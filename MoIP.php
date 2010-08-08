@@ -11,7 +11,7 @@ class MoIP
 
   private $credenciais;
   private $razao;
-  private $ambiente;
+  private $ambiente = 'sandbox';
   private $id_proprio;
   private $formas_pagamento = array('boleto','financiamento','debito','cartao','carteira_moip');
   private $forma_pagamento;
@@ -90,9 +90,22 @@ class MoIP
 
 class MoIPClient
 {
-  function send()
+  function send($auth,$xml,$url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
   {
-
+    $header[] = "Authorization: Basic " . base64_encode($auth);
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL,$url);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+    curl_setopt($curl, CURLOPT_USERPWD, $auth);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0");
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $xml);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    $ret = curl_exec($curl);
+    $err = curl_error($curl);
+    curl_close($curl);
+    return array('resposta'=>$ret,'erro'=>$err);
   }
 }
 ?>
