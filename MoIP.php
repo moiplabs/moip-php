@@ -15,6 +15,7 @@ class MoIP
   private $id_proprio;
   private $formas_pagamento = array('boleto','financiamento','debito','cartao','carteira_moip');
   private $forma_pagamento;
+  private $resposta;
 
   function __construct()
   {
@@ -96,15 +97,14 @@ class MoIP
 
   public function getResposta()
   {
-    if ($this->resposta->erro!==false)
-      return (object) array('sucesso'=>false,'mensagem'=>$this->resposta['erro']);
+    if (!empty($this->resposta->erro))
+      return (object) array('sucesso'=>false,'mensagem'=>$this->resposta->erro);
 
     $xml = xml2array($this->resposta->resposta);
     $struct = $xml['ns1:EnviarInstrucaoUnicaResponse'];
     $return = (object) array();
     $return->sucesso = $struct['Resposta']['Status']=='Sucesso';
     $return->token = $struct['Resposta']['Token'];
-
     return $return;
   }
 }
@@ -130,7 +130,7 @@ class MoIPClient
     curl_setopt($curl, CURLOPT_POSTFIELDS, $xml);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     $ret = curl_exec($curl);
-    $err = curl_error($curl);
+    $err = curl_error($curl); 
     curl_close($curl);
     return (object) array('resposta'=>$ret,'erro'=>$err);
   }
