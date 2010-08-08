@@ -1,5 +1,5 @@
 <?php
-
+require 'xml2array.php';
 /**
  * Abstração da API do MoIP para PHP
  * @author Herberth Amaral
@@ -76,18 +76,45 @@ class MoIP
     return "<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio></InstrucaoUnica></EnviarInstrucao>";
   }
 
-  public function envia()
+  public function envia($client=null)
   {
     $this->valida();
+    
+    if($client==null)
+      $client = new MoIPClient();
+
+    if ($this->ambiente=='sandbox')
+      $url = 'https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica';
+    else
+      $url = 'pegar url depois';
+
+    $this->resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],
+                                    $this->getXML(),
+                                    $url);
     return $this;
   }
 
   public function getResposta()
   {
-    return (object) array('sucesso'=>true,'token'=>'A2J031F0F06810E7E1L9P4R7B5O4F003V3W0Z090H0J080I0Z0J372I352I4');
+    if ($this->resposta->erro!==false)
+      return (object) array('sucesso'=>false,'mensagem'=>$this->resposta['erro']);
+
+    $xml = xml2array($this->resposta->resposta);
+    $struct = $xml['ns1:EnviarInstrucaoUnicaResponse'];
+    $return = (object) array();
+    $return->sucesso = $struct['Resposta']['Status']=='Sucesso';
+    $return->token = $struct['Resposta']['Token'];
+
+    return $return;
   }
 }
 
+/**
+ * Cliente HTTP "burro"
+ *
+ * @author Herberth Amaral
+ * @version 0.0.1
+ */ 
 class MoIPClient
 {
   function send($auth,$xml,$url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
@@ -105,7 +132,7 @@ class MoIPClient
     $ret = curl_exec($curl);
     $err = curl_error($curl);
     curl_close($curl);
-    return array('resposta'=>$ret,'erro'=>$err);
+    return (object) array('resposta'=>$ret,'erro'=>$err);
   }
 }
 ?>

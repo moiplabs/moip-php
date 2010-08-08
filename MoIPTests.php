@@ -104,15 +104,15 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 
   public function testVerificaSeARespostaDoServidorFoiRecebidaCorretamente()
   {
-    $respostaExpected = (object) array('sucesso'=>true,
-                                       'token'=>'A2J031F0F06810E7E1L9P4R7B5O4F003V3W0Z090H0J080I0Z0J372I352I4');
+    $respostaFromMoIPClient = (object) array('erro'=>false,
+                                       'resposta'=>'<ns1:EnviarInstrucaoUnicaResponse xmlns:ns1="http://www.moip.com.br/ws/alpha/"><Resposta><ID>201008080605083750000000012345</ID><Status>Sucesso</Status><Token>1230S1C7P0Z8L8M8C0Z6Q9F5B0V8Y3L7S5N0U0O0D0F0N060Z053Y2Y3Z2Q7</Token></Resposta></ns1:EnviarInstrucaoUnicaResponse>');
     
     
     $client = $this->getMock('MoIPClient',array('send'));
 
     $client->expects($this->any())
            ->method('send')
-           ->will($this->returnValue($this->equalTo($respostaExpected)));
+           ->will($this->returnValue($respostaFromMoIPClient));
 
     $resposta = $this->MoIP->setRazao('Pagamento de testes')
                ->setCredenciais($this->validCredentials)
