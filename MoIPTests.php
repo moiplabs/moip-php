@@ -11,13 +11,15 @@ require_once 'MoIP.php';
  */
 class MoIPTests extends PHPUnit_Framework_TestCase
 {
-  //method called before each test method
+  //method called before each test methodi
+  private $validCredentials = array('token'=>'TLCSNDHJ2K3RT2SSIADPMZFBSSCUJC17',
+                                    'key'=>'62TEXRGAELROYXRWJCAWKYZJWD1WWD8WBGDVH9R0'); 
   public function setUp()
   {
     $this->MoIP = new MoIP();
   }
 
-  public function testVerificaSeTokenEKeyForamPassadosCorretamente()
+  public function testVerificaSeExceptionEhLancadaSeCredenciaisInvalidasForemPassadas()
   {
     try
     {
@@ -31,11 +33,102 @@ class MoIPTests extends PHPUnit_Framework_TestCase
    
   }
 
+  public function testVerificaSeNaoOcorreExceptionsQuandoCredenciaisValidasForemPassadas()
+  {
+    $this->MoIP->setCredenciais($this->validCredentials);
+  }
+
+  public function testVerificaSeExceptionEhLancadaQuandoOAmbienteDeExecucaoInvalidoForPassado()
+  {
+    try
+    {
+      $this->MoIP->setAmbiente('ambiente.invalido');
+      $this->fail('Erro: Não obtive uma exception ao informar um abiente inválido');
+    }catch(InvalidArgumentException $e){}
+  }
+
+  public function testVerificaSeExceptionNaoEhLancadaQuandoOAmbienteDeExecucaoValidoForPassado()
+  {
+    $this->MoIP->setAmbiente('producao');
+    $this->MoIP->setAmbiente('sandbox');
+  }
+
+  public function testVerificaSeQuandoDadosInsuficientesForemPassadosUmaExceptionEhLancada()
+  {
+    try
+    {
+      $this->MoIP->valida();
+      $this->fail("Erro: não obtive uma exception ao deixar de informar campos inválidos");
+    } catch (InvalidArgumentException $e){}
+
+   try
+   {
+     $this->MoIP->setRazao('Pagamento de testes')->valida();
+     $this->fail("Erro: não obtive exception ao especificar somente a razão");
+   }catch(InvalidArgumentException $e){}
+  }
+
+  public function testVerificaSeQuandoDadosCorretosForemPassadosNenhumaExceptionEhLancada()
+  {
+    $this->MoIP->setRazao('Pagamento de testes')
+               ->setCredenciais($this->validCredentials)
+               ->setIDProprio(123456)
+               ->valida();
+  }
+
+  public function testVerificaSeXMLGeradoEhValidoQuandoParametrosBasicosForemPassados()
+  {
+
+    $current = $this->MoIP->setRazao('Pagamento de testes')
+                ->setCredenciais($this->validCredentials)
+                ->setIDProprio(123456)
+                ->valida()
+                ->getXML();
+    $expected = "<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio></InstrucaoUnica></EnviarInstrucao>";
+    $this->assertEquals($expected,$current);
+  }
+
+  public function testVerificaSeUmaExceptionEhLancadaQuandoAFormaDePagamentoNaoEstiverDisponivel()
+  {
+    try
+    {
+      $this->MoIP->setFormaPagamento('invalid');
+      $this->fail('Erro: não houve exception ao setar uma forma de pagamento inválida');
+    }
+    catch(InvalidArgumentException $e){}
+  }
+  public function testVerificaSeOpcoesDePagamentoPadraoEstaoDisponiveis()
+  {
+    $this->MoIP->setFormaPagamento('boleto');
+  }
+
+  public function testVerificaSeARespostaDoServidorFoiRecebidaCorretamente()
+  {
+    $respostaExpected = (object) array('sucesso'=>true,
+                                       'token'=>'A2J031F0F06810E7E1L9P4R7B5O4F003V3W0Z090H0J080I0Z0J372I352I4');
+    
+    
+    $client = $this->getMock('MoIPClient',array('send'));
+
+    $client->expects($this->any())
+           ->method('send')
+           ->will($this->returnValue($this->equalTo($respostaExpected)));
+
+    $resposta = $this->MoIP->setRazao('Pagamento de testes')
+               ->setCredenciais($this->validCredentials)
+               ->setIDProprio(123456)
+               ->valida()
+               ->envia($client)
+               ->getResposta();
+    
+    $this->assertTrue($resposta->sucesso);
+    $this->assertEquals(strlen($resposta->token),60);
+  }
+
   //method called after each test method
   public function tearDown()
   {
     unset($this->MoIP);
   }
 }
-
 ?>
