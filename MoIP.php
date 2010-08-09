@@ -21,6 +21,7 @@ class MoIP
                                     'carteira_moip'=>'CarteiraMoIP');
   private $forma_pagamento;
   private $forma_pagamento_args;
+  private $pagador;
   private $resposta;
   private $valor;
 
@@ -98,6 +99,33 @@ class MoIP
     return $this; 
   }
 
+  public function setPagador($pagador)
+  {
+    if(empty($pagador) or
+      !isset($pagador['nome']) or
+      !isset($pagador['login_moip']) or
+      !isset($pagador['email']) or 
+      !isset($pagador['celular']) or
+      !isset($pagador['apelido']) or
+      !isset($pagador['identidade']) or
+      !isset($pagador['endereco']) or
+      !isset($pagador['endereco']['logradouro']) or
+      !isset($pagador['endereco']['numero']) or
+      !isset($pagador['endereco']['complemento']) or
+      !isset($pagador['endereco']['bairro']) or
+      !isset($pagador['endereco']['cidade']) or
+      !isset($pagador['endereco']['estado']) or
+      !isset($pagador['endereco']['pais']) or
+      !isset($pagador['endereco']['cep']) or
+      !isset($pagador['endereco']['telefone'])
+    )
+    {
+      throw new InvalidArgumentException("Dados do pagador especificados de forma incorreta");
+    }
+    $this->pagador = $pagador;
+
+  }
+
   public function setValor($valor)
   {
     $this->valor = $valor;
@@ -133,6 +161,11 @@ class MoIP
 
         $xml .= '</Boleto>';
       }
+    }
+    
+    if(!empty($this->pagador))
+    {
+
     }
 
     $xml .= "</InstrucaoUnica></EnviarInstrucao>";

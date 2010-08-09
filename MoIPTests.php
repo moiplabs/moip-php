@@ -13,7 +13,23 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 {
   //method called before each test methodi
   private $validCredentials = array('token'=>'TLCSNDHJ2K3RT2SSIADPMZFBSSCUJC17',
-                                    'key'=>'62TEXRGAELROYXRWJCAWKYZJWD1WWD8WBGDVH9R0'); 
+    'key'=>'62TEXRGAELROYXRWJCAWKYZJWD1WWD8WBGDVH9R0');
+
+  private $pagadorValido = array('nome'=>'Luiz Inácio Lula da Silva',
+                                 'login_moip'=>'lula',
+                                 'email'=>'presidente@planalto.com.br',
+                                 'celular'=>'(61)9999-9999',
+                                 'apelido'=>'Lula',
+                                 'identidade'=>'111.111.111-11',
+                                 'endereco'=>array('logradouro'=>'Praça dos Três Poderes',
+                                                   'numero'=>'0',
+                                                   'complemento'=>'Palácio do Planalto',
+                                                   'bairro'=>'Zona Cívico-Admnistrativa',
+                                                   'cidade'=>'Brasília',
+                                                   'estado'=>'DF',
+                                                   'pais'=>'BRA',
+                                                   'cep'=>'70100-000',
+                                                   'telefone'=>'(61)3211-1221'));
   public function setUp()
   {
     $this->MoIP = new MoIP();
@@ -109,6 +125,10 @@ class MoIPTests extends PHPUnit_Framework_TestCase
       '<Instrucao2>Outra instrucao</Instrucao2></Boleto></InstrucaoUnica></EnviarInstrucao>';
     
     $this->assertEquals($expected,$current->getXML(),"Instruções básicas com valor e forma de pagamento com parâmetros");
+
+    //com forma de pagamento em boleto com instruções extra e dados do pagador
+    $current->setPagador($this->pagadorValido);
+    $this->assertEquals($expected,$current->getXML(),"Instruções básicas com valor e forma de pagamento com parâmetros e dados do pagador");
   }
 
   public function testVerificaSeUmaExceptionEhLancadaQuandoAFormaDePagamentoNaoEstiverDisponivel()
@@ -162,6 +182,22 @@ class MoIPTests extends PHPUnit_Framework_TestCase
   public function testVerificaSeNaoHaExceptionQuandoOsDadosDoBoletoSaoPassadosCorretamente()
   {
     $this->MoIP->setFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'corridos','dias'=>'5')));
+  }
+
+  public function testVerificaSeExceptionEhLancadaQuandoDadosDoPagadorSaoPassadosIncorretamente()
+  {
+    $pagador = array();
+    try
+    {
+      $this->MoIP->setPagador($pagador);
+      $this->fail('Erro: deve haver uma exception quando dos dados do pagador são especificados de forma incorreta');
+    }catch (InvalidArgumentException $e){}
+  }
+
+  public function testVerificaSeExceptionNaoEhLancadaQuandoDadosDoPagadorSaoPassadosCorretamente()
+  {
+
+    $this->MoIP->setPagador($this->pagadorValido);
   }
 
   //method called after each test method
