@@ -82,10 +82,22 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     $current = $this->MoIP->setRazao('Pagamento de testes')
                 ->setCredenciais($this->validCredentials)
                 ->setIDProprio(123456)
-                ->valida()
-                ->getXML();
+                ->valida();
     $expected = "<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio></InstrucaoUnica></EnviarInstrucao>";
-    $this->assertEquals($expected,$current);
+    $this->assertEquals($expected,$current->getXML(),"Instruções básicas");
+    
+    //com valor
+    $current = $this->MoIP->setValor(123.45);
+
+    $expected = '<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio><Valores><Valor moeda="BRL">123.45</Valor></Valores></InstrucaoUnica></EnviarInstrucao>';
+    $this->assertEquals($expected,$current->getXML(),"Instruções básicas + valor");
+
+    //com forma de pagamento 
+    $current->setFormaPagamento('boleto');
+    $expected = '<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio><Valores>'.
+      '<Valor moeda="BRL">123.45</Valor></Valores><PagamentoDireto><Forma>BoletoBancario</Forma></PagamentoDireto>'.
+      '</InstrucaoUnica></EnviarInstrucao>';
+    $this->assertEquals($expected,$current->getXML(),"Instruções básicas com valor e forma de pagamento");
   }
 
   public function testVerificaSeUmaExceptionEhLancadaQuandoAFormaDePagamentoNaoEstiverDisponivel()

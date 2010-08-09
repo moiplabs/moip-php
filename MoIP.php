@@ -13,9 +13,15 @@ class MoIP
   private $razao;
   private $ambiente = 'sandbox';
   private $id_proprio;
-  private $formas_pagamento = array('boleto','financiamento','debito','cartao','carteira_moip');
+  private $formas_pagamento = array('boleto'=>'BoletoBancario',
+                                    'financiamento'=>'FinanciamentoBancario',
+                                    'debito'=>'DebitoBancario',
+                                    'cartao_credito'=>'CartaoCredito',
+                                    'cartao_debito'=>'CartaoDebito',
+                                    'carteira_moip'=>'CarteiraMoIP');
   private $forma_pagamento;
   private $resposta;
+  private $valor;
 
   function __construct()
   {
@@ -66,15 +72,33 @@ class MoIP
 
   public function setFormaPagamento($forma)
   {
-    if(!in_array($forma,$this->formas_pagamento))
+    if(!isset($this->formas_pagamento[$forma]))
       throw new InvalidArgumentException("Forma de pagamento indisponivel");
     $this->forma_pagamento = $forma;
     return $this; 
   }
 
+  public function setValor($valor)
+  {
+    $this->valor = $valor;
+    return $this;
+  }
+
   public function getXML()
   {
-    return "<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio></InstrucaoUnica></EnviarInstrucao>";
+    $xml = "<EnviarInstrucao><InstrucaoUnica><Razao>".$this->razao."</Razao><IdProprio>".$this->id_proprio."</IdProprio>";
+    if (!empty($this->valor))
+    {
+      $xml .='<Valores><Valor moeda="BRL">'.$this->valor.'</Valor></Valores>';
+    }
+
+    if (!empty($this->forma_pagamento))
+    {
+      $xml .= '<PagamentoDireto><Forma>'.$this->formas_pagamento[$this->forma_pagamento].'</Forma></PagamentoDireto>';
+    }
+
+    $xml .= "</InstrucaoUnica></EnviarInstrucao>";
+    return $xml; 
   }
 
   public function envia($client=null)
