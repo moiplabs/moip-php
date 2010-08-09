@@ -89,15 +89,26 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     //com valor
     $current = $this->MoIP->setValor(123.45);
 
-    $expected = '<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio><Valores><Valor moeda="BRL">123.45</Valor></Valores></InstrucaoUnica></EnviarInstrucao>';
+    $expected = '<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio>'.
+                 '<Valores><Valor moeda="BRL">123.45</Valor></Valores></InstrucaoUnica></EnviarInstrucao>';
     $this->assertEquals($expected,$current->getXML(),"Instruções básicas + valor");
 
-    //com forma de pagamento 
+    //com forma de pagamento em boleto
     $current->setFormaPagamento('boleto');
     $expected = '<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio><Valores>'.
       '<Valor moeda="BRL">123.45</Valor></Valores><PagamentoDireto><Forma>BoletoBancario</Forma></PagamentoDireto>'.
       '</InstrucaoUnica></EnviarInstrucao>';
     $this->assertEquals($expected,$current->getXML(),"Instruções básicas com valor e forma de pagamento");
+    
+    //com forma de pagamento em boleto com instruções extra
+    $current->setFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'Corridos','dias'=>5),
+      'instrucoes'=>array('Nao receber apos o vencimento','Outra instrucao')));
+    $expected = '<EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio><Valores>'.
+      '<Valor moeda="BRL">123.45</Valor></Valores><PagamentoDireto><Forma>BoletoBancario</Forma></PagamentoDireto>'.
+      '<Boleto><DiasExpiracao Tipo="Corridos">5</DiasExpiracao><Instrucao1>Nao receber apos o vencimento</Instrucao1>'.
+      '<Instrucao2>Outra instrucao</Instrucao2></Boleto></InstrucaoUnica></EnviarInstrucao>';
+    
+    $this->assertEquals($expected,$current->getXML(),"Instruções básicas com valor e forma de pagamento com parâmetros");
   }
 
   public function testVerificaSeUmaExceptionEhLancadaQuandoAFormaDePagamentoNaoEstiverDisponivel()
@@ -135,6 +146,22 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     
     $this->assertTrue($resposta->sucesso);
     $this->assertEquals(strlen($resposta->token),60);
+  }
+
+  public function testVerificaSeExceptionEhLancadaQuandoDadosDoBoletoSaoPassadosIncorretamente()
+  {
+    try
+    {
+      $this->MoIP->setFormaPagamento('boleto',array('nada'));
+      $this->fail('Erro: deve haver uma exception quando os dados do boleto são especificados de forma incorreta');
+    }
+    catch(InvalidArgumentException $e){}
+
+  }
+
+  public function testVerificaSeNaoHaExceptionQuandoOsDadosDoBoletoSaoPassadosCorretamente()
+  {
+    $this->MoIP->setFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'corridos','dias'=>'5')));
   }
 
   //method called after each test method

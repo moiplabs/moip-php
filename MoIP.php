@@ -20,6 +20,7 @@ class MoIP
                                     'cartao_debito'=>'CartaoDebito',
                                     'carteira_moip'=>'CarteiraMoIP');
   private $forma_pagamento;
+  private $forma_pagamento_args;
   private $resposta;
   private $valor;
 
@@ -70,10 +71,29 @@ class MoIP
     return $this;
   }
 
-  public function setFormaPagamento($forma)
+  public function setFormaPagamento($forma,$args=null)
   {
     if(!isset($this->formas_pagamento[$forma]))
       throw new InvalidArgumentException("Forma de pagamento indisponivel");
+
+    if($args!=null)
+    {
+      if (!is_array($args))
+        throw InvalidArgumentException("Os parâmetros extra devem ser passados em um array");
+
+      if($forma=='boleto')
+      { 
+        //argumentos possíveis: dias de expiração, instruções e logo da URL
+        if (isset($args['dias_expiracao']) and isset($args['dias_expiracao']['tipo']) and isset($args['dias_expiracao']['dias']))
+        {
+            $this->forma_pagamento_args = $args;
+        }
+        else
+        {
+          throw new InvalidArgumentException("Parâmetros passados de forma incorreta");
+        }
+      }
+    }
     $this->forma_pagamento = $forma;
     return $this; 
   }
@@ -95,6 +115,24 @@ class MoIP
     if (!empty($this->forma_pagamento))
     {
       $xml .= '<PagamentoDireto><Forma>'.$this->formas_pagamento[$this->forma_pagamento].'</Forma></PagamentoDireto>';
+
+      if($this->forma_pagamento=='boleto' and !empty($this->forma_pagamento_args))
+      {
+        $xml .= '<Boleto><DiasExpiracao Tipo="'.$this->forma_pagamento_args['dias_expiracao']['tipo'].'">'.
+                $this->forma_pagamento_args['dias_expiracao']['dias'].'</DiasExpiracao>';
+
+        if(isset($this->forma_pagamento_args['instrucoes']))
+        {
+          $numeroInstrucoes = 1;
+          foreach($this->forma_pagamento_args['instrucoes'] as $instrucao)
+          {
+            $xml .= '<Instrucao'.$numeroInstrucoes.'>'.$instrucao.'</Instrucao'.$numeroInstrucoes.'>';
+            $numeroInstrucoes++;
+          }
+        }
+
+        $xml .= '</Boleto>';
+      }
     }
 
     $xml .= "</InstrucaoUnica></EnviarInstrucao>";
