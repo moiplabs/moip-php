@@ -25,9 +25,18 @@ class MoIP
   private $resposta;
   private $valor;
 
+  //simplexml object
+  private $xml;
+
   function __construct()
   {
-    
+    $this->initXMLObject();
+  }
+
+  private function initXMLObject()
+  {
+      $this->xml = new SimpleXmlElement('<EnviarInstrucao></EnviarInstrucao>');
+      $this->xml->addChild('InstrucaoUnica');
   }
 
   public function setCredenciais($credenciais)
@@ -68,8 +77,9 @@ class MoIP
 
   public function setRazao($razao)
   {
-    $this->razao = $razao;
-    return $this;
+      $this->xml->InstrucaoUnica->addChild('Razao',$razao);
+      $this->razao = $razao;
+      return $this;
   }
 
   public function setFormaPagamento($forma,$args=null)
@@ -134,32 +144,37 @@ class MoIP
 
   public function getXML()
   {
-    $xml = "<EnviarInstrucao><InstrucaoUnica><Razao>".$this->razao."</Razao><IdProprio>".$this->id_proprio."</IdProprio>";
-    if (!empty($this->valor))
-    {
-      $xml .='<Valores><Valor moeda="BRL">'.$this->valor.'</Valor></Valores>';
-    }
+      $this->xml->InstrucaoUnica->addChild('IdProprio',$this->id_proprio);
+      
+      if (!empty($this->valor))
+      {
+          $this->xml->InstrucaoUnica->addChild('Valores')
+                                        ->addChild('Valor',$this->valor)
+                                            ->addAttribute('moeda','BRL'); 
+      }
 
     if (!empty($this->forma_pagamento))
     {
-      $xml .= '<PagamentoDireto><Forma>'.$this->formas_pagamento[$this->forma_pagamento].'</Forma></PagamentoDireto>';
+        $instrucao = $this->xml->InstrucaoUnica;
+        $instrucao->addChild('PagamentoDireto');
+        $instrucao->PagamentoDireto->addChild('Forma',$this->formas_pagamento[$this->forma_pagamento]);
+
 
       if($this->forma_pagamento=='boleto' and !empty($this->forma_pagamento_args))
       {
-        $xml .= '<Boleto><DiasExpiracao Tipo="'.$this->forma_pagamento_args['dias_expiracao']['tipo'].'">'.
-                $this->forma_pagamento_args['dias_expiracao']['dias'].'</DiasExpiracao>';
+          $instrucao->addChild('Boleto')
+                    ->addChild('DiasExpiracao',$this->forma_pagamento_args['dias_expiracao']['dias'])
+                        ->addAttribute('Tipo',$this->forma_pagamento_args['dias_expiracao']['tipo']);
 
         if(isset($this->forma_pagamento_args['instrucoes']))
         {
           $numeroInstrucoes = 1;
-          foreach($this->forma_pagamento_args['instrucoes'] as $instrucao)
+          foreach($this->forma_pagamento_args['instrucoes'] as $instrucaostr)
           {
-            $xml .= '<Instrucao'.$numeroInstrucoes.'>'.$instrucao.'</Instrucao'.$numeroInstrucoes.'>';
-            $numeroInstrucoes++;
+              $instrucao->Boleto->addChild('Instrucao'.$numeroInstrucoes,$instrucaostr);
+              $numeroInstrucoes++;
           }
         }
-
-        $xml .= '</Boleto>';
       }
     }
     
@@ -167,9 +182,9 @@ class MoIP
     {
 
     }
-
-    $xml .= "</InstrucaoUnica></EnviarInstrucao>";
-    return $xml; 
+    $return = $this->xml->asXML();
+    $this->initXMLObject();
+    return str_ireplace("\n","",$return);
   }
 
   public function envia($client=null)
