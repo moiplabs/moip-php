@@ -1,4 +1,4 @@
-MOIP-PHP - Biblioteca PHP para acesso à API do MoIP
+MOIP-PHP - Biblioteca PHP para acesso à API do MoIP (v. 0.0.1)
 ====================================================
 
 Você já deve ter visto todos os nossos plugins prontos e provavelmente deve ter pensado consigo mesmo: "uma biblioteca pronta para PHP iria facilitar muito a minha vida de desenvolvedor, pra eu não precisar mais de ficar validando regras de negócio na mão ou trabalhando diretamente com o cURL."
