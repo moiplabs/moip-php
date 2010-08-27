@@ -5,7 +5,7 @@ Você já deve ter visto todos os nossos plugins prontos e provavelmente deve te
 
 Pois seus problemas acabaram-se :-)
 
-A MoIP-PHP é uma biblioteca que, apesar de ainda não contemplar todas as funcionalidades do MoIP, já serve para casos mais simples. Um exemplo rápido:
+A MoIP-PHP é uma biblioteca que implementa uma camada de abstração prientada à objetos para geração do XML de instruções da MoIP, permitindo que você gere instruções sem poluir seu código com várias linhas de XML. Apesar de ainda não contemplar todas as funcionalidades do MoIP, já serve para casos mais simples. Um exemplo rápido:
 
       require 'MoIP.php';
       $moip = new MoIP();
