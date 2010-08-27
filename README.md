@@ -7,26 +7,26 @@ Pois seus problemas acabaram-se :-)
 
 A MoIP-PHP é uma biblioteca que, apesar de ainda não contemplar todas as funcionalidades do MoIP, já serve para casos mais simples. Um exemplo rápido:
 
-> require 'MoIP.php';
-> $moip = new MoIP();
-> $moip->setCredenciais(array('key'=>'sua_key','token'=>'seu_token'));
-> $moip->setIDProprio(123456);
-> $moip->setRazao('Teste do MoIP-PHP');
-> $moip->valida();
-> $moip->envia();
-> echo $moip->getResposta()->token;`
+>   require 'MoIP.php';
+>   $moip = new MoIP();
+>   $moip->setCredenciais(array('key'=>'sua_key','token'=>'seu_token'));
+>   $moip->setIDProprio(123456);
+>   $moip->setRazao('Teste do MoIP-PHP');
+>   $moip->valida();
+>   $moip->envia();
+>echo $moip->getResposta()->token;`
 
 O MoIP-PHP utiliza o padrão [Fluent Interfaces](http://martinfowler.com/bliki/FluentInterface.html), portanto, você pode fazer o exemplo acima da seguinte forma:
 
-> require 'MoIP.php';
-> $moip = new MoIP();
-> echo $moip->setCredenciais(array('key'=>'sua_key','token'=>'seu_token'))
->               ->setIDProprio(123456);
->               ->setRazao('Teste do MoIP-PHP')
->               ->valida()
->               ->envia()
->               ->getResposta()
->               ->token;
+>   require 'MoIP.php';
+>   $moip = new MoIP();
+>   echo $moip->setCredenciais(array('key'=>'sua_key','token'=>'seu_token'))
+>             ->setIDProprio(123456);
+>              ->setRazao('Teste do MoIP-PHP')
+>              ->valida()
+>              ->envia()
+>              ->getResposta()
+>              ->token;
 
 
 O método getResposta() retorna um objeto contendo com os atributos "token" e "sucesso" (um tipo booleano).
