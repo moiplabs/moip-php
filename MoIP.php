@@ -61,9 +61,9 @@ class MoIP
 
   public function valida()
   {
-    if ($this->credenciais == null or
-        $this->razao == null or
-        $this->id_proprio == null)
+    if (!isset($this->credenciais)  or
+        !isset($this->razao) or
+        !isset($this->id_proprio))
         throw new InvalidArgumentException("Dados requeridos não preenchidos. Você deve especificar as credenciais, a razão do pagamento e seu ID próprio");
 
     return $this;
@@ -242,8 +242,7 @@ class MoIPClient
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     $ret = curl_exec($curl);
     $err = curl_error($curl); 
-    curl_close($curl);
-    echo $ret;
+    curl_close($curl); 
     return (object) array('resposta'=>$ret,'erro'=>$err);
   }
 }
