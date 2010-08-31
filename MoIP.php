@@ -156,8 +156,8 @@ class MoIP
     if (!empty($this->forma_pagamento))
     {
         $instrucao = $this->xml->InstrucaoUnica;
-        $instrucao->addChild('PagamentoDireto');
-        $instrucao->PagamentoDireto->addChild('Forma',$this->formas_pagamento[$this->forma_pagamento]);
+        $instrucao->addChild('PagamentoUnico');
+        $instrucao->PagamentoUnico->addChild('Forma',$this->formas_pagamento[$this->forma_pagamento]);
 
 
       if($this->forma_pagamento=='boleto' and !empty($this->forma_pagamento_args))
