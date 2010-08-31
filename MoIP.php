@@ -1,5 +1,5 @@
 <?php
-require 'xml2array.php';
+
 /**
  * Abstração da API do MoIP para PHP
  * @author Herberth Amaral
@@ -210,11 +210,12 @@ class MoIP
     if (!empty($this->resposta->erro))
       return (object) array('sucesso'=>false,'mensagem'=>$this->resposta->erro);
 
-    $xml = xml2array($this->resposta->resposta);
-    $struct = $xml['ns1:EnviarInstrucaoUnicaResponse'];
+    $xml = new SimpleXmlElement($this->resposta->resposta);
     $return = (object) array();
-    $return->sucesso = $struct['Resposta']['Status']=='Sucesso';
-    $return->token = $struct['Resposta']['Token'];
+    $return->sucesso = (bool)$xml->Resposta->Status=='Sucesso';
+    $return->id      = (string)$xml->Resposta->ID;
+    $return->token = (string)$xml->Resposta->Token;
+    
     return $return;
   }
 }
@@ -242,6 +243,7 @@ class MoIPClient
     $ret = curl_exec($curl);
     $err = curl_error($curl); 
     curl_close($curl);
+    echo $ret;
     return (object) array('resposta'=>$ret,'erro'=>$err);
   }
 }
