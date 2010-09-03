@@ -197,7 +197,7 @@ class MoIP
     if ($this->ambiente=='sandbox')
       $url = 'https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica';
     else
-      $url = 'pegar url depois';
+      $url = 'https://www.moip.com.br/ws/alpha/EnviarInstrucao/Unica';
 
     $this->resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],
                                     $this->getXML(),
