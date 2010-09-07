@@ -63,7 +63,7 @@ class MoIP
   {
     if (!isset($this->credenciais)  or
         !isset($this->razao) or
-        !isset($this->id_proprio))
+        !isset($this->xml->InstrucaoUnica->IdProprio))
         throw new InvalidArgumentException("Dados requeridos não preenchidos. Você deve especificar as credenciais, a razão do pagamento e seu ID próprio");
 
     return $this;
@@ -71,7 +71,8 @@ class MoIP
 
   public function setIDProprio($id)
   {
-    $this->id_proprio = $id;
+    $this->xml->InstrucaoUnica->addChild('IdProprio',$id);
+    //$this->id_proprio = $id;
     return $this;
   }
 
@@ -144,14 +145,13 @@ class MoIP
 
   public function getXML()
   {
-      $this->xml->InstrucaoUnica->addChild('IdProprio',$this->id_proprio);
-      
-      if (!empty($this->valor))
-      {
-          $this->xml->InstrucaoUnica->addChild('Valores')
-                                        ->addChild('Valor',$this->valor)
-                                            ->addAttribute('moeda','BRL'); 
-      }
+ 
+    if (!empty($this->valor))
+    {
+        $this->xml->InstrucaoUnica->addChild('Valores')
+                                  ->addChild('Valor',$this->valor)
+                                  ->addAttribute('moeda','BRL'); 
+    }
 
     if (!empty($this->forma_pagamento))
     {

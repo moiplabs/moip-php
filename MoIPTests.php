@@ -93,48 +93,20 @@ class MoIPTests extends PHPUnit_Framework_TestCase
   }
 
   public function testVerificaSeXMLGeradoEhValidoQuandoParametrosBasicosForemPassados()
-  {
-    
-    $current = $this->MoIP->setRazao('Pagamento de testes')
-                ->setCredenciais($this->validCredentials)
-                ->setIDProprio(123456)
-                ->valida();
-    $expected = "<?xml version=\"1.0\"?><EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio></InstrucaoUnica></EnviarInstrucao>";
-    $this->assertEquals($expected,str_ireplace("\n","",$current->getXML()),"Instruções básicas");
-    
-    //com valor
-    $this->MoIP = new MoIP();
-    $current = $this->MoIP->setRazao('Pagamento de testes')
-                          ->setCredenciais($this->validCredentials)
-                          ->setIDProprio(123456)
-                          ->setValor(123.45);
-    
-    $expected = '<?xml version="1.0"?><EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio>'.
-                 '<Valores><Valor moeda="BRL">123.45</Valor></Valores></InstrucaoUnica></EnviarInstrucao>';
-    $this->assertEquals($expected,$current->getXML(),"Instruções básicas + valor");
-
-    //com forma de pagamento em boleto
-    $current->setRazao('Pagamento de testes')->setFormaPagamento('boleto');
-    $expected = '<?xml version="1.0"?><EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio><Valores>'.
-      '<Valor moeda="BRL">123.45</Valor></Valores><PagamentoUnico><Forma>BoletoBancario</Forma></PagamentoUnico>'.
-      '</InstrucaoUnica></EnviarInstrucao>';
-    $this->assertEquals($expected,$current->getXML(),"Instruções básicas com valor e forma de pagamento");
-    
+  {    
     //com forma de pagamento em boleto com instruções extra
+    $current = new MoIP(); 
     $current->setIDProprio(123456)
             ->setRazao('Pagamento de testes')
             ->setFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'Corridos','dias'=>5),
-      'instrucoes'=>array('Nao receber apos o vencimento','Outra instrucao')));
-    $expected = '<?xml version="1.0"?><EnviarInstrucao><InstrucaoUnica><Razao>Pagamento de testes</Razao><IdProprio>123456</IdProprio><Valores>'.
-      '<Valor moeda="BRL">123.45</Valor></Valores><PagamentoUnico><Forma>BoletoBancario</Forma></PagamentoUnico>'.
-      '<Boleto><DiasExpiracao Tipo="Corridos">5</DiasExpiracao><Instrucao1>Nao receber apos o vencimento</Instrucao1>'.
-      '<Instrucao2>Outra instrucao</Instrucao2></Boleto></InstrucaoUnica></EnviarInstrucao>';
-    
-    $this->assertEquals($expected,$current->getXML(),"Instruções básicas com valor e forma de pagamento com parâmetros");
+                                'instrucoes'=>array('Nao receber apos o vencimento','Outra instrucao'))); 
+    $xml = new SimpleXmlElement($current->getXML()); 
 
-    //com forma de pagamento em boleto com instruções extra e dados do pagador
-    //$current->setPagador($this->pagadorValido);
-    //$this->assertEquals($expected,$current->getXML(),"Instruções básicas com valor e forma de pagamento com parâmetros e dados do pagador");
+    
+    $this->assertEquals((int)$xml->InstrucaoUnica->Boleto->DiasExpiracao,5);
+    $this->assertEquals((string)$xml->InstrucaoUnica->Boleto->DiasExpiracao["Tipo"],"Corridos");
+    $this->assertEquals((string)$xml->InstrucaoUnica->Boleto->Instrucao1,"Nao receber apos o vencimento");
+    $this->assertEquals((string)$xml->InstrucaoUnica->Boleto->Instrucao2,"Outra instrucao");
   }
 
   public function testVerificaSeUmaExceptionEhLancadaQuandoAFormaDePagamentoNaoEstiverDisponivel()
