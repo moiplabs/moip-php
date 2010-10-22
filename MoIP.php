@@ -55,6 +55,7 @@ class MoIP
   {
     if ($ambiente!='sandbox' and $ambiente!='producao')
       throw new InvalidArgumentException("Ambiente inválido");
+  
     $this->ambiente = $ambiente;
     return $this;
   }

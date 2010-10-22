@@ -14,7 +14,7 @@ A MoIP-PHP é uma biblioteca que implementa uma camada de abstração prientada 
       $moip->setRazao('Teste do MoIP-PHP');
       $moip->valida();
       $moip->envia();
-  echo $moip->getResposta()->token;`
+      echo $moip->getResposta()->token;
 
 O MoIP-PHP utiliza o padrão [Fluent Interfaces](http://martinfowler.com/bliki/FluentInterface.html), portanto, você pode fazer o exemplo acima da seguinte forma:
 
@@ -36,12 +36,40 @@ O MoIP-PHP possui testes unitários utilizando o framework [PHPUnit](http://phpu
 
 > $ phpunit MoIPTests.php
 
+Métodos disponíveis
+--------------------
+
+> setCredenciais ($credenciais)
+
+Informa as credenciais (token,key) ao objeto MoIP. Necessárias à autenticação. Você *precisa* informar as suas credenciais antes de enviar a instrução, pois não é possível autenticar no sistema da MoIP sem estas informações.
+
+O parâmetro $credenciais é um array associativo contendo as chaves _key_ e _token_ (ex: array('key'=>'sua_key','token'=>'seu_token')). Se você ainda não possui estes dados, entre em contato com a equipe do MoiP e solicite-os.
+
+> setAmbiente($ambiente)
+
+Configura o ambiente a ser utilizado. Suporta apenas dois valores: 'producao' e 'sandbox'
+
+> setIDProprio($id_proprio)
+
+Informa seu ID para a transação.
+
+> setRazao($razao) 
+
+Informa a razão do pagamento. Campo obrigatório.
+
+> setFormaPagamento($forma,$args=null)
+
+Configura a forma de pagamento. Atualmente só suporta boleto bancário, portanto, o unico valor que o parametro $forma aceita é 'boleto'.
+
+O parametro opcional $args serve para informar dados adicionais do pagamento, como 
 
 Limitações
 -----------
 Esta é a primeira versão da biblioteca e nem todos os casos estão cobertos. Veja nossa lista de issues para ver o que falta e quais são os problemas encontrados.
 
-Por enquanto, a biblioteca só suporta instruções únicas (remessa, por enquanto, não é suportado).
+Por enquanto, a biblioteca só suporta instruções únicas (remessa, por exemplo, não é suportado).
+
+Se você quiser ver alguma funcionalidade na biblioteca, por favor, crie uma issue. Se você realmente quiser ajudar, faça um fork e nos mande um pull request. Ficaremos contentes de ver sua contribuição :-)
 
 
 Licença
