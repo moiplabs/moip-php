@@ -228,23 +228,51 @@ class MoIP
  * @version 0.0.1
  */ 
 class MoIPClient
-{
-  function send($auth,$xml,$url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
+{ 
+  function send($credentials, $xml, $url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
   {
-    $header[] = "Authorization: Basic " . base64_encode($auth);
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL,$url);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-    curl_setopt($curl, CURLOPT_USERPWD, $auth);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0");
-    curl_setopt($curl, CURLOPT_POST, true);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $xml);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    $ret = curl_exec($curl);
-    $err = curl_error($curl); 
-    curl_close($curl); 
-    return (object) array('resposta'=>$ret,'erro'=>$err);
+    $auth = base64_encode($credentials);
+    $header[] = "Authorization: Basic " . $auth;
+
+
+    $params = array('http' => array(
+                'method' => 'POST',
+                'content' => $xml,
+                'header'=>$header
+              ));
+    $ctx = stream_context_create($params);
+    $fp = @fopen($url, 'rb', false, $ctx);
+    if (!$fp) {
+      //tenta enviar com cURL
+      return $this->send_with_curl($credentials,$xml,$url);
+    }
+    $response = @stream_get_contents($fp);
+    if ($response === false) {
+      throw new Exception("Problemas ao ler dados de $url, $php_errormsg");
+    } 
+    return (object)array('resposta'=>$response,'erro'=>null);
   }
+
+  private function send_with_curl($credentials,$xml,$url)
+  {  
+     $header[] = "Authorization: Basic " . base64_encode($credentials);
+     if (!function_exists('curl_init'))
+         throw new Exception('Parece que você não tem o cURL nem o OpenSSL ativado. Instale um dos dois (ou ambos) para esta biblioteca funcionar');
+     $curl = curl_init();
+     curl_setopt($curl, CURLOPT_URL,$url);
+     curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+     curl_setopt($curl, CURLOPT_USERPWD, $credentials);
+     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+     curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0");
+     curl_setopt($curl, CURLOPT_POST, true);
+     curl_setopt($curl, CURLOPT_POSTFIELDS, $xml);
+     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+     $ret = curl_exec($curl);
+     $err = curl_error($curl); 
+     curl_close($curl); 
+     echo $ret;
+     return (object) array('resposta'=>$ret,'erro'=>$err);
+  }
+
 }
 ?>
