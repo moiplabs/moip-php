@@ -135,7 +135,7 @@ class MoIP
       throw new InvalidArgumentException("Dados do pagador especificados de forma incorreta");
     }
     $this->pagador = $pagador;
-
+    return $this;
   }
 
   public function setValor($valor)
