@@ -301,16 +301,3 @@ class MoIPClient
 
 }
 ?>
-/4.0");
-     curl_setopt($curl, CURLOPT_POST, true);
-     curl_setopt($curl, CURLOPT_POSTFIELDS, $xml);
-     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-     $ret = curl_exec($curl);
-     $err = curl_error($curl); 
-     curl_close($curl); 
-     
-     return (object) array('resposta'=>$ret,'erro'=>$err);
-  }
-
-}
-?>
