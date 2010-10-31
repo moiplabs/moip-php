@@ -21,6 +21,7 @@ class MoIP
                                     'carteira_moip'=>'CarteiraMoIP');
   private $forma_pagamento;
   private $forma_pagamento_args;
+  private $tipo_pagamento = 'Unico';
   private $pagador;
   private $resposta;
   private $valor;
@@ -64,7 +65,7 @@ class MoIP
   {
     if (!isset($this->credenciais)  or
         !isset($this->razao) or
-        !isset($this->xml->InstrucaoUnica->IdProprio))
+        !isset($this->id_proprio))
         throw new InvalidArgumentException("Dados requeridos não preenchidos. Você deve especificar as credenciais, a razão do pagamento e seu ID próprio");
 
     return $this;
@@ -72,14 +73,12 @@ class MoIP
 
   public function setIDProprio($id)
   {
-    $this->xml->InstrucaoUnica->addChild('IdProprio',$id);
-    //$this->id_proprio = $id;
+    $this->id_proprio = $id;
     return $this;
   }
 
   public function setRazao($razao)
   {
-      $this->xml->InstrucaoUnica->addChild('Razao',$razao);
       $this->razao = $razao;
       return $this;
   }
@@ -111,6 +110,12 @@ class MoIP
     return $this; 
   }
 
+  public function setTipoPagamento( $tipo )
+  {
+	$this->tipo_pagamento = $tipo;
+	return $this;
+  }
+
   public function setPagador($pagador)
   {
     if(empty($pagador) or
@@ -135,7 +140,7 @@ class MoIP
       throw new InvalidArgumentException("Dados do pagador especificados de forma incorreta");
     }
     $this->pagador = $pagador;
-    return $this;
+	return $this;
   }
 
   public function setValor($valor)
@@ -146,7 +151,9 @@ class MoIP
 
   public function getXML()
   {
- 
+    $this->xml->InstrucaoUnica->addChild('IdProprio' , $this->id_proprio);
+    $this->xml->InstrucaoUnica->addChild('Razao' , $this->razao);
+
     if (!empty($this->valor))
     {
         $this->xml->InstrucaoUnica->addChild('Valores')
@@ -157,8 +164,9 @@ class MoIP
     if (!empty($this->forma_pagamento))
     {
         $instrucao = $this->xml->InstrucaoUnica;
-        $instrucao->addChild('PagamentoUnico');
-        $instrucao->PagamentoUnico->addChild('Forma',$this->formas_pagamento[$this->forma_pagamento]);
+        $instrucao->addChild('Pagamento' . $this->tipo_pagamento);
+		$tpo = 'Pagamento' . $this->tipo_pagamento;
+        $instrucao->$tpo->addChild('Forma',$this->formas_pagamento[$this->forma_pagamento]);
 
 
       if($this->forma_pagamento=='boleto' and !empty($this->forma_pagamento_args))
@@ -181,8 +189,25 @@ class MoIP
     
     if(!empty($this->pagador))
     {
-
+		$this->xml->InstrucaoUnica->addChild('Pagador');
+		$this->xml->InstrucaoUnica->Pagador->addChild( 'Nome' , $this->pagador[ 'nome' ] );
+		$this->xml->InstrucaoUnica->Pagador->addChild( 'LoginMoIP' , $this->pagador[ 'login_moip' ] );
+		$this->xml->InstrucaoUnica->Pagador->addChild( 'Email' , $this->pagador['email']);
+		$this->xml->InstrucaoUnica->Pagador->addChild( 'TelefoneCelular' , $this->pagador['celular']);
+		$this->xml->InstrucaoUnica->Pagador->addChild( 'Apelido' , $this->pagador['apelido']);
+		$this->xml->InstrucaoUnica->Pagador->addChild( 'Identidade' , $this->pagador['identidade']);
+		$this->xml->InstrucaoUnica->Pagador->addChild( 'EnderecoCobranca' );
+		$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Logradouro' , $this->pagador['endereco']['logradouro']);
+		$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Numero' , $this->pagador['endereco']['numero']);
+		$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Complemento' , $this->pagador['endereco']['complemento']);
+		$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Bairro' , $this->pagador['endereco']['bairro']);
+		$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Cidade' , $this->pagador['endereco']['cidade']);
+		$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Estado' , $this->pagador['endereco']['estado']);
+		$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Pais' , $this->pagador['endereco']['pais']);
+		$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'CEP' , $this->pagador['endereco']['cep']);
+		$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'TelefoneFixo' , $this->pagador['endereco']['telefone']);
     }
+
     $return = $this->xml->asXML();
     $this->initXMLObject();
     return str_ireplace("\n","",$return);
@@ -271,6 +296,19 @@ class MoIPClient
      $err = curl_error($curl); 
      curl_close($curl); 
      echo $ret;
+     return (object) array('resposta'=>$ret,'erro'=>$err);
+  }
+
+}
+?>
+/4.0");
+     curl_setopt($curl, CURLOPT_POST, true);
+     curl_setopt($curl, CURLOPT_POSTFIELDS, $xml);
+     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+     $ret = curl_exec($curl);
+     $err = curl_error($curl); 
+     curl_close($curl); 
+     
      return (object) array('resposta'=>$ret,'erro'=>$err);
   }
 
