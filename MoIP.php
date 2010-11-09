@@ -254,7 +254,7 @@ class MoIP
  */ 
 class MoIPClient
 { 
-  function send($credentials, $xml, $url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
+  function send_with_openssl($credentials, $xml, $url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
   {
     $auth = base64_encode($credentials);
     $header[] = "Authorization: Basic " . $auth;
@@ -268,8 +268,7 @@ class MoIPClient
     $ctx = stream_context_create($params);
     $fp = @fopen($url, 'rb', false, $ctx);
     if (!$fp) {
-      //tenta enviar com cURL
-      return $this->send_with_curl($credentials,$xml,$url);
+      throw new Exception("Você precisa do cURL ou do OpenSSL ativado no PHP para a integração com o MoIP funcionar."); 
     }
     $response = @stream_get_contents($fp);
     if ($response === false) {
@@ -278,11 +277,11 @@ class MoIPClient
     return (object)array('resposta'=>$response,'erro'=>null);
   }
 
-  private function send_with_curl($credentials,$xml,$url)
+  function send($credentials,$xml,$url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
   {  
      $header[] = "Authorization: Basic " . base64_encode($credentials);
      if (!function_exists('curl_init'))
-         throw new Exception('Parece que você não tem o cURL nem o OpenSSL ativado. Instale um dos dois (ou ambos) para esta biblioteca funcionar');
+        return $this->send_with_openssl($credentials, $xml, $url);
      $curl = curl_init();
      curl_setopt($curl, CURLOPT_URL,$url);
      curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
