@@ -1,4 +1,4 @@
-MOIP-PHP - Biblioteca PHP para acesso à API do MoIP (v. 0.0.1)
+MOIP-PHP - Biblioteca PHP para acesso à API do MoIP (v. 0.0.2)
 ====================================================
 
 Você já deve ter visto todos os nossos plugins prontos e provavelmente deve ter pensado consigo mesmo: "uma biblioteca pronta para PHP iria facilitar muito a minha vida de desenvolvedor, pra eu não precisar mais de ficar validando regras de negócio na mão ou trabalhando diretamente com o cURL."
@@ -80,15 +80,6 @@ Esta lib necessita do [phpQuery](http://code.google.com/p/phpquery/). Você pode
       pear install phpquery/phpQuery 
 
 Se não houver possibilidade de instalação via PEAR, você ainda pode [baixar o pacote](http://code.google.com/p/phpquery/downloads/list) e substituir a chamada dele no início do arquivo **MoIPStatus.php**
-
-Limitações
------------
-Esta é a primeira versão da biblioteca e nem todos os casos estão cobertos. Veja nossa lista de issues para ver o que falta e quais são os problemas encontrados.
-
-Por enquanto, a biblioteca só suporta instruções únicas (remessa, por exemplo, não é suportado).
-
-Se você quiser ver alguma funcionalidade na biblioteca, por favor, crie uma issue. Se você realmente quiser ajudar, faça um fork e nos mande um pull request. Ficaremos contentes de ver sua contribuição :-)
-
 
 Licença
 -------
