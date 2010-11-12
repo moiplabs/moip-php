@@ -63,6 +63,24 @@ Configura a forma de pagamento. Atualmente só suporta boleto bancário, portant
 
 O parametro opcional $args serve para informar dados adicionais do pagamento, como 
 
+MoIP Status
+------------
+
+O MoIP Status reune funcionalidades desejadas que ainda não foram incluídos na API oficial do MoIP. Atualmente, esta biblioteca só suporta verificação de saldo. Eis um exemplo:
+
+      require 'MoIPStatus.php';
+
+      $status = new MoIPStatus();
+      $status->setCredenciais('seu_username_moip','sua_senha_moip')->getStatus();
+      print $status->saldo; // R$ 120,34
+
+Esta lib necessita do [phpQuery](http://code.google.com/p/phpquery/). Você pode instala-lo via PEAR:
+
+      pear channel-discover phpquery-pear.appspot.com  
+      pear install phpquery/phpQuery 
+
+Se não houver possibilidade de instalação via PEAR, você ainda pode [baixar o pacote](http://code.google.com/p/phpquery/downloads/list) e substituir a chamada dele no início do arquivo **MoIPStatus.php**
+
 Limitações
 -----------
 Esta é a primeira versão da biblioteca e nem todos os casos estão cobertos. Veja nossa lista de issues para ver o que falta e quais são os problemas encontrados.

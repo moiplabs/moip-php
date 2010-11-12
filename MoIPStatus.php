@@ -39,9 +39,9 @@ class MoIPStatus
         
         $doc = phpQuery::newDocumentHTML($page);
         
-        $saldo = pq('div.textoCinza11 b.textoAzul15');
+        $this->saldo = pq('div.textoCinza11 b.textoAzul15')->text();
         
-        return (object)array('saldo'=>$saldo->text());
+        return $this;
     }
 }
 ?>
