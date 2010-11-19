@@ -66,13 +66,54 @@ O parametro opcional $args serve para informar dados adicionais do pagamento, co
 MoIP Status
 ------------
 
-O MoIP Status reune funcionalidades desejadas que ainda não foram incluídos na API oficial do MoIP. Atualmente, esta biblioteca só suporta verificação de saldo. Eis um exemplo:
+O MoIP Status reune funcionalidades desejadas que ainda não foram incluídos na API oficial do MoIP. Eis um exemplo de consulta de saldo:
 
       require 'MoIPStatus.php';
 
       $status = new MoIPStatus();
       $status->setCredenciais('seu_username_moip','sua_senha_moip')->getStatus();
       print $status->saldo; // R$ 120,34
+
+Você também pode obter as ultimas transações:
+
+      require 'MoIPStatus.php';
+
+      $status = new MoIPStatus();
+      $status->setCredenciais('seu_username_moip','sua_senha_moip')->getStatus();
+      print_r($status->ultimas_transacoes);
+
+Um exemplo de saída do exemplo anterior seria:
+
+    Array
+        (
+            [0] => Array
+                (
+                    [data] => 10/10/2010
+                    [nome] => Jose da Silve
+                    [pagamento] => concluido
+                    [adicional] => Saque para Conta corrente
+                    [valor] => - R$123.45
+                )
+
+            [1] => Array
+                (
+                    [data] => 10/10/2010
+                    [nome] => Maria Pereira
+                    [pagamento] => cancelado
+                    [adicional] => Caneca X
+                    [valor] => + R$2.00
+                )
+
+            [2] => Array
+                (
+                    [data] => 09/10/2010
+                    [nome] => Ricardo Oliveira
+                    [pagamento] => boleto impresso
+                    [adicional] => Camisa do Link
+                    [valor] => + R$30.00
+                )
+
+
 
 Esta lib necessita do [phpQuery](http://code.google.com/p/phpquery/). Você pode instala-lo via PEAR:
 
