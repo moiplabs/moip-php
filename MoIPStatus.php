@@ -2,9 +2,9 @@
 require 'phpQuery.php';
 
 /**
- * Verificação de status da conta do MoIP. Atualmente somente com suporte à verificação de saldo.
+ * Verificação de status da conta do MoIP. Atualmente somente com suporte à verificação de saldo e ultimas transações.
  * @author Herberth Amaral
- * @version 0.0.1
+ * @version 0.0.2
  * @package MoIP
  */
 
@@ -40,8 +40,35 @@ class MoIPStatus
         $doc = phpQuery::newDocumentHTML($page);
         
         $this->saldo = pq('div.textoCinza11 b.textoAzul15')->text();
-        
+        $this->ultimas_transacoes = $this->getLastTransactions($page);
+
         return $this;
+    }
+
+    private function getLastTransactions($page)
+    {
+        $doc = phpQuery::newDocumentHTML($page);
+
+        $selector = 'div.conteudo>div:eq(1)>div:eq(1)>div:eq(1)>div:eq(0) div.box table[cellpadding=5]>tbody tr';
+
+        if (substr(utf8_encode(pq($selector)->find('td:eq(0)')->html()),0,7)=="Nenhuma")
+            return null;
+        
+        $ultimas_transacoes = array();
+        foreach(pq($selector) as $tr)
+        {
+            $tds = pq($tr);
+        
+            $transacao = array('data'=>$tds->find('td:eq(0)')->html(),
+                               'nome'=>$tds->find('td:eq(1)')->html(),
+                               'pagamento'=>$tds->find('td:eq(2)')->html(),
+                               'adicional'=>$tds->find('td:eq(3)')->html(),
+                               'valor'=>$tds->find('td:eq(4)')->html()
+                                );
+            $ultimas_transacoes[] = $transacao;
+        }
+
+        return $ultimas_transacoes;
     }
 }
 ?>
