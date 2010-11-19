@@ -113,7 +113,7 @@ Um exemplo de saída do exemplo anterior seria:
                     [valor] => + R$30.00
                 )
 
-O atributo **ultimas_transacoes** será **null* se não houver ao menos uma transação nos ultimos 30 dias. 
+O atributo **ultimas_transacoes** será **null** se não houver ao menos uma transação nos ultimos 30 dias. 
 
 
 Esta lib necessita do [phpQuery](http://code.google.com/p/phpquery/). Você pode instala-lo via PEAR:
