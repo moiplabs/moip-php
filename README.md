@@ -1,4 +1,4 @@
-MOIP-PHP - Biblioteca PHP para acesso à API do MoIP (v. 0.0.2)
+MOIP-PHP - Biblioteca PHP para acesso à API do MoIP (v. 0.1)
 ====================================================
 
 Você já deve ter visto todos os nossos plugins prontos e provavelmente deve ter pensado consigo mesmo: "uma biblioteca pronta para PHP iria facilitar muito a minha vida de desenvolvedor, pra eu não precisar mais de ficar validando regras de negócio na mão ou trabalhando diretamente com o cURL."
@@ -115,13 +115,7 @@ Um exemplo de saída do exemplo anterior seria:
 
 O atributo **ultimas_transacoes** será **null** se não houver ao menos uma transação nos ultimos 30 dias. 
 
-
-Esta lib necessita do [phpQuery](http://code.google.com/p/phpquery/). Você pode instala-lo via PEAR:
-
-      pear channel-discover phpquery-pear.appspot.com  
-      pear install phpquery/phpQuery 
-
-Se não houver possibilidade de instalação via PEAR, você ainda pode [baixar o pacote](http://code.google.com/p/phpquery/downloads/list) e substituir a chamada dele no início do arquivo **MoIPStatus.php**
+As dependências necessárias para esta funcionalidade já estão incluídas por padrão.
 
 Licença
 -------
