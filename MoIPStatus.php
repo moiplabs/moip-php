@@ -1,5 +1,5 @@
 <?php
-require 'phpQuery.php';
+require 'phpQuery/phpQuery.php';
 
 /**
  * Verificação de status da conta do MoIP. Atualmente somente com suporte à verificação de saldo e ultimas transações.
