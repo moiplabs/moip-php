@@ -188,6 +188,34 @@ class MoIP
       }
   }
 
+  public function addComissao($param)
+  {
+      if (!isset($param['login_moip']))
+          throw new InvalidArgumentException('Você deve especificar um usuário para comissionar.');
+
+      if (!isset($param['valor_fixo']) or !isset($param['valor_percentual']))
+          throw new InvalidArgumentException('Você deve especificar um tipo de valor para comissionar.');
+      
+      if (isset($param['valor_fixo']) and isset($param['valor_percentual']))  
+          throw new InvalidArgumentException('Você deve especificar somente um tipo de valor de comissão');
+
+      if (!isset($this->xml->InstrucaoUnica->Comissoes))
+          $this->xml->InstrucaoUnica->addChild('Comissoes');
+
+      if (isset($param['valor_fixo']))
+      {
+          $node = $this->xml->InstrucaoUnica->Comissoes->addChild('Comissao');
+          $node->addChild('Comissionado')->addChild('LoginMoIP',$param['login_moip']);
+          $node->addChild('ValorFixo',$param['valor_fixo']);
+      }
+      else
+      {
+          $node = $this->xml->InstrucaoUnica->Comissoes->addChild('Comissao');
+          $node->addChild('Comissionado')->addChild('LoginMoIP',$param['login_moip']);
+          $node->addChild('ValorPercentual',$param['valor_percentual']);
+      }
+  }
+
   public function getXML()
   {
     $this->xml->InstrucaoUnica->addChild('IdProprio' , $this->id_proprio);

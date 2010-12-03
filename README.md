@@ -114,6 +114,17 @@ Adiciona um valor no pagamento. Pode ser usado para cobrança de multas, fretes 
 
 Deduz um valor do pagamento. É usado principalmente para descontos.
 
+> addComissao($params)
+
+Mais uma instrução adicional. Permite especificar comissões, em valores fixos ou percentuais, sobre o pagamento. Exemplos de uso:
+
+Adicionando um comissionado com um valor fixo:
+
+    addComissao(array('login_moip'=>'login_do_comissionado','valor_fixo'=>15)); 
+
+Adicionando um comissionado com um valor percentual:
+
+    addComissao(array('login_moip'=>'login_do_comissionado','valor_percentual'=>2.1));
 > getXML()
 
 Útil para debugging. Retorna o XML que irá ser gerado, com base nos parâmetros já informados.

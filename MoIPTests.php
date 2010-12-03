@@ -183,6 +183,28 @@ class MoIPTests extends PHPUnit_Framework_TestCase
       }catch(InvalidArgumentException $e){}
   }
 
+  public function testVerificaSeExceptionEhLancadaQuandoOsParametrosDeComissaoSaoPassadosIncorretamente()
+  {
+      try
+      {
+        $this->MoIP->addComissao(array());
+        $this->fail('Erro: uma exception deveria ser lançada se os parametros de comissão fossem passados incorretamente');
+      }catch(InvalidArgumentException $e){}
+
+      try
+      {
+          $this->MoIP->addComissao(array('login_moip'=>'blah'));
+          $this->fail('Erro: uma exception deveria ser lançada se o valor não for informado');
+      }catch(InvalidArgumentException $e){}
+
+      try
+      {
+          $this->MoIP->addComissao(array('login_moip'=>'blah','valor_fixo'=>'10','valor_percentual'=>'15'));
+          $this->fail('Erro: uma exception deveria ser lançada se mais de um valor for informado');
+      }
+      catch(InvalidArgumentException $e){}
+  }
+
   public function testVerificaSeExceptionNaoEhLancadaQuandoDadosDoPagadorSaoPassadosCorretamente()
   {
 
