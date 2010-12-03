@@ -59,9 +59,42 @@ Informa a razão do pagamento. Campo obrigatório.
 
 > setFormaPagamento($forma,$args=null)
 
-Configura a forma de pagamento. Atualmente só suporta boleto bancário, portanto, o unico valor que o parametro $forma aceita é 'boleto'.
+Configura a forma de pagamento. $forma pode ser:
+
+ - 'boleto' 
+ - 'financiamento'
+ - 'debito'
+ - 'cartao_credito'
+ - 'cartao_debito' 
+ - 'carteira_moip' 
 
 O parametro opcional $args serve para informar dados adicionais do pagamento, como 
+
+> setValor($valor) [obrigatório]
+
+Especifica o valor da transação no formato do MoIP (sem vírgulas, sendo que os dois ultimos digitos representam os centavos)
+
+> setPagador($pagador)
+
+Informa os dados do pagador em que ''$pagador''. Um exemplo de $pagador:
+
+$pagador = array('nome'=>'Jose da Silva',
+                 'login_moip'=>'jose_silva',
+                 'email'=>'jose@silva.com',
+                 'celular'=>'1199999999',
+                 'apelido'=>'zeh',
+                 'identidade'=>'12345678',
+                 'endereco'=>array('logradouro'=>'Rua do Zé',
+                                   'numero'=>'45',
+                                   'complemento'=>'z',
+                                   'cidade'=>'São Paulo',
+                                   'estado'=>'São Paulo',
+                                   'pais'=>'Brasil',
+                                   'cep'=>'11111111',
+                                   'telefone'=>'1188888888'));
+> getXML()
+
+Útil para debugging. Retorna o XML que irá ser gerado, com base nos parâmetros já informados.
 
 MoIP Status
 ------------
