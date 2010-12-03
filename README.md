@@ -80,20 +80,20 @@ Especifica o valor da transação no formato do MoIP (sem vírgulas, sendo que o
 
 Informa os dados do pagador em que ''$pagador''. Um exemplo de $pagador:
 
-$pagador = array('nome'=>'Jose da Silva',
-                 'login_moip'=>'jose_silva',
-                 'email'=>'jose@silva.com',
-                 'celular'=>'1199999999',
-                 'apelido'=>'zeh',
-                 'identidade'=>'12345678',
-                 'endereco'=>array('logradouro'=>'Rua do Zé',
-                                   'numero'=>'45',
-                                   'complemento'=>'z',
-                                   'cidade'=>'São Paulo',
-                                   'estado'=>'São Paulo',
-                                   'pais'=>'Brasil',
-                                   'cep'=>'11111111',
-                                   'telefone'=>'1188888888'));
+    $pagador = array('nome'=>'Jose da Silva',
+                     'login_moip'=>'jose_silva',
+                     'email'=>'jose@silva.com',
+                     'celular'=>'1199999999',
+                     'apelido'=>'zeh',
+                     'identidade'=>'12345678',
+                     'endereco'=>array('logradouro'=>'Rua do Zé',
+                                       'numero'=>'45',
+                                       'complemento'=>'z',
+                                       'cidade'=>'São Paulo',
+                                       'estado'=>'São Paulo',
+                                       'pais'=>'Brasil',
+                                       'cep'=>'11111111',
+                                       'telefone'=>'1188888888'));
 > addMensagem($msg)
 
 Adiciona uma mensagem na instrução para serem mostradas ao pagador. Você pode adicionar quantas mensagens quiser.
