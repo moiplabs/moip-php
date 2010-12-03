@@ -154,12 +154,15 @@ class MoIP
     $this->xml->InstrucaoUnica->addChild('IdProprio' , $this->id_proprio);
     $this->xml->InstrucaoUnica->addChild('Razao' , $this->razao);
 
-    if (!empty($this->valor))
-    {
-        $this->xml->InstrucaoUnica->addChild('Valores')
-                                  ->addChild('Valor',$this->valor)
-                                  ->addAttribute('moeda','BRL'); 
-    }
+    if (empty($this->valor))
+        throw new InvalidArgumentException('Erro: o valor da transação deve ser especificado');
+
+
+
+    $this->xml->InstrucaoUnica->addChild('Valores')
+                              ->addChild('Valor',$this->valor)
+                              ->addAttribute('moeda','BRL'); 
+
 
     if (!empty($this->forma_pagamento))
     {

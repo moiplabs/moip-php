@@ -98,6 +98,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     $current = new MoIP(); 
     $current->setIDProprio(123456)
             ->setRazao('Pagamento de testes')
+            ->setValor('12345')
             ->setFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'Corridos','dias'=>5),
                                 'instrucoes'=>array('Nao receber apos o vencimento','Outra instrucao'))); 
     $xml = new SimpleXmlElement($current->getXML()); 
@@ -138,6 +139,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     $resposta = $this->MoIP->setRazao('Pagamento de testes')
                ->setCredenciais($this->validCredentials)
                ->setIDProprio(123456)
+               ->setValor('123456')
                ->valida()
                ->envia($client)
                ->getResposta();
@@ -170,6 +172,15 @@ class MoIPTests extends PHPUnit_Framework_TestCase
       $this->MoIP->setPagador($pagador);
       $this->fail('Erro: deve haver uma exception quando dos dados do pagador são especificados de forma incorreta');
     }catch (InvalidArgumentException $e){}
+  }
+  
+  public function testVerificaSeExceptionEhLancadaQuandoOValorNaoEhEspecificado()
+  {
+      try
+      {
+          $this->MoIP->setIDProprio('123456')->setRazao('Razao do pagamento')->getXML();
+          $this->fail('Erro: uma exception deve ser lançada quando o valor não for especificado');
+      }catch(InvalidArgumentException $e){}
   }
 
   public function testVerificaSeExceptionNaoEhLancadaQuandoDadosDoPagadorSaoPassadosCorretamente()
