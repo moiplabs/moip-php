@@ -1,4 +1,4 @@
-MOIP-PHP - Biblioteca PHP para acesso à API do MoIP (v. 0.1)
+MOIP-PHP - Biblioteca PHP para acesso à API do MoIP 
 ====================================================
 
 Você já deve ter visto todos os nossos plugins prontos e provavelmente deve ter pensado consigo mesmo: "uma biblioteca pronta para PHP iria facilitar muito a minha vida de desenvolvedor, pra eu não precisar mais de ficar validando regras de negócio na mão ou trabalhando diretamente com o cURL."
@@ -11,6 +11,7 @@ A MoIP-PHP é uma biblioteca que implementa uma camada de abstração prientada 
       $moip = new MoIP();
       $moip->setCredenciais(array('key'=>'sua_key','token'=>'seu_token'));
       $moip->setIDProprio(123456);
+      $moip->setValor('123456')
       $moip->setRazao('Teste do MoIP-PHP');
       $moip->valida();
       $moip->envia();
@@ -22,6 +23,7 @@ O MoIP-PHP utiliza o padrão [Fluent Interfaces](http://martinfowler.com/bliki/F
       $moip = new MoIP();
       echo $moip->setCredenciais(array('key'=>'sua_key','token'=>'seu_token'))
                 ->setIDProprio(123456)
+                ->setValor('123456')
                 ->setRazao('Teste do MoIP-PHP')
                 ->valida()
                 ->envia()
@@ -59,9 +61,42 @@ Informa a razão do pagamento. Campo obrigatório.
 
 > setFormaPagamento($forma,$args=null)
 
-Configura a forma de pagamento. Atualmente só suporta boleto bancário, portanto, o unico valor que o parametro $forma aceita é 'boleto'.
+Configura a forma de pagamento. $forma pode ser:
+
+ - 'boleto' 
+ - 'financiamento'
+ - 'debito'
+ - 'cartao_credito'
+ - 'cartao_debito' 
+ - 'carteira_moip' 
 
 O parametro opcional $args serve para informar dados adicionais do pagamento, como 
+
+> setValor($valor) [obrigatório]
+
+Especifica o valor da transação no formato do MoIP (sem vírgulas, sendo que os dois ultimos digitos representam os centavos)
+
+> setPagador($pagador)
+
+Informa os dados do pagador em que ''$pagador''. Um exemplo de $pagador:
+
+$pagador = array('nome'=>'Jose da Silva',
+                 'login_moip'=>'jose_silva',
+                 'email'=>'jose@silva.com',
+                 'celular'=>'1199999999',
+                 'apelido'=>'zeh',
+                 'identidade'=>'12345678',
+                 'endereco'=>array('logradouro'=>'Rua do Zé',
+                                   'numero'=>'45',
+                                   'complemento'=>'z',
+                                   'cidade'=>'São Paulo',
+                                   'estado'=>'São Paulo',
+                                   'pais'=>'Brasil',
+                                   'cep'=>'11111111',
+                                   'telefone'=>'1188888888'));
+> getXML()
+
+Útil para debugging. Retorna o XML que irá ser gerado, com base nos parâmetros já informados.
 
 MoIP Status
 ------------
