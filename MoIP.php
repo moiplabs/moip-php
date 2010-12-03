@@ -149,6 +149,45 @@ class MoIP
     return $this;
   }
 
+  public function setAcrescimo($valor)
+  {
+      $this->acrescimo = $valor;
+      return $this;
+  }
+
+  public function setDeducao($valor)
+  {
+      $this->deducao = $valor;
+      return $this;
+  }
+
+  public function addMensagem($msg)
+  {
+      if(!isset($this->xml->InstrucaoUnica->Mensagens))
+      {
+          $this->xml->InstrucaoUnica->addChild('Mensagens');
+      }
+
+      $this->xml->InstrucaoUnica->Mensagens->addChild('Mensagem',$msg);
+      return $this;
+  }
+
+  public function setUrlRetorno($url)
+  {
+      if (!isset($this->xml->InstrucaoUnica->URLRetorno))
+      {
+          $this->xml->InstrucaoUnica->addChild('URLRetorno',$url);
+      }
+  }
+
+  public function setUrlNotificacao($url)
+  {
+      if (!isset($this->xml->InstrucaoUnica->URLNotificacao))
+      {
+          $this->xml->InstrucaoUnica->addChild('URLNotificacao',$url);
+      }
+  }
+
   public function getXML()
   {
     $this->xml->InstrucaoUnica->addChild('IdProprio' , $this->id_proprio);
@@ -162,7 +201,17 @@ class MoIP
     $this->xml->InstrucaoUnica->addChild('Valores')
                               ->addChild('Valor',$this->valor)
                               ->addAttribute('moeda','BRL'); 
+    if (isset($this->deducao))
+    {
+        $this->xml->InstrucaoUnica->Valores->addChild('Deducao',$this->deducao)
+                                           ->addAttribute('moeda','BRL');
+    }
 
+    if (isset($this->acrescimo))
+    {
+        $this->xml->InstrucaoUnica->Valores->addChild('Acrescimo',$this->acrescimo)
+                                           ->addAttribute('moeda','BRL');
+    }
 
     if (!empty($this->forma_pagamento))
     {

@@ -94,6 +94,26 @@ $pagador = array('nome'=>'Jose da Silva',
                                    'pais'=>'Brasil',
                                    'cep'=>'11111111',
                                    'telefone'=>'1188888888'));
+> addMensagem($msg)
+
+Adiciona uma mensagem na instrução para serem mostradas ao pagador. Você pode adicionar quantas mensagens quiser.
+
+> setUrlRetorno($url)
+
+Informa a URL de retorno, que redireciona o cliente à página de seu site, por exemplo, após o pagamento. É necessário que a ferramenta URL de Retorno esteja habilitada em sua conta MoIP. Para habilitá-la, acesse sua conta MoIP em Meus Dados > Preferências > URL de Retorno
+
+> setUrlNotificacao($url)
+
+Informa a URL de notificação, que envia as informações sobre as alterações de status do pagamento. Estas informações são enviadas ao seu sistema para controle dos recebimentos. É necessário que a ferramenta NASP esteja habilitada em sua conta MoIP. Para habilitá-la, acesse sua conta MoIP em Meus Dados > Preferências > Notificação das Transações. Neste menu, marque a opção “*Receber notificação instantânea de transação” e confirme as alterações.
+
+> setAcrescimo($valor)
+
+Adiciona um valor no pagamento. Pode ser usado para cobrança de multas, fretes e outros.
+
+> setDeducao($valor)
+
+Deduz um valor do pagamento. É usado principalmente para descontos.
+
 > getXML()
 
 Útil para debugging. Retorna o XML que irá ser gerado, com base nos parâmetros já informados.
