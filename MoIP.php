@@ -19,7 +19,7 @@ class MoIP
                                     'cartao_credito'=>'CartaoCredito',
                                     'cartao_debito'=>'CartaoDebito',
                                     'carteira_moip'=>'CarteiraMoIP');
-  private $forma_pagamento;
+  private $forma_pagamento = array();
   private $forma_pagamento_args;
   private $tipo_pagamento = 'Unico';
   private $pagador;
@@ -83,7 +83,7 @@ class MoIP
       return $this;
   }
 
-  public function setFormaPagamento($forma,$args=null)
+  public function addFormaPagamento($forma,$args=null)
   {
     if(!isset($this->formas_pagamento[$forma]))
       throw new InvalidArgumentException("Forma de pagamento indisponivel");
@@ -106,7 +106,7 @@ class MoIP
         }
       }
     }
-    $this->forma_pagamento = $forma;
+    $this->forma_pagamento[] = $forma;
     return $this; 
   }
 
@@ -244,27 +244,31 @@ class MoIP
     if (!empty($this->forma_pagamento))
     {
         $instrucao = $this->xml->InstrucaoUnica;
-        $instrucao->addChild('Pagamento' . $this->tipo_pagamento);
-		$tpo = 'Pagamento' . $this->tipo_pagamento;
-        $instrucao->$tpo->addChild('Forma',$this->formas_pagamento[$this->forma_pagamento]);
+        $formas = $instrucao->addChild('FormasPagamento');
 
-
-      if($this->forma_pagamento=='boleto' and !empty($this->forma_pagamento_args))
-      {
-          $instrucao->addChild('Boleto')
-                    ->addChild('DiasExpiracao',$this->forma_pagamento_args['dias_expiracao']['dias'])
-                        ->addAttribute('Tipo',$this->forma_pagamento_args['dias_expiracao']['tipo']);
-
-        if(isset($this->forma_pagamento_args['instrucoes']))
+        foreach ($this->forma_pagamento as $forma)
         {
-          $numeroInstrucoes = 1;
-          foreach($this->forma_pagamento_args['instrucoes'] as $instrucaostr)
-          {
-              $instrucao->Boleto->addChild('Instrucao'.$numeroInstrucoes,$instrucaostr);
-              $numeroInstrucoes++;
-          }
+            
+            $formas->addChild('FormaPagamento',$this->formas_pagamento[$forma]);
+
+            if($forma == 'boleto' and !empty($this->forma_pagamento_args))
+            {
+                $instrucao->addChild('Boleto')
+                          ->addChild('DiasExpiracao',$this->forma_pagamento_args['dias_expiracao']['dias'])
+                              ->addAttribute('Tipo',$this->forma_pagamento_args['dias_expiracao']['tipo']);
+
+              if(isset($this->forma_pagamento_args['instrucoes']))
+              {
+                $numeroInstrucoes = 1;
+                foreach($this->forma_pagamento_args['instrucoes'] as $instrucaostr)
+                {
+                    $instrucao->Boleto->addChild('Instrucao'.$numeroInstrucoes,$instrucaostr);
+                    $numeroInstrucoes++;
+                }
+              }
+            }
+
         }
-      }
     }
     
     if(!empty($this->pagador))

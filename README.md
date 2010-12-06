@@ -59,9 +59,9 @@ Informa seu ID para a transação.
 
 Informa a razão do pagamento. Campo obrigatório.
 
-> setFormaPagamento($forma,$args=null)
+> addFormaPagamento($forma,$args=null)
 
-Configura a forma de pagamento. $forma pode ser:
+Adiciona um tipo de forma de pagamento. $forma pode ser:
 
  - 'boleto' 
  - 'financiamento'
@@ -70,7 +70,9 @@ Configura a forma de pagamento. $forma pode ser:
  - 'cartao_debito' 
  - 'carteira_moip' 
 
-O parametro opcional $args serve para informar dados adicionais do pagamento, como 
+O parametro opcional $args serve para informar dados adicionais do pagamento em boleto bancário, como:
+
+    array('dias_expiracao'=>array('dias'=>5,'tipo'=>'corridos'));
 
 > setValor($valor) [obrigatório]
 

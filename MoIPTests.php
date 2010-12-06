@@ -99,9 +99,10 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     $current->setIDProprio(123456)
             ->setRazao('Pagamento de testes')
             ->setValor('12345')
-            ->setFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'Corridos','dias'=>5),
+            ->addFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'Corridos','dias'=>5),
                                 'instrucoes'=>array('Nao receber apos o vencimento','Outra instrucao'))); 
     $xml = new SimpleXmlElement($current->getXML()); 
+
 
     
     $this->assertEquals((int)$xml->InstrucaoUnica->Boleto->DiasExpiracao,5);
@@ -114,14 +115,19 @@ class MoIPTests extends PHPUnit_Framework_TestCase
   {
     try
     {
-      $this->MoIP->setFormaPagamento('invalid');
+      $this->MoIP->addFormaPagamento('invalid');
       $this->fail('Erro: não houve exception ao setar uma forma de pagamento inválida');
     }
     catch(InvalidArgumentException $e){}
   }
   public function testVerificaSeOpcoesDePagamentoPadraoEstaoDisponiveis()
   {
-    $this->MoIP->setFormaPagamento('boleto');
+    $this->MoIP->addFormaPagamento('boleto');
+    $this->MoIP->addFormaPagamento('financiamento');
+    $this->MoIP->addFormaPagamento('debito');
+    $this->MoIP->addFormaPagamento('cartao_credito');
+    $this->MoIP->addFormaPagamento('cartao_debito');
+    $this->MoIP->addFormaPagamento('carteira_moip');
   }
 
   public function testVerificaSeARespostaDoServidorFoiRecebidaCorretamente()
@@ -152,7 +158,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
   {
     try
     {
-      $this->MoIP->setFormaPagamento('boleto',array('nada'));
+      $this->MoIP->addFormaPagamento('boleto',array('nada'));
       $this->fail('Erro: deve haver uma exception quando os dados do boleto são especificados de forma incorreta');
     }
     catch(InvalidArgumentException $e){}
@@ -161,7 +167,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 
   public function testVerificaSeNaoHaExceptionQuandoOsDadosDoBoletoSaoPassadosCorretamente()
   {
-    $this->MoIP->setFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'corridos','dias'=>'5')));
+    $this->MoIP->addFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'corridos','dias'=>'5')));
   }
 
   public function testVerificaSeExceptionEhLancadaQuandoDadosDoPagadorSaoPassadosIncorretamente()
