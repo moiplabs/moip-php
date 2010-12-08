@@ -141,6 +141,7 @@ O MoIP Status reune funcionalidades desejadas que ainda não foram incluídos na
       $status = new MoIPStatus();
       $status->setCredenciais('seu_username_moip','sua_senha_moip')->getStatus();
       print $status->saldo; // R$ 120,34
+      print $status->saldo_a_receber; // R$12,45 -- null se não houver saldo a receber
 
 Você também pode obter as ultimas transações:
 

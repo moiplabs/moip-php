@@ -40,6 +40,8 @@ class MoIPStatus
         $doc = phpQuery::newDocumentHTML($page);
         
         $this->saldo = pq('div.textoCinza11 b.textoAzul15')->text();
+        $this->saldo_a_receber = pq('div.textoCinza11 b.textoAzul11')->text();
+
         $this->ultimas_transacoes = $this->getLastTransactions($page);
 
         return $this;
