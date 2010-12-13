@@ -31,8 +31,16 @@ class MoIPStatus
         curl_setopt($ch, CURLOPT_POSTFIELDS    ,"j_username=$this->username&j_password=$this->password");
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,1);
         curl_setopt($ch, CURLOPT_HEADER      ,0);  
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);  
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1); 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         $page = curl_exec($ch);
+        $error = curl_error($ch);
+
+        if (!empty($error))
+        {
+            $errno = curl_errno($ch);
+            throw new Exception("Ooops, ocorreu um erro ao tentar recuperar os status #$errno: $error");
+        }
         
         if (stristr($page,"Login e senha incorretos"))
             throw new Exception('Login incorreto');
