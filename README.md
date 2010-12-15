@@ -116,6 +116,10 @@ Adiciona um valor no pagamento. Pode ser usado para cobrança de multas, fretes 
 
 Deduz um valor do pagamento. É usado principalmente para descontos.
 
+> addEntrega($params)
+
+To do..
+
 > addComissao($params)
 
 Mais uma instrução adicional. Permite especificar comissões, em valores fixos ou percentuais, sobre o pagamento. Exemplos de uso:

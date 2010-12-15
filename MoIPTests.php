@@ -308,7 +308,18 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 
   public function testVerificaSeNaoHaNenhumaExceptionQuandoOsParametrosDoAddEntregaSaoPassadosCorretamente()
   {
-      //$this->MoIP->addEntrega(array('tipo'=>'proprio','valor'=>'2.30','prazo'=>array('tipo'=>'corridos','dia'=>'3')));
+      $this->MoIP->addEntrega(array('tipo'=>'proprio','valor'=>'2.30','prazo'=>array('tipo'=>'corridos','dias'=>'3')));
+
+      $this->MoIP->addEntrega(array('tipo'=>'correios',
+                                   
+                                    'prazo'=>array('tipo'=>'corridos','dias'=>'3'),
+                                    'correios'=>array('peso'=>'10','forma_entrega'=>'EncomendaNormal')));
+
+      $this->MoIP->addEntrega(array('tipo'=>'correios',
+                                    
+                                    'prazo'=>array('tipo'=>'corridos','dias'=>'3'),
+                                    'correios'=>array('peso'=>'10','forma_entrega'=>'Sedex10')));
+
   }
 
   //method called after each test method

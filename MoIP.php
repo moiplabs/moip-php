@@ -243,6 +243,8 @@ class MoIP
 
   public function addEntrega($params)
   {
+    //validações dos parâmetros de entrega
+
     if (empty($params) or !isset($params['tipo']) or !isset($params['prazo'])) 
     {
         throw new InvalidArgumentException('Você deve especificar o tipo de frete (proprio ou correios) e o prazo de entrega');
@@ -264,6 +266,7 @@ class MoIP
             throw new InvalidArgumentException('Você deve especificar os dias do prazo de entrega');
         }
     }
+
     if ($params['tipo']=='correios')   
     {
         if ((!isset($params['correios']) or empty($params['correios'])) )
@@ -282,7 +285,29 @@ class MoIP
 
     }
 
+    //fim das validações
+    if (!isset($this->xml->InstrucaoUnica->Entrega))
+    {
+        $this->xml->InstrucaoUnica->addChild('Entrega')->addChild('Destino','MesmoCobranca');
+    }
 
+    $entrega = $this->xml->InstrucaoUnica->Entrega;
+    $calculo_frete = $entrega->addChild('CalculoFrete');
+    $calculo_frete->addChild('Tipo',$this->tipo_frete[$params['tipo']]);
+    
+    $calculo_frete->addChild('Prazo',$params['prazo']['dias'])
+                  ->addAttribute('Tipo',$this->tipo_prazo[$params['prazo']['tipo']]);
+
+    if ($params['tipo']=='proprio')
+        $calculo_frete->addChild('ValorFixo',$params['valor']);
+    else
+    {
+        $correios = $calculo_frete->addChild('Correios');
+        $correios->addChild('PesoTotal',$params['correios']['peso']);
+        $correios->addChild('FormaEntrega',$params['correios']['forma_entrega']);
+    }
+
+    return $this;
   }
 
   public function getXML()
