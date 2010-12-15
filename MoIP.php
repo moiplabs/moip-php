@@ -19,6 +19,11 @@ class MoIP
                                     'cartao_credito'=>'CartaoCredito',
                                     'cartao_debito'=>'CartaoDebito',
                                     'carteira_moip'=>'CarteiraMoIP');
+
+  private $tipo_frete = array('proprio'=>'Proprio','correios'=>'Correios');
+
+  private $tipo_prazo = array('corridos'=>'Corridos','uteis'=>'Uteis');
+
   private $forma_pagamento = array();
   private $forma_pagamento_args;
   private $tipo_pagamento = 'Unico';
@@ -214,6 +219,70 @@ class MoIP
           $node->addChild('Comissionado')->addChild('LoginMoIP',$param['login_moip']);
           $node->addChild('ValorPercentual',$param['valor_percentual']);
       }
+  }
+  
+  public function addParcela($min,$max,$juros='')
+  {
+    if (!isset($this->xml->InstrucaoUnica->Parcelamentos))
+    {
+      $this->xml->InstrucaoUnica->addChild('Parcelamentos');
+    }
+
+    $parcela = $this->xml->InstrucaoUnica->Parcelamentos->addChild('Parcelamento');
+    $parcela->addChild('MinimoParcelas',$min);
+    $parcela->addChild('MaximoParcelas',$max);
+    $parcela->addChild('Recebimento','AVista');
+
+    if (!empty($juros))
+    {
+        $parcela->addChild('Juros',$min);
+    }
+
+    return $this;
+  }
+
+  public function addEntrega($params)
+  {
+    if (empty($params) or !isset($params['tipo']) or !isset($params['prazo'])) 
+    {
+        throw new InvalidArgumentException('Você deve especificar o tipo de frete (proprio ou correios) e o prazo de entrega');
+    }
+
+    if (!isset($this->tipo_frete[$params['tipo']]))
+    {
+        throw new InvalidArgumentException('Tipo de frete inválido. Opções válidas: "proprio" ou "correios"');
+    }
+    if (is_array($params['prazo']))
+    { 
+        if (is_array($params['prazo']) and !isset($this->tipo_prazo[$params['prazo']['tipo']]))
+        {
+            throw new InvalidArgumentException('Tipo de prazo de entrega inválido. Opções válidas: "uteis" ou "corridos".');
+        }
+
+        if (!isset($params['prazo']['dias']))
+        {
+            throw new InvalidArgumentException('Você deve especificar os dias do prazo de entrega');
+        }
+    }
+    if ($params['tipo']=='correios')   
+    {
+        if ((!isset($params['correios']) or empty($params['correios'])) )
+        {
+            throw new InvalidArgumentException('É necessário especificar os '.
+                                               'parâmetros dos correios quando o '.
+                                               'tipo de frete é Correios');
+
+        }
+
+        if (!isset($params['correios']['peso']) or !isset($params['correios']['forma_entrega']))
+        {
+            throw new InvalidArgumentException('É necessário passar os parâmetros'.
+                                               ' dos correios quando a forma de envio são os Correios');
+        }
+
+    }
+
+
   }
 
   public function getXML()

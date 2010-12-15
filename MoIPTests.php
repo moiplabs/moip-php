@@ -213,8 +213,102 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 
   public function testVerificaSeExceptionNaoEhLancadaQuandoDadosDoPagadorSaoPassadosCorretamente()
   {
-
     $this->MoIP->setPagador($this->pagadorValido);
+  }
+
+  public function testCertificaQueUmArrayVazioNaoPodeSerPassadoComoArgumentoDeEntrega()
+  {
+      try
+      {
+          $this->MoIP->addEntrega(array());
+          $this->fail('Erro: uma exception deveria ser lançada caso os parametros necessários da entrega não fossem informados');
+      }
+      catch(InvalidArgumentException $e){}
+  }
+
+  public function testVerificaSeExceptionEhLancandaQuandoUmDosParametrosNecessariosNaoSaoPassados()
+  {
+     try
+     {
+         $this->MoIP->addEntrega(array('tipo'=>'proprio')); 
+         $this->fail('Erro: uma exception deveria ser lançada caso os parametros necessários da entrega não fossem informados');
+     }catch(InvalidArgumentException $e){}
+
+     try
+     {
+         $this->MoIP->addEntrega(array('prazo'=>'5')); 
+         $this->fail('Erro: uma exception deveria ser lançada caso os parametros necessários da entrega não fossem informados');
+
+     }catch(InvalidArgumentException $e){}
+  }
+
+  public function testVerificaSeExceptionEhLancadaQuandoUmTipoDeFreteInvalidoEhPassado()
+  {
+      try
+      {
+        $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'blah'));
+        $this->fail('Erro: uma exception deveria ser lançada quando um tipo inválido for passado');
+      }
+      catch(InvalidArgumentException $e){}
+  }
+
+  public function testVerificaSeExceptionEhLancadaQuandoUmPrazoInvalidoEhEspecificado()
+  {
+      try
+      {
+          $this->MoIP->addEntrega(array('prazo'=>array('tipo'=>'blah','dias'=>'5'),'tipo'=>'proprio'));
+          $this->fail('Erro: uma exception deveria ser lançada quando um tipo de prazo inválido for passado');
+      }
+      catch(InvalidArgumentException $e){}
+  }
+
+  public function testVerificaSeExceptionEhLancadaQuandoParametrosDosCorreiosEstaoVazios()
+  {
+      try
+      {
+          $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'correios'));
+          $this->fail('Erro: uma exception deveria ser lançada quando os correios não forem passados corretamente');
+      }
+      catch(InvalidArgumentException $e){}
+  }
+
+  public function testVerificaSeExceptionEhLancadaQuandoParametrosDosCorreiosNaoSaoEspecificadosCorretamente()
+  {
+      try
+      {
+          $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'correios','correios'=>array()));
+          $this->fail('Erro: Uma exception deveria ser lançada quando os parâmetros dos correios não forem passados corretamente');
+      }
+      catch (InvalidArgumentException $e){}
+
+      try
+      {
+          $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'correios','correios'=>array('peso_total'=>'1.1')));
+          $this->fail('Erro: Uma exception deveria ser lançada quando os parâmetros dos correios não forem passados corretamente');
+      }
+      catch (InvalidArgumentException $e){}
+      
+      try
+      {
+          $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'correios','correios'=>array('forma_entrega'=>'EncomendaNormal')));
+          $this->fail('Erro: Uma exception deveria ser lançada quando os parâmetros dos correios não forem passados corretamente');
+      }
+      catch (InvalidArgumentException $e){}
+
+  }
+
+  public function testVerificaSeExceptionEhLancadaQuandoTipoDoPrazoEhEspecificadoIncorretamente()
+  {
+      try
+      {
+          $this->MoIP->addEntrega(array('tipo'=>'proprio','valor'=>'2.30','prazo'=>array('tipo'=>'uteis','dia'=>'3')));
+          $this->fail('Erro: quando o numero de dias não eh passado, deve ocorrer uma exception.');
+      }catch (InvalidArgumentException $e){}
+  }
+
+  public function testVerificaSeNaoHaNenhumaExceptionQuandoOsParametrosDoAddEntregaSaoPassadosCorretamente()
+  {
+      //$this->MoIP->addEntrega(array('tipo'=>'proprio','valor'=>'2.30','prazo'=>array('tipo'=>'corridos','dia'=>'3')));
   }
 
   //method called after each test method
