@@ -254,6 +254,7 @@ class MoIP
     {
         throw new InvalidArgumentException('Tipo de frete inválido. Opções válidas: "proprio" ou "correios"');
     }
+
     if (is_array($params['prazo']))
     { 
         if (is_array($params['prazo']) and !isset($this->tipo_prazo[$params['prazo']['tipo']]))
@@ -284,6 +285,11 @@ class MoIP
         }
 
     }
+    else
+    {
+        if (!isset($params['valor_fixo']) and !isset($params['valor_percentual']))
+            throw new InvalidArgumentException('Você deve especificar valor_fixo ou valor_percentual quando o tipo de frete é próprio');
+    }
 
     //fim das validações
     if (!isset($this->xml->InstrucaoUnica->Entrega))
@@ -299,7 +305,12 @@ class MoIP
                   ->addAttribute('Tipo',$this->tipo_prazo[$params['prazo']['tipo']]);
 
     if ($params['tipo']=='proprio')
-        $calculo_frete->addChild('ValorFixo',$params['valor']);
+    {
+        if (isset($params['valor_fixo']))
+            $calculo_frete->addChild('ValorFixo',$params['valor_fixo']);
+        else 
+            $calculo_frete->addChild('ValorPercentual',$params['valor_percentual']);
+    }
     else
     {
         $correios = $calculo_frete->addChild('Correios');

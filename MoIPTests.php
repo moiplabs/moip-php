@@ -306,9 +306,18 @@ class MoIPTests extends PHPUnit_Framework_TestCase
       }catch (InvalidArgumentException $e){}
   }
 
+  public function testVerificaSeExceptionEhLancadaQuandoNenhumValorEhPassadoEOTipoEhProprio()
+  {
+      try
+      {
+          $this->MoIP->addEntrega(array('tipo'=>'proprio','prazo'=>array('tipo'=>'corridos','dias'=>'3')));
+          $this->fail('Erro: uma exception deveria ser lançada quando o tipo de frete é próprio mas não há nenhum valor, fixo ou percentual');
+      }catch(InvalidArgumentException $e){}
+  }
+
   public function testVerificaSeNaoHaNenhumaExceptionQuandoOsParametrosDoAddEntregaSaoPassadosCorretamente()
   {
-      $this->MoIP->addEntrega(array('tipo'=>'proprio','valor'=>'2.30','prazo'=>array('tipo'=>'corridos','dias'=>'3')));
+      $this->MoIP->addEntrega(array('tipo'=>'proprio','valor_fixo'=>'2.30','prazo'=>array('tipo'=>'corridos','dias'=>'3')));
 
       $this->MoIP->addEntrega(array('tipo'=>'correios',
                                    
