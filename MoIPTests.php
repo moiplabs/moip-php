@@ -324,8 +324,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
                                     'prazo'=>array('tipo'=>'corridos','dias'=>'3'),
                                     'correios'=>array('peso'=>'10','forma_entrega'=>'EncomendaNormal')));
 
-      $this->MoIP->addEntrega(array('tipo'=>'correios',
-                                    
+      $this->MoIP->addEntrega(array('tipo'=>'correios',                              
                                     'prazo'=>array('tipo'=>'corridos','dias'=>'3'),
                                     'correios'=>array('peso'=>'10','forma_entrega'=>'Sedex10')));
 

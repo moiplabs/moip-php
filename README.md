@@ -118,7 +118,33 @@ Deduz um valor do pagamento. É usado principalmente para descontos.
 
 > addEntrega($params)
 
-To do..
+Adiciona um parâmetro de entrega, permitindo especificar o cálculo do frete (sendo que o frete pode ser próprio ou dos correios).
+
+Um exemplo mínimo:
+
+    $moip = new MoIP();
+    
+    //adiciona um parâmetro de entrega de frete próprio, custando R$2,30 que será entregue em 3 dias corridos
+    $moip->addEntrega(array('tipo'=>'proprio',
+                            'valor_fixo'=>'2.30',
+                            'prazo'=>array('tipo'=>'corridos','dias'=>'3'));
+   
+    //adiciona um parâmetro de entrega de frete via correios, com 10KG, via uma encomenda normal,
+    //podendo ser entregue em até 3 dias uteis. 
+    $moip->addEntrega(array('tipo'=>'correios',
+                            'prazo'=>array('tipo'=>'uteis','dias'=>'3'),
+                            'correios'=>array('peso'=>'10.00','forma_entrega'=>'EncomendaNormal')));
+    
+    // adiciona um parâmetro de entrega de frete via correios, com 10KG, via Sedex 10.
+    // podendo ser entregue em até 1 dia corrido.
+    $moIP->addEntrega(array('tipo'=>'correios',                              
+                            'prazo'=>array('tipo'=>'corridos','dias'=>'1'),
+                            'correios'=>array('peso'=>'10.00','forma_entrega'=>'Sedex10')));
+
+Em qualquer parâmetro é obrigatório que o tipo de frete seja especificado e seu respectivo prazo de entrega informando se os dias passados são uteis ou corridos.
+
+Se o tipo de frete for os correios, é necessário especificar os parâmetros de entrega pelos correios (peso e forma de entrega).
+
 
 > addComissao($params)
 
