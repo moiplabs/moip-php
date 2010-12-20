@@ -145,6 +145,9 @@ Em qualquer parâmetro é obrigatório que o tipo de frete seja especificado e s
 
 Se o tipo de frete for os correios, é necessário especificar os parâmetros de entrega pelos correios (peso e forma de entrega).
 
+> addParcela($min,$max,$juros='')
+
+Permite adicionar uma forma de parcelamento, em que $min se refere ao mínimo de parcelas da forma e $max se refere ao numero maximo de parcelas. $juros é um parâmetro opcional que informa os juros mensais (em %).
 
 > addComissao($params)
 
