@@ -444,10 +444,10 @@ class MoIP
 class MoIPClient
 { 
   function send_without_curl($credentials, $xml, $url='http://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
-  {
+  {  
     $auth = base64_encode($credentials);
-    //$url = str_replace('https','http',$url);
-    echo $url;
+    $url = str_replace('https','http',$url); 
+    
     $header[] = "Authorization: Basic " . $auth;
 
 
