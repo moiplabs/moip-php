@@ -28,7 +28,7 @@ class MoIP
   private $forma_pagamento_args;
   private $tipo_pagamento = 'Unico';
   private $pagador;
-  private $resposta;
+  var $resposta;
   private $valor;
 
   //simplexml object
@@ -443,9 +443,11 @@ class MoIP
  */ 
 class MoIPClient
 { 
-  function send_with_openssl($credentials, $xml, $url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
+  function send_without_curl($credentials, $xml, $url='http://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
   {
     $auth = base64_encode($credentials);
+    //$url = str_replace('https','http',$url);
+    echo $url;
     $header[] = "Authorization: Basic " . $auth;
 
 
@@ -455,11 +457,9 @@ class MoIPClient
                 'header'=>$header
               ));
     $ctx = stream_context_create($params);
-    $fp = @fopen($url, 'rb', false, $ctx);
-    if (!$fp) {
-      throw new Exception("Você precisa do cURL ou do OpenSSL ativado no PHP para a integração com o MoIP funcionar."); 
-    }
-    $response = @stream_get_contents($fp);
+    $fp = fopen($url, 'r', false, $ctx);
+
+    $response = stream_get_contents($fp);
     if ($response === false) {
       throw new Exception("Problemas ao ler dados de $url, $php_errormsg");
     } 
@@ -470,7 +470,8 @@ class MoIPClient
   {  
      $header[] = "Authorization: Basic " . base64_encode($credentials);
      if (!function_exists('curl_init'))
-        return $this->send_with_openssl($credentials, $xml, $url);
+         return $this->send_without_curl($credentials, $xml, $url);
+
      $curl = curl_init();
      curl_setopt($curl, CURLOPT_URL,$url);
      curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
