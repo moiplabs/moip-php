@@ -329,7 +329,77 @@ class MoIPTests extends PHPUnit_Framework_TestCase
             'correios'=>array('peso'=>'10','forma_entrega'=>'Sedex10')));
 
     }
+    
+    public function testVerificaSeUmaExceptionEhLancadaQuandoSetPagamentoDiretoForChamadoSemArgumentos()
+    {
+       
+        try
+        {
+            
+            $this->MoIP->setPagamentoDireto(array());
+            $this->fail("A chamada do método setPagamentoDireto deveria lançar uma exception se o ".
+                "mesmo for chamado com argumentos insuficientes.");
 
+        }
+        catch(InvalidArgumentException $e)
+        {
+        }
+    }
+
+    public function testVerificaSeUmaExceptionEhLancadaQuandoUmaFormaInvalidaEhSelecionada()
+    {
+        // to be implemented
+    }
+
+    public function testVerificaSeUmaExceptionEhLancadaQuandoOPagamentoDiretoEhSetadoComoDebitoBancarioSemInstituicao()
+    {
+        try
+        {
+            $this->MoIP->setPagamentoDireto(array('forma'=>'debito'));
+            $this->fail("A chamada do método setPagamentoDireto deveria lançar uma exception se a ".
+                "forma de pagamento for via débito bancário");
+        }
+        catch(InvalidArgumentException $e)
+        {
+        }
+    }
+
+    public function testVerificaSeUmaExceptionEhLancadaQuandoOPagamentoDiretoEhSetadoComoDebitoBancarioComInstituicaoInvalida()
+    {
+        try
+        {
+            $this->MoIP->setPagamentoDireto(array('forma'=>'debito','instituicao'=>'blah'));
+            $this->fail("O método setPagamentoDireto deveria lançar uma exception quando a instituição for inválida");
+        }
+        catch(InvalidArgumentException $e)
+        {
+        }
+        
+        //this should work
+        $this->MoIP->setPagamentoDireto(array('forma'=>'debito','instituicao'=>'real'));
+
+    }
+
+    public function testVerificaSeNaoHaErroQuandoPagamentoDiretoEhPorBoletoBancario()
+    {
+        $this->MoIP->setPagamentoDireto(array('forma'=>'boleto'));
+    }
+
+    public function testVerificaSeUmaExceptionEhLancadaQuandoUmaInstituicaoEhInvalidaEOPagamentoEhViaCartao()
+    {
+        try
+        {
+            $this->MoIP->setPagamentoDireto(array('forma'=>'cartao','instituicao'=>'blah'));
+            $this->fail("O método setPagamentoDireto deveria lançar uma exception quando a instituição é inválida");
+        }catch(InvalidArgumentException $e)
+        {
+        }
+
+    }
+    public function testVerificaSeExceptionEhLancadaQuandoDadosDoCartaoNaoSaoPassadosCorretamente()
+    {
+        
+    }
     //method called after each test method
     public function tearDown()
     {

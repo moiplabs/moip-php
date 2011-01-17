@@ -20,6 +20,22 @@ class MoIP
         'cartao_debito'=>'CartaoDebito',
         'carteira_moip'=>'CarteiraMoIP');
 
+    private $instituicoes = array('moip'=>'MoIP',
+        'visa'=>'Visa',
+        'american_express'=>'AmericanExpress',
+        'mastercard'=>'Mastercard',
+        'diners'=>'Diners',
+        'banco_brasil'=>'BancoDoBrasil',
+        'bradesco'=>'Bradesco',
+        'itau'=>'Itau',
+        'real'=>'BancoReal',
+        'unibanco'=>'Unibanco',
+        'aura'=>'Aura',
+        'hipercard'=>'Hipercard',
+        'paggo'=>'Paggo', //oi paggo
+        'banrisul'=>'Banrisul'
+    ); 
+
     private $tipo_frete = array('proprio'=>'Proprio','correios'=>'Correios');
 
     private $tipo_prazo = array('corridos'=>'Corridos','uteis'=>'Uteis');
@@ -43,6 +59,28 @@ class MoIP
     {
         $this->xml = new SimpleXmlElement('<EnviarInstrucao></EnviarInstrucao>');
         $this->xml->addChild('InstrucaoUnica');
+    }
+
+    public function setPagamentoDireto($params)
+    {
+        if (!isset($params['forma']))
+            throw new InvalidArgumentException("Você deve especificar a forma de pagamento em setPagamentoDireto.");
+        
+        if ( 
+            ($params['forma']=='debito' or $params['forma']=='cartao') 
+            and 
+            (!isset($params['instituicao']) or !isset($this->instituicoes[$params['instituicao']]))
+
+        ) 
+        {
+            throw new InvalidArgumentException("Você deve especificar uma instituição de pagamento válida quando".
+                " a forma de forma de pagamento é via débito ou cartao");
+        }
+        
+        
+
+        $this->tipo_pagamento = 'Direto';
+
     }
 
     public function setCredenciais($credenciais)
