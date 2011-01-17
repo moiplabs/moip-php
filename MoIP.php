@@ -3,7 +3,7 @@
 /**
  * Abstração da API do MoIP para PHP
  * @author Herberth Amaral
- * @version 0.0.1
+ * @version 0.4.3
  * @package MoIP
  */
 class MoIP
@@ -23,7 +23,7 @@ class MoIP
   private $tipo_frete = array('proprio'=>'Proprio','correios'=>'Correios');
 
   private $tipo_prazo = array('corridos'=>'Corridos','uteis'=>'Uteis');
-
+    
   private $forma_pagamento = array();
   private $forma_pagamento_args;
   private $tipo_pagamento = 'Unico';
@@ -484,7 +484,6 @@ class MoIPClient
      $ret = curl_exec($curl);
      $err = curl_error($curl); 
      curl_close($curl); 
-     echo $ret;
      return (object) array('resposta'=>$ret,'erro'=>$err);
   }
 

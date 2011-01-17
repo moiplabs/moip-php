@@ -6,7 +6,7 @@ require_once 'MoIP.php';
  * Testes unitários da lib MoIP
  * 
  * @author Herberth Amaral
- * @version 0.0.1
+ * @version 0.4.3 
  * @package MoIP
  */
 class MoIPTests extends PHPUnit_Framework_TestCase
