@@ -24,7 +24,7 @@ class MoIPStatus
     {
         if (!isset($this->username) or !isset($this->password))
             throw new Exception("Usuário ou senha não especificados.");
-        
+
 
         $ch = curl_init($this->url_login);
         curl_setopt($ch, CURLOPT_POST      ,1);
@@ -41,12 +41,12 @@ class MoIPStatus
             $errno = curl_errno($ch);
             throw new Exception("Ooops, ocorreu um erro ao tentar recuperar os status #$errno: $error");
         }
-        
+
         if (stristr($page,"Login e senha incorretos"))
             throw new Exception('Login incorreto');
-        
+
         $doc = phpQuery::newDocumentHTML($page);
-        
+
         $this->saldo = pq('div.textoCinza11 b.textoAzul15')->text();
         $this->saldo_a_receber = pq('div.textoCinza11 b.textoAzul11')->text();
 
@@ -63,18 +63,18 @@ class MoIPStatus
 
         if (substr(utf8_encode(pq($selector)->find('td:eq(0)')->html()),0,7)=="Nenhuma")
             return null;
-        
+
         $ultimas_transacoes = array();
         foreach(pq($selector) as $tr)
         {
             $tds = pq($tr);
-        
+
             $transacao = array('data'=>$tds->find('td:eq(0)')->html(),
-                               'nome'=>$tds->find('td:eq(1)')->html(),
-                               'pagamento'=>$tds->find('td:eq(2)')->html(),
-                               'adicional'=>$tds->find('td:eq(3)')->html(),
-                               'valor'=>$tds->find('td:eq(4)')->html()
-                                );
+                'nome'=>$tds->find('td:eq(1)')->html(),
+                'pagamento'=>$tds->find('td:eq(2)')->html(),
+                'adicional'=>$tds->find('td:eq(3)')->html(),
+                'valor'=>$tds->find('td:eq(4)')->html()
+            );
             $ultimas_transacoes[] = $transacao;
         }
 
