@@ -391,15 +391,18 @@ class MoIPTests extends PHPUnit_Framework_TestCase
         {
             $this->MoIP->setPagamentoDireto(array('forma'=>'cartao','instituicao'=>'blah'));
             $this->fail("O método setPagamentoDireto deveria lançar uma exception quando a instituição é inválida");
-        }catch(InvalidArgumentException $e)
+        }
+        catch(InvalidArgumentException $e)
         {
         }
 
     }
+
     public function testVerificaSeExceptionEhLancadaQuandoDadosDoCartaoNaoSaoPassadosCorretamente()
     {
-        
+            
     }
+
     //method called after each test method
     public function tearDown()
     {

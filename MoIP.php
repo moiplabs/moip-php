@@ -153,12 +153,6 @@ class MoIP
         return $this; 
     }
 
-    public function setTipoPagamento( $tipo )
-    {
-        $this->tipo_pagamento = $tipo;
-        return $this;
-    }
-
     public function setPagador($pagador)
     {
         if(empty($pagador) or
