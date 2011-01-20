@@ -66,8 +66,9 @@ class MoIP
         if (!isset($params['forma']))
             throw new InvalidArgumentException("Você deve especificar a forma de pagamento em setPagamentoDireto.");
         
+
         if ( 
-            ($params['forma']=='debito' or $params['forma']=='cartao') 
+            ($params['forma']=='debito' or $params['forma']=='cartao_credito') 
             and 
             (!isset($params['instituicao']) or !isset($this->instituicoes[$params['instituicao']]))
 
@@ -76,11 +77,55 @@ class MoIP
             throw new InvalidArgumentException("Você deve especificar uma instituição de pagamento válida quando".
                 " a forma de forma de pagamento é via débito ou cartao");
         }
+
+        if ($params['forma'] == 'cartao_credito' and
+            (!isset($params['cartao']) or
+            !isset($params['cartao']['numero']) or
+            !isset($params['cartao']['expiracao']) or
+            !isset($params['cartao']['codigo_seguranca']) or
+            !isset($params['cartao']['portador']) or
+            !isset($params['cartao']['portador']['nome']) or
+            !isset($params['cartao']['portador']['identidade_numero']) or
+            !isset($params['cartao']['portador']['identidade_tipo']) or
+            !isset($params['cartao']['portador']['telefone']) or
+            !isset($params['cartao']['portador']['data_nascimento']) or
+            !isset($params['cartao']['parcelamento']) or
+            !isset($params['cartao']['parcelamento']['parcelas']) or
+            !isset($params['cartao']['parcelamento']['recebimento']) 
+           )
+          )
+        {
+            throw new InvalidArgumentException("Os dados do cartão foram passados de forma incorreta.");
+        }
+
+        $pd = $this->xml->InstrucaoUnica->addChild('PagamentoDireto');
         
-        
+        $pd->addChild('Forma',$this->formas_pagamento[$params['forma']]);
+
+        if ($params['forma']=='debito' or $params['forma']=='cartao_credito')
+        {
+            $pd->addChild('Instituicao',$this->instituicoes[$params['instituicao']]);
+        }
+
+        if ($params['forma']=='cartao_credito')
+        {
+            $cartao = $pd->addChild('CartaoCredito');
+            $cartao->addChild('Numero',$params['cartao']['numero']);
+            $cartao->addChild('Expiracao',$params['cartao']['expiracao']);
+            $cartao->addChild('CodigoSeguranca',$params['cartao']['codigo_seguranca']);
+
+            $portador = $cartao->addChild('Portador');
+            $portador->addChild('Nome',$params['cartao']['portador']['nome']);
+            $portador->addChild('Identidade',$params['cartao']['portador']['identidade_numero'])
+                     ->addAttribute('tipo',$params['cartao']['portador']['identidade_tipo']);
+
+            $parcelamento = $cartao->addChild('Parcelamento');
+            $parcelamento->addChild('Parcelas',$params['cartao']['parcelamento']['parcelas']);
+            $parcelamento->addChild('Recebimento',$params['cartao']['parcelamento']['recebimento']);
+        }
 
         $this->tipo_pagamento = 'Direto';
-
+        return $this;
     }
 
     public function setCredenciais($credenciais)

@@ -389,7 +389,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->setPagamentoDireto(array('forma'=>'cartao','instituicao'=>'blah'));
+            $this->MoIP->setPagamentoDireto(array('forma'=>'debito','instituicao'=>'blah'));
             $this->fail("O método setPagamentoDireto deveria lançar uma exception quando a instituição é inválida");
         }
         catch(InvalidArgumentException $e)
@@ -398,9 +398,31 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 
     }
 
-    public function testVerificaSeExceptionEhLancadaQuandoDadosDoCartaoNaoSaoPassadosCorretamente()
+    public function testVerificaSeExceptionNaoEhLancadaQuandoDadosDoCartaoSaoPassadosCorretamente()
     {
-            
+        try
+        {
+            $this->MoIP->setPagamentoDireto(
+                array('forma'=>'cartao_credito',
+                      'instituicao'=>'american_express',
+                      'cartao'=>array('numero'=>345678901234564,
+                                      'expiracao'=>'08/11',
+                                      'codigo_seguranca'=>'1234',
+                                      'portador'=>array('nome'=>'Nome do Portador',
+                                                  'identidade_tipo' => 'cpf',
+                                                  'identidade_numero' => '111.111.111-11',
+                                                  'telefone' => '(11) 1111-1111',
+                                                  'data_nascimento' => '30/11/1980'
+                                              ),
+                                      'parcelamento' => array('parcelas'=>2,'recebimento'=>'avista')
+                                     )
+                     ));
+
+        } 
+        catch(InvalidArgumentException $e)
+        {
+            $this->fail('Exception não deveria ser lançada quando os dados do cartão estão corretos');
+        }
     }
 
     //method called after each test method
