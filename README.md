@@ -78,6 +78,35 @@ O parametro opcional $args serve para informar dados adicionais do pagamento em 
 
 Especifica o valor da transação no formato do MoIP (sem vírgulas, sendo que os dois ultimos digitos representam os centavos)
 
+> setPagamentoDireto($params)
+
+Especifica que a transação irá ser feita utilizando o Pagamento Direto do MoIP. É necessário que a conta do MoIP em questão já esteja com o Pagamento Direto habilitado. Em caso de dúvidas sobre o pagamento direto, utilize nosso [ fórum ][http://labs.moip.com.br/forum/]
+
+Um exemplo de uso:
+
+    $moip = new MoIP();
+    //... seta token/key, informa razão de pagamento e ID próprio
+    $moip->setPagamentoDireto(array('forma'=>'boleto'); //pagamento direto via boleto
+    $moip->setPagamentoDireto(array('forma'=>'debito','instituicao'=>'banco_brasil'); //debito bancario pelo Banco do Brasil
+
+    //pagamento direto via cartão de crédito
+    //todos os dados são necessários
+    $moip->setPagamentoDireto(array('forma'=>'cartao_credito',
+                                    'instituicao'=>'american_express',
+                                    'cartao'=>array('numero'=>345678901234564,
+                                                    'expiracao'=>'08/11',
+                                                    'codigo_seguranca'=>'1234',
+                                                    'portador'=>array('nome'=>'Nome do Portador',
+                                                                'identidade_tipo' => 'cpf',
+                                                                'identidade_numero' => '111.111.111-11',
+                                                                'telefone' => '(11) 1111-1111',
+                                                                'data_nascimento' => '30/11/1980'
+                                                            ),
+                                                    'parcelamento' => array('parcelas'=>2,'recebimento'=>'avista')
+                                                   )
+                                 ));
+
+    
 > setPagador($pagador)
 
 Informa os dados do pagador em que ''$pagador''. Um exemplo de $pagador:
