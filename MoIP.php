@@ -68,6 +68,7 @@ class MoIP
         }
         return $this;
     }
+
     public function setPagamentoDireto($params)
     {
         if (!isset($params['forma']))
@@ -533,6 +534,14 @@ class MoIP
 
         return $return;
     }
+
+    public function checarPagamentoDireto($login_moip)
+    {
+        $url = "https://www.moip.com.br/ws/alpha/ChecarPagamentoDireto/$login_moip";
+        $client = new MoIPClient();
+        $resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],'',$url,'GET');
+
+    }
 }
 
 /**
@@ -543,7 +552,7 @@ class MoIP
  */ 
 class MoIPClient
 { 
-    function send_without_curl($credentials, $xml, $url='http://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
+    function send_without_curl($credentials, $xml, $url='http://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica',$method='POST')
     {  
         $auth = base64_encode($credentials);
         $url = str_replace('https','http',$url); 
@@ -552,7 +561,7 @@ class MoIPClient
 
 
         $params = array('http' => array(
-            'method' => 'POST',
+            'method' => $method,
             'content' => $xml,
             'header'=>$header
         ));
@@ -566,7 +575,7 @@ class MoIPClient
         return (object)array('resposta'=>$response,'erro'=>null);
     }
 
-    function send($credentials,$xml,$url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica')
+    function send($credentials,$xml,$url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica',$method='POST')
     {  
         $header[] = "Authorization: Basic " . base64_encode($credentials);
         if (!function_exists('curl_init'))
@@ -578,8 +587,10 @@ class MoIPClient
         curl_setopt($curl, CURLOPT_USERPWD, $credentials);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0");
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $xml);
+
+        $method=='POST'?curl_setopt($curl, CURLOPT_POST, true):null;
+
+        $xml!=''?curl_setopt($curl, CURLOPT_POSTFIELDS, $xml):null;
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $ret = curl_exec($curl);
         $err = curl_error($curl); 
