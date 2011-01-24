@@ -176,6 +176,8 @@ class MoIPTests extends PHPUnit_Framework_TestCase
         try
         {
             $this->MoIP->setPagador($pagador);
+            $this->MoIP->setTipoPagamento('Direto');
+            $this->MoIP->valida();
             $this->fail('Erro: deve haver uma exception quando dos dados do pagador são especificados de forma incorreta');
         }catch (InvalidArgumentException $e){}
     }

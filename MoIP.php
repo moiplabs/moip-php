@@ -60,7 +60,14 @@ class MoIP
         $this->xml = new SimpleXmlElement('<EnviarInstrucao></EnviarInstrucao>');
         $this->xml->addChild('InstrucaoUnica');
     }
-
+    
+    public function setTipoPagamento($tipo)
+    {
+        if ($tipo=='Unico' || $tipo=='Direto') {
+            $this->tipo_pagamento = $tipo;
+        }
+        return $this;
+    }
     public function setPagamentoDireto($params)
     {
         if (!isset($params['forma']))
@@ -156,6 +163,32 @@ class MoIP
             !isset($this->id_proprio))
             throw new InvalidArgumentException("Dados requeridos não preenchidos. Você deve especificar as credenciais, a razão do pagamento e seu ID próprio");
 
+        $pagador = $this->pagador;
+        
+        if ($this->tipo_pagamento=='Direto') {
+
+            if(  empty($pagador) or
+                !isset($pagador['nome']) or
+                !isset($pagador['email']) or 
+                !isset($pagador['celular']) or
+                !isset($pagador['apelido']) or
+                !isset($pagador['identidade']) or
+                !isset($pagador['endereco']) or
+                !isset($pagador['endereco']['logradouro']) or
+                !isset($pagador['endereco']['numero']) or
+                !isset($pagador['endereco']['complemento']) or
+                !isset($pagador['endereco']['bairro']) or
+                !isset($pagador['endereco']['cidade']) or
+                !isset($pagador['endereco']['estado']) or
+                !isset($pagador['endereco']['pais']) or
+                !isset($pagador['endereco']['cep']) or
+                !isset($pagador['endereco']['telefone'])
+            )
+            {
+                throw new InvalidArgumentException("Dados do pagador especificados de forma incorreta");
+            }
+        }
+
         return $this;
     }
 
@@ -200,27 +233,6 @@ class MoIP
 
     public function setPagador($pagador)
     {
-        if(empty($pagador) or
-            !isset($pagador['nome']) or
-            !isset($pagador['login_moip']) or
-            !isset($pagador['email']) or 
-            !isset($pagador['celular']) or
-            !isset($pagador['apelido']) or
-            !isset($pagador['identidade']) or
-            !isset($pagador['endereco']) or
-            !isset($pagador['endereco']['logradouro']) or
-            !isset($pagador['endereco']['numero']) or
-            !isset($pagador['endereco']['complemento']) or
-            !isset($pagador['endereco']['bairro']) or
-            !isset($pagador['endereco']['cidade']) or
-            !isset($pagador['endereco']['estado']) or
-            !isset($pagador['endereco']['pais']) or
-            !isset($pagador['endereco']['cep']) or
-            !isset($pagador['endereco']['telefone'])
-        )
-        {
-            throw new InvalidArgumentException("Dados do pagador especificados de forma incorreta");
-        }
         $this->pagador = $pagador;
         return $this;
     }
@@ -406,11 +418,10 @@ class MoIP
         if (empty($this->valor))
             throw new InvalidArgumentException('Erro: o valor da transação deve ser especificado');
 
-
-
         $this->xml->InstrucaoUnica->addChild('Valores')
             ->addChild('Valor',$this->valor)
             ->addAttribute('moeda','BRL'); 
+
         if (isset($this->deducao))
         {
             $this->xml->InstrucaoUnica->Valores->addChild('Deducao',$this->deducao)
@@ -455,23 +466,35 @@ class MoIP
 
         if(!empty($this->pagador))
         {
+            $p = $this->pagador;
             $this->xml->InstrucaoUnica->addChild('Pagador');
-            $this->xml->InstrucaoUnica->Pagador->addChild( 'Nome' , $this->pagador[ 'nome' ] );
-            $this->xml->InstrucaoUnica->Pagador->addChild( 'LoginMoIP' , $this->pagador[ 'login_moip' ] );
-            $this->xml->InstrucaoUnica->Pagador->addChild( 'Email' , $this->pagador['email']);
-            $this->xml->InstrucaoUnica->Pagador->addChild( 'TelefoneCelular' , $this->pagador['celular']);
-            $this->xml->InstrucaoUnica->Pagador->addChild( 'Apelido' , $this->pagador['apelido']);
-            $this->xml->InstrucaoUnica->Pagador->addChild( 'Identidade' , $this->pagador['identidade']);
+            (isset($p['nome']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Nome' , $this->pagador[ 'nome' ] ):null;
+            (isset($p['login_moip']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'LoginMoIP' , $this->pagador[ 'login_moip' ] ):null;
+            (isset($p['email']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Email' , $this->pagador['email']):null;
+            (isset($p['celular']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'TelefoneCelular' , $this->pagador['celular']):null;
+            (isset($p['apelido']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Apelido' , $this->pagador['apelido']):null;
+            (isset($p['identidade']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Identidade' , $this->pagador['identidade']):null;
+
+            $p = $this->pagador['endereco'];
             $this->xml->InstrucaoUnica->Pagador->addChild( 'EnderecoCobranca' );
-            $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Logradouro' , $this->pagador['endereco']['logradouro']);
-            $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Numero' , $this->pagador['endereco']['numero']);
-            $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Complemento' , $this->pagador['endereco']['complemento']);
-            $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Bairro' , $this->pagador['endereco']['bairro']);
-            $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Cidade' , $this->pagador['endereco']['cidade']);
-            $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Estado' , $this->pagador['endereco']['estado']);
-            $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Pais' , $this->pagador['endereco']['pais']);
-            $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'CEP' , $this->pagador['endereco']['cep']);
-            $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'TelefoneFixo' , $this->pagador['endereco']['telefone']);
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Logradouro' , $this->pagador['endereco']['logradouro']):null;
+            
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Numero' , $this->pagador['endereco']['numero']):null;
+
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Complemento' , $this->pagador['endereco']['complemento']):null;
+
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Bairro' , $this->pagador['endereco']['bairro']):null;
+
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Cidade' , $this->pagador['endereco']['cidade']):null;
+
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Estado' , $this->pagador['endereco']['estado']):null;
+
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Pais' , $this->pagador['endereco']['pais']):null;
+
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'CEP' , $this->pagador['endereco']['cep']):null;
+
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'TelefoneFixo' , $this->pagador['endereco']['telefone']):null;
+
         }
 
         $return = $this->xml->asXML();
