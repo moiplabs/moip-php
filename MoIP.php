@@ -546,7 +546,6 @@ class MoIP
 
         $url = "https://www.moip.com.br/ws/alpha/ChecarPagamentoDireto/$login_moip";
         $resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],'',$url,'GET');
-        print_r($resposta);
         $xml = new SimpleXmlElement($resposta->resposta);
 
         return (object)array(
@@ -561,6 +560,37 @@ class MoIP
             'boleto_bancario'=>$xml->Resposta->BoletoBancario=='true',
             'debito_automatico'=>$xml->Resposta->DebitoAutomatico=='true');
     }
+
+    public function checarValoresParcelamento($login_moip,$total_parcelas,$juros,$valor_simulado,$client=null)
+    {
+        if (!isset($this->credenciais)) {
+            throw new Exception("Você deve especificar as credenciais (token/key) da API antes de chamar este método");
+        }
+
+        if ($client==null) {
+            $client = new MoIPClient();
+        }
+
+        $url = "https://www.moip.com.br/ws/alpha/ChecarValoresParcelamento/$login_moip/$total_parcelas/$juros/$valor_simulado";
+        $resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],'',$url,'GET');
+        $xml = new SimpleXmlElement($resposta->resposta);
+
+        $return = array('sucesso'=>(bool)$xml->Resposta->Status=='sucesso',
+            'id'=>(string)$xml->Resposta->ID,
+            'parcelas'=>array());
+
+        $i = 1;
+
+        foreach($xml->Resposta->ValorDaParcela as $parcela)
+        {
+            $attrib = $parcela->attributes();
+            $return['parcelas']["$i"] = array('total'=>(string)$attrib['Total'],'juros'=>(string)$attrib['Juros'],'valor'=>(string)$attrib['Valor']);
+            $i++;
+        }    
+
+        return $return;
+    }
+
 }
 
 /**

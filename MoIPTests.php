@@ -187,6 +187,61 @@ class MoIPTests extends PHPUnit_Framework_TestCase
         $this->assertTrue($resposta->boleto_bancario);
         $this->assertFalse($resposta->debito_automatico);
     }
+    
+    public function testChecarValoresParcelamentoDeveLancarUmaExceptionQuandoCredenciaisNaoForemInformadas()
+    {
+        try
+        {
+            $this->MoIP->checarValoresParcelamento('login_moip',12,1.99,100);
+            $this->fail('O Método checarValoresParcelamento deve lançar uma exception quando as credenciais não forem informadas');
+        }
+        catch(Exception $e)
+        {
+        }
+    }
+
+    public function testVerificaSeOMetodoDeParcelamentoEstaRetornandoOsValoresCorretosDeAcordoComARespostaDoServer()
+    {
+        $respostaFromMoIPClient = (object)array('erro'=>false,'resposta'=>'
+            <ns1:ChecarValoresParcelamentoResponse
+            xmlns:ns1="http://www.moip.com.br/ws/alpha/">
+            <Resposta>
+            <ID>201008241556253120000000034351</ID>
+            <Status>Sucesso</Status>
+            <ValorDaParcela Total="150.00" Juros="2.99" Valor="150.00">1</ValorDaParcela>
+            <ValorDaParcela Total="156.76" Juros="2.99" Valor="78.38">2</ValorDaParcela>
+            <ValorDaParcela Total="159.06" Juros="2.99" Valor="53.02">3</ValorDaParcela>
+            <ValorDaParcela Total="161.36" Juros="2.99" Valor="40.34">4</ValorDaParcela>
+            <ValorDaParcela Total="163.70" Juros="2.99" Valor="32.74">5</ValorDaParcela>
+            <ValorDaParcela Total="166.08" Juros="2.99" Valor="27.68">6</ValorDaParcela>
+            <ValorDaParcela Total="168.49" Juros="2.99" Valor="24.07">7</ValorDaParcela>
+            <ValorDaParcela Total="170.88" Juros="2.99" Valor="21.36">8</ValorDaParcela>
+            </Resposta>
+            </ns1:ChecarValoresParcelamentoResponse>');
+
+        $client = $this->getMock('MoIPClient',array('send'));
+
+        $client->expects($this->any())
+            ->method('send')
+            ->will($this->returnValue($respostaFromMoIPClient));
+
+        $expected = array('sucesso'=>true,'id'=>'201008241556253120000000034351',
+            'parcelas'=>array('1'=>array('total'=>'150.00','juros'=>'2.99','valor'=>'150.00'),
+                              '2'=>array('total'=>'156.76','juros'=>'2.99','valor'=>'78.38'),
+                              '3'=>array('total'=>'159.06','juros'=>'2.99','valor'=>'53.02'),
+                              '4'=>array('total'=>'161.36','juros'=>'2.99','valor'=>'40.34'),
+                              '5'=>array('total'=>'163.70','juros'=>'2.99','valor'=>'32.74'),
+                              '6'=>array('total'=>'166.08','juros'=>'2.99','valor'=>'27.68'),
+                              '7'=>array('total'=>'168.49','juros'=>'2.99','valor'=>'24.07'),
+                              '8'=>array('total'=>'170.88','juros'=>'2.99','valor'=>'21.36'),
+        ));
+
+        $this->MoIP->setCredenciais($this->validCredentials);
+        $current = $this->MoIP->checarValoresParcelamento('blah',12,1.99,100,$client);
+
+        $this->assertEquals($expected,$current);
+    }
+
     public function testVerificaSeExceptionEhLancadaQuandoDadosDoBoletoSaoPassadosIncorretamente()
     {
         try

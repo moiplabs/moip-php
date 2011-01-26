@@ -129,6 +129,113 @@ Esse método retorna um objeto contendo os métodos/meios de pagamento do MoIP e
 No caso anterior, o usuário consultado não tem acesso a nenhum método de pagamento via PagamentoDireto. Para maiores detalhes sobre esse método, veja [nosso post sobre o assunto](http://labs.moip.com.br/2011/01/24/novas-funcionalidades-da-api-do-moip-checarpagamentodireto-e-checarvaloresparcelamento/)
 
 
+> checarValoresParcelamento($login_moip,$total_parcelas,$juros,$valor_simulado)
+
+Obtém os valores das parcelas de acordo com o usuário MoIP (determinado por $login_moip), o número de parcelas ($total_parcelas, inteiro), os juros ($juros, float) e o valor total da transação a ser simulado ($valor_simulado). **Atenção** este método requer que você especifique suas credenciais **de produção** da API do MoIP para funcionar.
+
+Exemplo:
+
+    $moip = new MoIP();
+    $moip->setCredenciais(array('token'=>'meu_token_de_producao','key'=>'minha_key_de_producao');
+    $parcelamento = $moip->checarValoresParcelamento('login_moip',12,1.99,100);
+    print_r($parcelamento);
+
+    // a instrucao acima irá imprimir algo parecido com isso:
+    Array
+    (
+        [sucesso] => 1
+        [id] => 201101261211303120000005383093
+        [parcelas] => Array
+            (
+                [1] => Array
+                    (
+                        [total] => 100
+                        [juros] => 1.99
+                        [valor] => 100
+                    )
+
+                [2] => Array
+                    (
+                        [total] => 103.00
+                        [juros] => 1.99
+                        [valor] => 51.50
+                    )
+
+                [3] => Array
+                    (
+                        [total] => 104.01
+                        [juros] => 1.99
+                        [valor] => 34.67
+                    )
+
+                [4] => Array
+                    (
+                        [total] => 105.04
+                        [juros] => 1.99
+                        [valor] => 26.26
+                    )
+
+                [5] => Array
+                    (
+                        [total] => 106.05
+                        [juros] => 1.99
+                        [valor] => 21.21
+                    )
+
+                [6] => Array
+                    (
+                        [total] => 107.10
+                        [juros] => 1.99
+                        [valor] => 17.85
+                    )
+
+                [7] => Array
+                    (
+                        [total] => 108.15
+                        [juros] => 1.99
+                        [valor] => 15.45
+                    )
+
+                [8] => Array
+                    (
+                        [total] => 109.20
+                        [juros] => 1.99
+                        [valor] => 13.65
+                    )
+
+                [9] => Array
+                    (
+                        [total] => 110.25
+                        [juros] => 1.99
+                        [valor] => 12.25
+                    )
+
+                [10] => Array
+                    (
+                        [total] => 111.30
+                        [juros] => 1.99
+                        [valor] => 11.13
+                    )
+
+                [11] => Array
+                    (
+                        [total] => 112.31
+                        [juros] => 1.99
+                        [valor] => 10.21
+                    )
+
+                [12] => Array
+                    (
+                        [total] => 113.40
+                        [juros] => 1.99
+                        [valor] => 9.45
+                    )
+
+            )
+
+    )
+
+
 
 > setPagador($pagador)
 
