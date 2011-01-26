@@ -535,12 +535,31 @@ class MoIP
         return $return;
     }
 
-    public function checarPagamentoDireto($login_moip)
+    public function checarPagamentoDireto($login_moip,$client=null)
     {
-        $url = "https://www.moip.com.br/ws/alpha/ChecarPagamentoDireto/$login_moip";
-        $client = new MoIPClient();
-        $resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],'',$url,'GET');
+        if (!isset($this->credenciais))
+            throw new Exception("Você deve especificar as credenciais (token/key) da API antes de chamar este método");
 
+        if ($client==null) {
+            $client = new MoIPClient();
+        }
+
+        $url = "https://www.moip.com.br/ws/alpha/ChecarPagamentoDireto/$login_moip";
+        $resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],'',$url,'GET');
+        print_r($resposta);
+        $xml = new SimpleXmlElement($resposta->resposta);
+
+        return (object)array(
+            'erro'=>$resposta->erro,
+            'id'=>(string)$xml->Resposta->ID,
+            'sucesso'=>$xml->Resposta->Status=='Sucesso',
+            'carteira_moip'=>$xml->Resposta->CarteiraMoIP=='true',
+            'cartao_credito'=>$xml->Resposta->CartaoCredito=='true',
+            'cartao_debito'=>$xml->Resposta->CartaoDebito=='true',
+            'debito_bancario'=>$xml->Resposta->DebitoBancario=='true',
+            'financiamento_bancario'=>$xml->Resposta->FinanciamentoBancario=='true',
+            'boleto_bancario'=>$xml->Resposta->BoletoBancario=='true',
+            'debito_automatico'=>$xml->Resposta->DebitoAutomatico=='true');
     }
 }
 

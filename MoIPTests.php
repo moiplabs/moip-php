@@ -161,8 +161,9 @@ class MoIPTests extends PHPUnit_Framework_TestCase
             $this->MoIP->checarPagamentoDireto('login');
             $this->fail('checarPagamentoDireto deveria lancar uma exception quando os dados de auth não forem passados');
         }
-        catch(InvalidArgumentException $e)
+        catch(Exception $e)
         {
+
         }
     }
     public function testChecarPagamentoDiretoDeveRetornarUmObjetoMoIPCheckQuandoARespostaDoServerForValida()
@@ -172,9 +173,19 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 
         $client->expects($this->any())
             ->method('send')
-            ->will($this->returnValue($xml));
+            ->will($this->returnValue($respostaFromMoIPClient));
 
-        $resposta = $this->MoIP->setCredenciais($this->validCredentials);
+        $resposta = $this->MoIP->setCredenciais($this->validCredentials)->checarPagamentoDireto('login',$client);
+        $this->assertFalse($resposta->erro);
+        $this->assertEquals($resposta->id,'201008241612518190000002974464');
+        $this->assertTrue($resposta->sucesso);
+        $this->assertFalse($resposta->carteira_moip);
+        $this->assertTrue($resposta->cartao_credito);
+        $this->assertFalse($resposta->cartao_debito);
+        $this->assertTrue($resposta->debito_bancario);
+        $this->assertFalse($resposta->financiamento_bancario);
+        $this->assertTrue($resposta->boleto_bancario);
+        $this->assertFalse($resposta->debito_automatico);
     }
     public function testVerificaSeExceptionEhLancadaQuandoDadosDoBoletoSaoPassadosIncorretamente()
     {
