@@ -106,7 +106,30 @@ Um exemplo de uso:
                                                    )
                                  ));
 
-    
+> checarPagamentoDireto($login_moip)
+
+Faz a verificação dos tipos de pagamento disponíveis para o cliente MoIP em $login_moip, utilizando o PagamentoDireto. **Atenção**: você precisa especificar as credenciais de acesso utilizando o método setCredenciais antes de chamar o checarPagamentoDireto.
+
+Esse método retorna um objeto contendo os métodos/meios de pagamento do MoIP e se o usuário em questão pode utiliza-lo. Eis um exemplo adaptado da saída do ḿetodo anterior para um usuário que não tem o PagamentoDireto:
+
+    stdClass Object
+    (
+        [erro] => false
+        [id] => 201101260848421410000005380579
+        [sucesso] => true 
+        [carteira_moip] => false
+        [cartao_credito] => false
+        [cartao_debito] => false
+        [debito_bancario] => false 
+        [financiamento_bancario] => false 
+        [boleto_bancario] => false
+        [debito_automatico] => false
+    )
+
+No caso anterior, o usuário consultado não tem acesso a nenhum método de pagamento via PagamentoDireto. Para maiores detalhes sobre esse método, veja [nosso post sobre o assunto](http://labs.moip.com.br/2011/01/24/novas-funcionalidades-da-api-do-moip-checarpagamentodireto-e-checarvaloresparcelamento/)
+
+
+
 > setPagador($pagador)
 
 Informa os dados do pagador em que ''$pagador''. Um exemplo de $pagador:
