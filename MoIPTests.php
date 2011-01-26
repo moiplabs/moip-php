@@ -154,6 +154,28 @@ class MoIPTests extends PHPUnit_Framework_TestCase
         $this->assertEquals(strlen($resposta->token),60);
     }
 
+    public function testMetodoChecarPagamentoDiretoDeveLancarUmaExceptionQuandoOsDadosDeAuthNaoForemPassados()
+    {
+        try
+        {
+            $this->MoIP->checarPagamentoDireto('login');
+            $this->fail('checarPagamentoDireto deveria lancar uma exception quando os dados de auth não forem passados');
+        }
+        catch(InvalidArgumentException $e)
+        {
+        }
+    }
+    public function testChecarPagamentoDiretoDeveRetornarUmObjetoMoIPCheckQuandoARespostaDoServerForValida()
+    {
+        $respostaFromMoIPClient =(object) array('erro'=>false,'resposta'=>'<ns1:ChecarPagamentoDiretoResponse xmlns:ns1="http://www.moip.com.br/ws/alpha/"><Resposta><ID>201008241612518190000002974464</ID><Status>Sucesso</Status><CarteiraMoIP>false</CarteiraMoIP><CartaoCredito>true</CartaoCredito><CartaoDebito>false</CartaoDebito><DebitoBancario>true</DebitoBancario><FinanciamentoBancario>false</FinanciamentoBancario><BoletoBancario>true</BoletoBancario><DebitoAutomatico>false</DebitoAutomatico></Resposta></ns1:ChecarPagamentoDiretoResponse>');
+        $client = $this->getMock('MoIPClient',array('send'));
+
+        $client->expects($this->any())
+            ->method('send')
+            ->will($this->returnValue($xml));
+
+        $resposta = $this->MoIP->setCredenciais($this->validCredentials);
+    }
     public function testVerificaSeExceptionEhLancadaQuandoDadosDoBoletoSaoPassadosIncorretamente()
     {
         try
@@ -426,6 +448,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
             $this->fail('Exception não deveria ser lançada quando os dados do cartão estão corretos');
         }
     }
+
 
     //method called after each test method
     public function tearDown()
