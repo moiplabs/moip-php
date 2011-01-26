@@ -39,27 +39,32 @@ O MoIP-PHP possui testes unitários utilizando o framework [PHPUnit](http://phpu
 > $ phpunit MoIPTests.php
 
 Métodos disponíveis
---------------------
+===================
 
-> setCredenciais ($credenciais)
+setCredenciais ($credenciais)
+------------------------------
 
 Informa as credenciais (token,key) ao objeto MoIP. Necessárias à autenticação. Você *precisa* informar as suas credenciais antes de enviar a instrução, pois não é possível autenticar no sistema da MoIP sem estas informações.
 
 O parâmetro $credenciais é um array associativo contendo as chaves _key_ e _token_ (ex: array('key'=>'sua_key','token'=>'seu_token')). Se você ainda não possui estes dados, entre em contato com a equipe do MoiP e solicite-os.
 
-> setAmbiente($ambiente)
+setAmbiente($ambiente)
+------------------------------
 
 Configura o ambiente a ser utilizado. Suporta apenas dois valores: 'producao' e 'sandbox'
 
-> setIDProprio($id_proprio)
+setIDProprio($id_proprio)
+------------------------------
 
 Informa seu ID para a transação.
 
-> setRazao($razao) 
+setRazao($razao) 
+------------------------------
 
 Informa a razão do pagamento. Campo obrigatório.
 
-> addFormaPagamento($forma,$args=null)
+addFormaPagamento($forma,$args=null)
+------------------------------
 
 Adiciona um tipo de forma de pagamento. $forma pode ser:
 
@@ -74,11 +79,13 @@ O parametro opcional $args serve para informar dados adicionais do pagamento em 
 
     array('dias_expiracao'=>array('dias'=>5,'tipo'=>'corridos'));
 
-> setValor($valor) [obrigatório]
+setValor($valor) [obrigatório]
+------------------------------
 
 Especifica o valor da transação no formato do MoIP (sem vírgulas, sendo que os dois ultimos digitos representam os centavos)
 
-> setPagamentoDireto($params)
+setPagamentoDireto($params)
+------------------------------
 
 Especifica que a transação irá ser feita utilizando o Pagamento Direto do MoIP. É necessário que a conta do MoIP em questão já esteja com o Pagamento Direto habilitado. Em caso de dúvidas sobre o pagamento direto, utilize nosso [ fórum ][http://labs.moip.com.br/forum/]
 
@@ -106,7 +113,8 @@ Um exemplo de uso:
                                                    )
                                  ));
 
-> checarPagamentoDireto($login_moip)
+checarPagamentoDireto($login_moip)
+------------------------------
 
 Faz a verificação dos tipos de pagamento disponíveis para o cliente MoIP em $login_moip, utilizando o PagamentoDireto. **Atenção**: você precisa especificar as credenciais de acesso utilizando o método setCredenciais antes de chamar o checarPagamentoDireto.
 
@@ -129,7 +137,8 @@ Esse método retorna um objeto contendo os métodos/meios de pagamento do MoIP e
 No caso anterior, o usuário consultado não tem acesso a nenhum método de pagamento via PagamentoDireto. Para maiores detalhes sobre esse método, veja [nosso post sobre o assunto](http://labs.moip.com.br/2011/01/24/novas-funcionalidades-da-api-do-moip-checarpagamentodireto-e-checarvaloresparcelamento/)
 
 
-> checarValoresParcelamento($login_moip,$total_parcelas,$juros,$valor_simulado)
+checarValoresParcelamento($login_moip,$total_parcelas,$juros,$valor_simulado)
+------------------------------
 
 Obtém os valores das parcelas de acordo com o usuário MoIP (determinado por $login_moip), o número de parcelas ($total_parcelas, inteiro), os juros ($juros, float) e o valor total da transação a ser simulado ($valor_simulado). **Atenção** este método requer que você especifique suas credenciais **de produção** da API do MoIP para funcionar.
 
@@ -237,7 +246,8 @@ Exemplo:
 
 
 
-> setPagador($pagador)
+setPagador($pagador)
+------------------------------
 
 Informa os dados do pagador em que ''$pagador''. Um exemplo de $pagador:
 
@@ -255,27 +265,33 @@ Informa os dados do pagador em que ''$pagador''. Um exemplo de $pagador:
                                        'pais'=>'Brasil',
                                        'cep'=>'11111111',
                                        'telefone'=>'1188888888'));
-> addMensagem($msg)
+addMensagem($msg)
+------------------------------
 
 Adiciona uma mensagem na instrução para serem mostradas ao pagador. Você pode adicionar quantas mensagens quiser.
 
-> setUrlRetorno($url)
+setUrlRetorno($url)
+------------------------------
 
 Informa a URL de retorno, que redireciona o cliente à página de seu site, por exemplo, após o pagamento. É necessário que a ferramenta URL de Retorno esteja habilitada em sua conta MoIP. Para habilitá-la, acesse sua conta MoIP em Meus Dados > Preferências > URL de Retorno
 
-> setUrlNotificacao($url)
+setUrlNotificacao($url)
+------------------------------
 
 Informa a URL de notificação, que envia as informações sobre as alterações de status do pagamento. Estas informações são enviadas ao seu sistema para controle dos recebimentos. É necessário que a ferramenta NASP esteja habilitada em sua conta MoIP. Para habilitá-la, acesse sua conta MoIP em Meus Dados > Preferências > Notificação das Transações. Neste menu, marque a opção “*Receber notificação instantânea de transação” e confirme as alterações.
 
-> setAcrescimo($valor)
+setAcrescimo($valor)
+------------------------------
 
 Adiciona um valor no pagamento. Pode ser usado para cobrança de multas, fretes e outros.
 
-> setDeducao($valor)
+setDeducao($valor)
+------------------------------
 
 Deduz um valor do pagamento. É usado principalmente para descontos.
 
-> addEntrega($params)
+addEntrega($params)
+------------------------------
 
 Adiciona um parâmetro de entrega, permitindo especificar o cálculo do frete (sendo que o frete pode ser próprio ou dos correios).
 
@@ -304,11 +320,13 @@ Em qualquer parâmetro é obrigatório que o tipo de frete seja especificado e s
 
 Se o tipo de frete for os correios, é necessário especificar os parâmetros de entrega pelos correios (peso e forma de entrega).
 
-> addParcela($min,$max,$juros='')
+addParcela($min,$max,$juros='')
+------------------------------
 
 Permite adicionar uma forma de parcelamento, em que $min se refere ao mínimo de parcelas da forma e $max se refere ao numero maximo de parcelas. $juros é um parâmetro opcional que informa os juros mensais (em %).
 
-> addComissao($params)
+addComissao($params)
+------------------------------
 
 Mais uma instrução adicional. Permite especificar comissões, em valores fixos ou percentuais, sobre o pagamento. Exemplos de uso:
 
@@ -319,7 +337,10 @@ Adicionando um comissionado com um valor fixo:
 Adicionando um comissionado com um valor percentual:
 
     addComissao(array('login_moip'=>'login_do_comissionado','valor_percentual'=>2.1));
-> getXML()
+
+getXML()
+---------
+
 
 Útil para debugging. Retorna o XML que irá ser gerado, com base nos parâmetros já informados.
 
