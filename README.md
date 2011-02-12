@@ -31,7 +31,7 @@ O MoIP-PHP utiliza o padrão [Fluent Interfaces](http://martinfowler.com/bliki/F
                 ->token;
 
 
-O método getResposta() retorna um objeto contendo com os atributos "token" e "sucesso" (um tipo booleano).
+O método getResposta() retorna um objeto contendo com os atributos "token" , "sucesso" (um tipo booleano) e "url_pagamento", que contém a URL que você deverá redirecionar seu cliente de acordo com o ambiente (sandbox ou produção) que você está utilizando.
 
 O MoIP-PHP possui testes unitários utilizando o framework [PHPUnit](http://phpunit.de). Se você quiser se certificar que o MoIP-PHP funciona no seu ambiente, é só chamar o phpunit com o arquivo de testes:
 

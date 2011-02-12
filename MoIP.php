@@ -532,6 +532,11 @@ class MoIP
         $return->id      = (string)$xml->Resposta->ID;
         $return->token = (string)$xml->Resposta->Token;
 
+        if ($this->ambiente == 'sandbox')
+            $return->url_pagamento = "https://desenvolvedor.moip.com.br/Instrucao.do?token=".$return->token;
+        else
+            $return->url_pagamento = "https://www.moip.com.br/sandbox/Instrucao.do?token=".$return;
+
         return $return;
     }
 
