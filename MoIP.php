@@ -3,7 +3,7 @@
 /**
  * Abstração da API do MoIP para PHP
  * @author Herberth Amaral
- * @version 0.4.3
+ * @version 1.0rc2 
  * @package MoIP
  */
 class MoIP
