@@ -522,23 +522,24 @@ class MoIP
     }
 
     public function getResposta()
-    {
-        if (!empty($this->resposta->erro))
-            return (object) array('sucesso'=>false,'mensagem'=>$this->resposta->erro);
+	{
+	        $xml = new SimpleXmlElement($this->resposta->resposta);
+	        if (isset($xml->Resposta->Erro)) {
+	            return (object) array('sucesso'=>false,'mensagem'=>$xml->Resposta->Erro);
+	        }
 
-        $xml = new SimpleXmlElement($this->resposta->resposta);
-        $return = (object) array();
-        $return->sucesso = (bool)$xml->Resposta->Status=='Sucesso';
-        $return->id      = (string)$xml->Resposta->ID;
-        $return->token = (string)$xml->Resposta->Token;
+	        $return = (object) array();
+	        $return->sucesso = (bool)$xml->Resposta->Status=='Sucesso';
+	        $return->id      = (string)$xml->Resposta->ID;
+	        $return->token = (string)$xml->Resposta->Token;
 
-        if ($this->ambiente == 'sandbox')
-            $return->url_pagamento = "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=".$return->token;
-        else
-            $return->url_pagamento = "https://www.moip.com.br/Instrucao.do?token=".$return->token;
+	        if ($this->ambiente == 'sandbox')
+	            $return->url_pagamento = "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=".$return->token;
+	        else
+	            $return->url_pagamento = "https://www.moip.com.br/Instrucao.do?token=".$return->token;
 
-        return $return;
-    }
+	        return $return;
+	}
 
     public function checarPagamentoDireto($login_moip,$client=null)
     {
