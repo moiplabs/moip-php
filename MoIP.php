@@ -535,7 +535,7 @@ class MoIP
         if ($this->ambiente == 'sandbox')
             $return->url_pagamento = "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=".$return->token;
         else
-            $return->url_pagamento = "https://www.moip.com.br/sandbox/Instrucao.do?token=".$return;
+            $return->url_pagamento = "https://www.moip.com.br/Instrucao.do?token=".$return->token;
 
         return $return;
     }
