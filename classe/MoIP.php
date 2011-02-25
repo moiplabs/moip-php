@@ -1,25 +1,67 @@
 <?php
-
 /**
- * Abstração da API do MoIP para PHP
+ * Class to help PHP users of MoIP's API
+ *
  * @author Herberth Amaral
+ * @author Wesley Willians
+ * @author Alê Borba
  * @version 1.0rc2 
+ * @licence <a href="http://opensource.org/licenses/gpl-3.0.html">GNU General Public License version 3 (GPLv3)</a>
+ */
+/**
+ * MoIP's API abstraction class
+ *
+ * Class to use for all abstraction of MoIP's API
  * @package MoIP
  */
 class Moip_Php
 {
-
+    /**
+     * Associative array with two keys. 'key'=>'your_key','token'=>'your_token'
+     * 
+     * @var array
+     * @access private
+     */
     private $credenciais;
+    /**
+     * Define the payment's reason
+     * 
+     * @var string
+     * @access private
+     */
     private $razao;
-    private $ambiente = 'sandbox';
+    /**
+     * The application's environment
+     * 
+     * @var string
+     * @access private
+     */
+    private $ambiente;
+    /**
+     * Transaction's unique ID
+     *
+     * @var string
+     * @access private
+     */
     private $id_proprio;
+    /**
+     * Associative array of payment's methods
+     *
+     * @var array
+     * @access private
+     */
     private $formas_pagamento = array('boleto'=>'BoletoBancario',
         'financiamento'=>'FinanciamentoBancario',
         'debito'=>'DebitoBancario',
         'cartao_credito'=>'CartaoCredito',
         'cartao_debito'=>'CartaoDebito',
         'carteira_moip'=>'CarteiraMoIP');
-
+    /**
+     * Associative array of payment's institutions
+     * 
+     * @var array
+     * @access private
+     */
     private $instituicoes = array('moip'=>'MoIP',
         'visa'=>'Visa',
         'american_express'=>'AmericanExpress',
@@ -35,23 +77,84 @@ class Moip_Php
         'paggo'=>'Paggo', //oi paggo
         'banrisul'=>'Banrisul'
     );
-
+    /**
+     * Associative array of delivery's type
+     * 
+     * @var array
+     * @access private
+     */
     private $tipo_frete = array('proprio'=>'Proprio','correios'=>'Correios');
-
+    /**
+     * Associative array with type of delivery's time
+     * 
+     * @var array
+     * @access private
+     */
     private $tipo_prazo = array('corridos'=>'Corridos','uteis'=>'Uteis');
-
-    private $forma_pagamento = array();
+    /**
+     * Payment method
+     * 
+     * @var array
+     * @access private
+     */
+    private $forma_pagamento[];
+    /**
+     * Arguments of payment method
+     *
+     * @var array
+     * @access private
+     */
     private $forma_pagamento_args;
-    private $tipo_pagamento = 'Unico';
+    /**
+     * Payment's type
+     * 
+     * @var string
+     * @access private
+     */
+    private $tipo_pagamento;
+    /**
+     * Associative array with payer's information
+     *
+     * @var array
+     * @access private
+     */
     private $pagador;
-    var $resposta;
+    /**
+     * Server's answer
+     *
+     * @var object
+     * @access public
+     */
+    public $resposta;
+    /**
+     * The transaction's value
+     * 
+     * @var numeric
+     * @access private
+     */
     private $valor;
-
-    //simplexml object
+    /**
+     * Simple XML object
+     * 
+     * @var object
+     * @access private
+     */
     private $xml;
 
     function __construct()
     {
+	//Verify the environment variable, if not 'producao' set 'sandbox'
+	if($this->ambiente != 'producao')
+	{
+		$this->ambiente = 'sandbox';
+	}
+
+	//Verify the payment's type, if null set 'Unico'
+	if(!$this->tipo_pagamento)
+	{
+		$this->tipo_pagamento = 'Unico';
+	}
+
         $this->initXMLObject();
     }
 
