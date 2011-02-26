@@ -141,7 +141,13 @@ class Moip_Php
      */
     private $xml;
 
-    function __construct()
+    /**
+     * Method construct
+     *
+     * @return void
+     * @access public
+     */
+    public function __construct()
     {
 	//Verify the environment variable, if not 'producao' set 'sandbox'
 	if($this->ambiente != 'producao')
@@ -158,20 +164,52 @@ class Moip_Php
         $this->initXMLObject();
     }
 
+    /**
+     * Method initXMLObject()
+     *
+     * Start a new XML structure for the requests
+     * 
+     * @return void
+     * @access private
+     */
     private function initXMLObject()
     {
         $this->xml = new SimpleXmlElement('<EnviarInstrucao></EnviarInstrucao>');
         $this->xml->addChild('InstrucaoUnica');
     }
-
+    
+    /**
+     * Method setTipoPagamento()
+     *
+     * Define the payment's type between 'Unico' or 'Direto'
+     * 
+     * @param string $tipo Can be 'Unico' or 'Direto'
+     * @return void
+     * @access public
+     */
     public function setTipoPagamento($tipo)
     {
+ 	//Verify if the value of variable $tipo is between 'Unico' or 'Direto'. If not, throw new exception error
         if ($tipo=='Unico' || $tipo=='Direto') {
             $this->tipo_pagamento = $tipo;
         }
+	else
+	{
+		throw new Exception("A variável tipo deve conter os valores 'Unico' ou 'Direto'");
+	}
+
         return $this;
     }
 
+    /**
+     * Method setPagamentoDireto()
+     *
+     * Especify the transaction will be done using the MoIP's PagamentoDireto
+     *
+     * @param array $params The PagamentoDireto data information
+     * @return void
+     * @access public
+     */
     public function setPagamentoDireto($params)
     {
         if (!isset($params['forma']))
@@ -239,6 +277,15 @@ class Moip_Php
         return $this;
     }
 
+    /**
+     * Method setCredenciais()
+     *
+     * Set the credentials(key,token) required for the API authentication.
+     *
+     * @param array $credenciais Array with the credentials token and key
+     * @return void
+     * @access public
+     */
     public function setCredenciais($credenciais)
     {
         if (!isset($credenciais['token']) or
@@ -251,6 +298,13 @@ class Moip_Php
         return $this;
     }
 
+    /**
+     * Method setAmbiente()
+     *
+     * Define the environment for the API utilization.
+     * 
+     * @param string $ambiente Only two values supported, 'sandbox' or 'producao'
+     */
     public function setAmbiente($ambiente)
     {
         if ($ambiente!='sandbox' and $ambiente!='producao')
@@ -260,6 +314,14 @@ class Moip_Php
         return $this;
     }
 
+    /**
+     * Method valida()
+     *
+     * Make the data validation
+     * 
+     * @return void
+     * @access public
+     */
     public function valida()
     {
         if (!isset($this->credenciais)  or
@@ -296,18 +358,46 @@ class Moip_Php
         return $this;
     }
 
+    /**
+     * Method setIDProprio()
+     *
+     * Set the unique ID for the transaction
+     *
+     * @param numeric $id Unique ID for each transaction
+     * @return void
+     * @access public
+     */
     public function setIDProprio($id)
     {
         $this->id_proprio = $id;
         return $this;
     }
 
+    /**
+     * Method setRazao()
+     *
+     * Set the short description of transaction. eg. Order Number.
+     * 
+     * @param string $razao The reason fo transaction
+     * @return void
+     * @access public
+     */
     public function setRazao($razao)
     {
         $this->razao = $razao;
         return $this;
     }
 
+    /**
+     * Method addFormaPagamento()
+     *
+     * Add a payment's method
+     *
+     * @param string $forma The payment method. Options: 'boleto','financiamento','debito','cartao_credito','cartao_debito','carteira_moip'
+     * @param array $args Use for optional informations with the payment's method 'boleto'.
+     * @return void
+     * @access public
+     */
     public function addFormaPagamento($forma,$args=null)
     {
         if(!isset($this->formas_pagamento[$forma]))
@@ -335,30 +425,75 @@ class Moip_Php
         return $this;
     }
 
+    /**
+     * Method setPagador()
+     *
+     * Set contacts informations for the payer.
+     * 
+     * @param array $pagador Contact information for the payer.
+     * @return voi
+     * @access public
+     */
     public function setPagador($pagador)
     {
         $this->pagador = $pagador;
         return $this;
     }
 
+    /**
+     * Method setValor()
+     *
+     * Set the transaction's value
+     *
+     * @param numeric $valor The transaction's value
+     * @return void
+     * @access public
+     */
     public function setValor($valor)
     {
         $this->valor = $valor;
         return $this;
     }
 
+    /**
+     * Method setAcrescimo()
+     *
+     * Adds a value on payment. Can be used for collecting fines, shipping and other
+     *
+     * @param numeric $valor The value to add.
+     * @return void
+     * @access public
+     */
     public function setAcrescimo($valor)
     {
         $this->acrescimo = $valor;
         return $this;
     }
 
+    /**
+     * Method setDeducao()
+     * 
+     * Deducts a payment amount. It is mainly used for discounts.
+     *
+     * @param numeric $value The value to deduct
+     * @return void
+     * @access public
+     */
     public function setDeducao($valor)
     {
         $this->deducao = $valor;
         return $this;
     }
 
+    /**
+     * Method addMensagem()
+     *
+     * Add a message in the instruction to be displayed to the payer.
+     * 
+     * @param string $msg Message to be displayed.
+     * @return void
+     * @access public
+     */
     public function addMensagem($msg)
     {
         if(!isset($this->xml->InstrucaoUnica->Mensagens))
@@ -370,6 +505,14 @@ class Moip_Php
         return $this;
     }
 
+    /**
+     * Method setUrlRetorno()
+     * 
+     * Set the return URL, which redirects the client after payment.
+     *
+     * @param string $url Return URL
+     * @access public
+     */
     public function setUrlRetorno($url)
     {
         if (!isset($this->xml->InstrucaoUnica->URLRetorno))
@@ -378,6 +521,14 @@ class Moip_Php
         }
     }
 
+    /**
+     * Method setUrlNotification()
+     *
+     * Set the notification URL, which sends information about changes in payment status
+     * 
+     * @param string $url Notification URL
+     * @access public
+     */
     public function setUrlNotificacao($url)
     {
         if (!isset($this->xml->InstrucaoUnica->URLNotificacao))
@@ -386,6 +537,14 @@ class Moip_Php
         }
     }
 
+    /**
+     * Method addComissao()
+     *
+     * Allows to specify commissions on the payment, like fixed values or percent.
+     *
+     * @param array $param Array of informations about the commissioner
+     * @access public
+     */
     public function addComissao($param)
     {
         if (!isset($param['login_moip']))
@@ -414,6 +573,17 @@ class Moip_Php
         }
     }
 
+    /**
+     * Method addParcela()
+     * 
+     * Allows to add a order to parceling.
+     * 
+     * @param numeric $min The minimum number of parcels.
+     * @param numeric $max The maximum number of parcels.
+     * @param numeric $juros The percentual value of rates
+     * @return void
+     * @access public
+     */
     public function addParcela($min,$max,$juros='')
     {
         if (!isset($this->xml->InstrucaoUnica->Parcelamentos))
@@ -434,9 +604,18 @@ class Moip_Php
         return $this;
     }
 
+    /**
+     * Method addEntrega()
+     *
+     * Adds a parameter for delivery, allowing you to specify the shipping value calculation
+     *
+     * @param array $params The parameters for delivery
+     * @return void
+     * @access public
+     */
     public function addEntrega($params)
     {
-        //validações dos parâmetros de entrega
+        //Validating the delivery's parameters
 
         if (empty($params) or !isset($params['tipo']) or !isset($params['prazo']))
         {
@@ -484,7 +663,8 @@ class Moip_Php
                 throw new InvalidArgumentException('Você deve especificar valor_fixo ou valor_percentual quando o tipo de frete é próprio');
         }
 
-        //fim das validações
+        //End of validate
+
         if (!isset($this->xml->InstrucaoUnica->Entrega))
         {
             $this->xml->InstrucaoUnica->addChild('Entrega')->addChild('Destino','MesmoCobranca');
@@ -514,6 +694,14 @@ class Moip_Php
         return $this;
     }
 
+    /**
+     * Method getXML()
+     *
+     * Returns the XML that is generated. Useful for debugging.
+     *
+     * @return string
+     * @access public
+     */
     public function getXML()
     {
         $this->xml->InstrucaoUnica->addChild('IdProprio' , $this->id_proprio);
@@ -606,6 +794,15 @@ class Moip_Php
         return str_ireplace("\n","",$return);
     }
 
+    /**
+     * Method envia()
+     *
+     * Send the request to the server
+     *
+     * @param object $client The server's connection
+     * @return void
+     * @access public
+     */
     public function envia($client=null)
     {
         $this->valida();
@@ -625,6 +822,14 @@ class Moip_Php
         return $this;
     }
 
+    /**
+     * Method getResposta()
+     *
+     * Gets the server's answer
+     * 
+     * @return object
+     * @access public
+     */
     public function getResposta()
     {
         $xml = new SimpleXmlElement($this->resposta->resposta);
@@ -645,6 +850,16 @@ class Moip_Php
         return $return;
     }
 
+    /**
+     * Method checarPagamentoDireto()
+     *
+     * Does a verification of payment types available for the MoIP's client defined in $login_moip
+     *
+     * @param string $login_moip The client's login for MoIP services.
+     * @param object $client The server's connection
+     * @return object
+     * @access public
+     */
     public function checarPagamentoDireto($login_moip,$client=null)
     {
         if (!isset($this->credenciais))
@@ -671,6 +886,19 @@ class Moip_Php
             'debito_automatico'=>$xml->Resposta->DebitoAutomatico=='true');
     }
 
+    /**
+     * Method checarValoresParcelamento()
+     *
+     * Get all informations about the parcelling of user defined by $login_moip
+     * 
+     * @param string $login_moip The client's login for MoIP services
+     * @param numeric $total_parcelas The total parcels
+     * @param numeric $juros The rate's percents of the parcelling.
+     * @param numeric $valor_simulado The value for simulation
+     * @param object $client The server's connection
+     * @return array
+     * @access public
+     */
     public function checarValoresParcelamento($login_moip,$total_parcelas,$juros,$valor_simulado,$client=null)
     {
         if (!isset($this->credenciais)) {
