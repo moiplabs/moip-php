@@ -22,35 +22,35 @@ class Moip_Php
      * @var array
      * @access private
      */
-    private $credenciais;
+    private $credential;
     /**
      * Define the payment's reason
      * 
      * @var string
      * @access private
      */
-    private $razao;
+    private $reason;
     /**
      * The application's environment
      * 
      * @var string
      * @access private
      */
-    private $ambiente;
+    private $environment;
     /**
      * Transaction's unique ID
      *
      * @var string
      * @access private
      */
-    private $id_proprio;
+    private $uniqueID;
     /**
-     * Associative array of payment's methods
+     * Associative array of payment's way
      *
      * @var array
      * @access private
      */
-    private $formas_pagamento = array('boleto'=>'BoletoBancario',
+    private $payment_way = array('boleto'=>'BoletoBancario',
         'financiamento'=>'FinanciamentoBancario',
         'debito'=>'DebitoBancario',
         'cartao_credito'=>'CartaoCredito',
@@ -62,7 +62,7 @@ class Moip_Php
      * @var array
      * @access private
      */
-    private $instituicoes = array('moip'=>'MoIP',
+    private $institution = array('moip'=>'MoIP',
         'visa'=>'Visa',
         'american_express'=>'AmericanExpress',
         'mastercard'=>'Mastercard',
@@ -83,56 +83,56 @@ class Moip_Php
      * @var array
      * @access private
      */
-    private $tipo_frete = array('proprio'=>'Proprio','correios'=>'Correios');
+    private $delivery_type = array('proprio'=>'Proprio','correios'=>'Correios');
     /**
      * Associative array with type of delivery's time
      * 
      * @var array
      * @access private
      */
-    private $tipo_prazo = array('corridos'=>'Corridos','uteis'=>'Uteis');
+    private $delivery_type_time = array('corridos'=>'Corridos','uteis'=>'Uteis');
     /**
      * Payment method
      * 
      * @var array
      * @access private
      */
-    private $forma_pagamento[];
+    private $payment_method;
     /**
      * Arguments of payment method
      *
      * @var array
      * @access private
      */
-    private $forma_pagamento_args;
+    private $payment_method_args;
     /**
      * Payment's type
      * 
      * @var string
      * @access private
      */
-    private $tipo_pagamento;
+    private $payment_type;
     /**
      * Associative array with payer's information
      *
      * @var array
      * @access private
      */
-    private $pagador;
+    private $payer;
     /**
      * Server's answer
      *
      * @var object
      * @access public
      */
-    public $resposta;
+    public $answer;
     /**
      * The transaction's value
      * 
      * @var numeric
      * @access private
      */
-    private $valor;
+    private $value;
     /**
      * Simple XML object
      * 
@@ -150,15 +150,15 @@ class Moip_Php
     public function __construct()
     {
 	//Verify the environment variable, if not 'producao' set 'sandbox'
-	if($this->ambiente != 'producao')
+	if($this->environment != 'producao')
 	{
-		$this->ambiente = 'sandbox';
+		$this->environment = 'sandbox';
 	}
 
 	//Verify the payment's type, if null set 'Unico'
-	if(!$this->tipo_pagamento)
+	if(!$this->payment_type)
 	{
-		$this->tipo_pagamento = 'Unico';
+		$this->payment_type = 'Unico';
 	}
 
         $this->initXMLObject();
@@ -179,7 +179,7 @@ class Moip_Php
     }
     
     /**
-     * Method setTipoPagamento()
+     * Method setPaymentType()
      *
      * Define the payment's type between 'Unico' or 'Direto'
      * 
@@ -187,11 +187,11 @@ class Moip_Php
      * @return void
      * @access public
      */
-    public function setTipoPagamento($tipo)
+    public function setPaymentType($tipo)
     {
  	//Verify if the value of variable $tipo is between 'Unico' or 'Direto'. If not, throw new exception error
         if ($tipo=='Unico' || $tipo=='Direto') {
-            $this->tipo_pagamento = $tipo;
+            $this->payment_type = $tipo;
         }
 	else
 	{
@@ -212,14 +212,14 @@ class Moip_Php
      */
     public function setPagamentoDireto($params)
     {
-        if (!isset($params['forma']))
+        if (!isset($params['way']))
             throw new InvalidArgumentException("Você deve especificar a forma de pagamento em setPagamentoDireto.");
 
 
         if (
-            ($params['forma']=='debito' or $params['forma']=='cartao_credito')
+            ($params['way']=='debito' or $params['way']=='cartao_credito')
             and
-            (!isset($params['instituicao']) or !isset($this->instituicoes[$params['instituicao']]))
+            (!isset($params['instituicao']) or !isset($this->institution[$params['instituicao']]))
 
         )
         {
@@ -227,7 +227,7 @@ class Moip_Php
                 " a forma de forma de pagamento é via débito ou cartao");
         }
 
-        if ($params['forma'] == 'cartao_credito' and
+        if ($params['way'] == 'cartao_credito' and
             (!isset($params['cartao']) or
             !isset($params['cartao']['numero']) or
             !isset($params['cartao']['expiracao']) or
@@ -249,14 +249,14 @@ class Moip_Php
 
         $pd = $this->xml->InstrucaoUnica->addChild('PagamentoDireto');
 
-        $pd->addChild('Forma',$this->formas_pagamento[$params['forma']]);
+        $pd->addChild('Forma',$this->payment_way[$params['way']]);
 
-        if ($params['forma']=='debito' or $params['forma']=='cartao_credito')
+        if ($params['way']=='debito' or $params['way']=='cartao_credito')
         {
-            $pd->addChild('Instituicao',$this->instituicoes[$params['instituicao']]);
+            $pd->addChild('Instituicao',$this->institution[$params['instituicao']]);
         }
 
-        if ($params['forma']=='cartao_credito')
+        if ($params['way']=='cartao_credito')
         {
             $cartao = $pd->addChild('CartaoCredito');
             $cartao->addChild('Numero',$params['cartao']['numero']);
@@ -273,85 +273,85 @@ class Moip_Php
             $parcelamento->addChild('Recebimento',$params['cartao']['parcelamento']['recebimento']);
         }
 
-        $this->tipo_pagamento = 'Direto';
+        $this->payment_type = 'Direto';
         return $this;
     }
 
     /**
-     * Method setCredenciais()
+     * Method setCredential()
      *
      * Set the credentials(key,token) required for the API authentication.
      *
-     * @param array $credenciais Array with the credentials token and key
+     * @param array $credential Array with the credentials token and key
      * @return void
      * @access public
      */
-    public function setCredenciais($credenciais)
+    public function setCredential($credential)
     {
-        if (!isset($credenciais['token']) or
-            !isset($credenciais['key']) or
-            strlen($credenciais['token'])!=32 or
-            strlen($credenciais['key'])!=40)
-            throw new InvalidArgumentException("Credenciais inválidas");
+        if (!isset($credential['token']) or
+            !isset($credential['key']) or
+            strlen($credential['token'])!=32 or
+            strlen($credential['key'])!=40)
+            throw new InvalidArgumentException("credential inválidas");
 
-        $this->credenciais = $credenciais;
+        $this->credential = $credential;
         return $this;
     }
 
     /**
-     * Method setAmbiente()
+     * Method setEnvironment()
      *
      * Define the environment for the API utilization.
      * 
-     * @param string $ambiente Only two values supported, 'sandbox' or 'producao'
+     * @param string $environment Only two values supported, 'sandbox' or 'producao'
      */
-    public function setAmbiente($ambiente)
+    public function setEnvironment($environment)
     {
-        if ($ambiente!='sandbox' and $ambiente!='producao')
+        if ($environment!='sandbox' and $environment!='producao')
             throw new InvalidArgumentException("Ambiente inválido");
 
-        $this->ambiente = $ambiente;
+        $this->environment = $environment;
         return $this;
     }
 
     /**
-     * Method valida()
+     * Method validate()
      *
      * Make the data validation
      * 
      * @return void
      * @access public
      */
-    public function valida()
+    public function validate()
     {
-        if (!isset($this->credenciais)  or
-            !isset($this->razao) or
-            !isset($this->id_proprio))
+        if (!isset($this->credential)  or
+            !isset($this->reason) or
+            !isset($this->uniqueID))
             throw new InvalidArgumentException("Dados requeridos não preenchidos. Você deve especificar as credenciais, a razão do pagamento e seu ID próprio");
 
-        $pagador = $this->pagador;
+        $payer = $this->payer;
 
-        if ($this->tipo_pagamento=='Direto') {
+        if ($this->payment_type=='Direto') {
 
-            if(  empty($pagador) or
-                !isset($pagador['nome']) or
-                !isset($pagador['email']) or
-                !isset($pagador['celular']) or
-                !isset($pagador['apelido']) or
-                !isset($pagador['identidade']) or
-                !isset($pagador['endereco']) or
-                !isset($pagador['endereco']['logradouro']) or
-                !isset($pagador['endereco']['numero']) or
-                !isset($pagador['endereco']['complemento']) or
-                !isset($pagador['endereco']['bairro']) or
-                !isset($pagador['endereco']['cidade']) or
-                !isset($pagador['endereco']['estado']) or
-                !isset($pagador['endereco']['pais']) or
-                !isset($pagador['endereco']['cep']) or
-                !isset($pagador['endereco']['telefone'])
+            if(  empty($payer) or
+                !isset($payer['nome']) or
+                !isset($payer['email']) or
+                !isset($payer['celular']) or
+                !isset($payer['apelido']) or
+                !isset($payer['identidade']) or
+                !isset($payer['endereco']) or
+                !isset($payer['endereco']['logradouro']) or
+                !isset($payer['endereco']['numero']) or
+                !isset($payer['endereco']['complemento']) or
+                !isset($payer['endereco']['bairro']) or
+                !isset($payer['endereco']['cidade']) or
+                !isset($payer['endereco']['estado']) or
+                !isset($payer['endereco']['pais']) or
+                !isset($payer['endereco']['cep']) or
+                !isset($payer['endereco']['telefone'])
             )
             {
-                throw new InvalidArgumentException("Dados do pagador especificados de forma incorreta");
+                throw new InvalidArgumentException("Dados do payer especificados de forma incorreta");
             }
         }
 
@@ -359,7 +359,7 @@ class Moip_Php
     }
 
     /**
-     * Method setIDProprio()
+     * Method setUniqueID()
      *
      * Set the unique ID for the transaction
      *
@@ -367,40 +367,40 @@ class Moip_Php
      * @return void
      * @access public
      */
-    public function setIDProprio($id)
+    public function setUniqueID($id)
     {
-        $this->id_proprio = $id;
+        $this->uniqueID = $id;
         return $this;
     }
 
     /**
-     * Method setRazao()
+     * Method setReason()
      *
      * Set the short description of transaction. eg. Order Number.
      * 
-     * @param string $razao The reason fo transaction
+     * @param string $reason The reason fo transaction
      * @return void
      * @access public
      */
-    public function setRazao($razao)
+    public function setReason($reason)
     {
-        $this->razao = $razao;
+        $this->reason = $reason;
         return $this;
     }
 
     /**
-     * Method addFormaPagamento()
+     * Method addPaymentWay()
      *
      * Add a payment's method
      *
-     * @param string $forma The payment method. Options: 'boleto','financiamento','debito','cartao_credito','cartao_debito','carteira_moip'
+     * @param string $way The payment method. Options: 'boleto','financiamento','debito','cartao_credito','cartao_debito','carteira_moip'
      * @param array $args Use for optional informations with the payment's method 'boleto'.
      * @return void
      * @access public
      */
-    public function addFormaPagamento($forma,$args=null)
+    public function addPaymentWay($way,$args=null)
     {
-        if(!isset($this->formas_pagamento[$forma]))
+        if(!isset($this->payment_way[$way]))
             throw new InvalidArgumentException("Forma de pagamento indisponivel");
 
         if($args!=null)
@@ -408,12 +408,12 @@ class Moip_Php
             if (!is_array($args))
                 throw InvalidArgumentException("Os parâmetros extra devem ser passados em um array");
 
-            if($forma=='boleto')
+            if($way=='boleto')
             {
                 //argumentos possíveis: dias de expiração, instruções e logo da URL
                 if (isset($args['dias_expiracao']) and isset($args['dias_expiracao']['tipo']) and isset($args['dias_expiracao']['dias']))
                 {
-                    $this->forma_pagamento_args = $args;
+                    $this->payment_way_args = $args;
                 }
                 else
                 {
@@ -421,57 +421,57 @@ class Moip_Php
                 }
             }
         }
-        $this->forma_pagamento[] = $forma;
+        $this->payment_way[] = $way;
         return $this;
     }
 
     /**
-     * Method setPagador()
+     * Method setPayer()
      *
      * Set contacts informations for the payer.
      * 
-     * @param array $pagador Contact information for the payer.
+     * @param array $payer Contact information for the payer.
      * @return voi
      * @access public
      */
-    public function setPagador($pagador)
+    public function setPayer($payer)
     {
-        $this->pagador = $pagador;
+        $this->payer = $payer;
         return $this;
     }
 
     /**
-     * Method setValor()
+     * Method setValue()
      *
      * Set the transaction's value
      *
-     * @param numeric $valor The transaction's value
+     * @param numeric $value The transaction's value
      * @return void
      * @access public
      */
-    public function setValor($valor)
+    public function setValue($value)
     {
-        $this->valor = $valor;
+        $this->value = $value;
         return $this;
     }
 
     /**
-     * Method setAcrescimo()
+     * Method setAdds()
      *
      * Adds a value on payment. Can be used for collecting fines, shipping and other
      *
-     * @param numeric $valor The value to add.
+     * @param numeric $value The value to add.
      * @return void
      * @access public
      */
-    public function setAcrescimo($valor)
+    public function setAdds($value)
     {
-        $this->acrescimo = $valor;
+        $this->adds = $value;
         return $this;
     }
 
     /**
-     * Method setDeducao()
+     * Method setDeduct()
      * 
      * Deducts a payment amount. It is mainly used for discounts.
      *
@@ -479,14 +479,14 @@ class Moip_Php
      * @return void
      * @access public
      */
-    public function setDeducao($valor)
+    public function setDeduct($value)
     {
-        $this->deducao = $valor;
+        $this->deduction = $value;
         return $this;
     }
 
     /**
-     * Method addMensagem()
+     * Method addMessage()
      *
      * Add a message in the instruction to be displayed to the payer.
      * 
@@ -494,7 +494,7 @@ class Moip_Php
      * @return void
      * @access public
      */
-    public function addMensagem($msg)
+    public function addMessage($msg)
     {
         if(!isset($this->xml->InstrucaoUnica->Mensagens))
         {
@@ -506,14 +506,14 @@ class Moip_Php
     }
 
     /**
-     * Method setUrlRetorno()
+     * Method setReturnURL()
      * 
      * Set the return URL, which redirects the client after payment.
      *
      * @param string $url Return URL
      * @access public
      */
-    public function setUrlRetorno($url)
+    public function setReturnURL($url)
     {
         if (!isset($this->xml->InstrucaoUnica->URLRetorno))
         {
@@ -522,14 +522,14 @@ class Moip_Php
     }
 
     /**
-     * Method setUrlNotification()
+     * Method setNotificationURL()
      *
      * Set the notification URL, which sends information about changes in payment status
      * 
      * @param string $url Notification URL
      * @access public
      */
-    public function setUrlNotificacao($url)
+    public function setNotificationURL($url)
     {
         if (!isset($this->xml->InstrucaoUnica->URLNotificacao))
         {
@@ -538,14 +538,14 @@ class Moip_Php
     }
 
     /**
-     * Method addComissao()
+     * Method addComission()
      *
      * Allows to specify commissions on the payment, like fixed values or percent.
      *
      * @param array $param Array of informations about the commissioner
      * @access public
      */
-    public function addComissao($param)
+    public function addComission($param)
     {
         if (!isset($param['login_moip']))
             throw new InvalidArgumentException('Você deve especificar um usuário para comissionar.');
@@ -574,17 +574,17 @@ class Moip_Php
     }
 
     /**
-     * Method addParcela()
+     * Method addParcel()
      * 
      * Allows to add a order to parceling.
      * 
      * @param numeric $min The minimum number of parcels.
      * @param numeric $max The maximum number of parcels.
-     * @param numeric $juros The percentual value of rates
+     * @param numeric $rate The percentual value of rates
      * @return void
      * @access public
      */
-    public function addParcela($min,$max,$juros='')
+    public function addParcel($min,$max,$rate='')
     {
         if (!isset($this->xml->InstrucaoUnica->Parcelamentos))
         {
@@ -596,16 +596,16 @@ class Moip_Php
         $parcela->addChild('MaximoParcelas',$max);
         $parcela->addChild('Recebimento','AVista');
 
-        if (!empty($juros))
+        if (!empty($rate))
         {
-            $parcela->addChild('Juros',$min);
+            $parcela->addChild('rate',$min);
         }
 
         return $this;
     }
 
     /**
-     * Method addEntrega()
+     * Method addDelivery()
      *
      * Adds a parameter for delivery, allowing you to specify the shipping value calculation
      *
@@ -613,7 +613,7 @@ class Moip_Php
      * @return void
      * @access public
      */
-    public function addEntrega($params)
+    public function addDelivery($params)
     {
         //Validating the delivery's parameters
 
@@ -622,14 +622,14 @@ class Moip_Php
             throw new InvalidArgumentException('Você deve especificar o tipo de frete (proprio ou correios) e o prazo de entrega');
         }
 
-        if (!isset($this->tipo_frete[$params['tipo']]))
+        if (!isset($this->delivery_type[$params['tipo']]))
         {
             throw new InvalidArgumentException('Tipo de frete inválido. Opções válidas: "proprio" ou "correios"');
         }
 
         if (is_array($params['prazo']))
         {
-            if (is_array($params['prazo']) and !isset($this->tipo_prazo[$params['prazo']['tipo']]))
+            if (is_array($params['prazo']) and !isset($this->delivery_type_time[$params['prazo']['tipo']]))
             {
                 throw new InvalidArgumentException('Tipo de prazo de entrega inválido. Opções válidas: "uteis" ou "corridos".');
             }
@@ -672,10 +672,10 @@ class Moip_Php
 
         $entrega = $this->xml->InstrucaoUnica->Entrega;
         $calculo_frete = $entrega->addChild('CalculoFrete');
-        $calculo_frete->addChild('Tipo',$this->tipo_frete[$params['tipo']]);
+        $calculo_frete->addChild('Tipo',$this->delivery_type[$params['tipo']]);
 
         $calculo_frete->addChild('Prazo',$params['prazo']['dias'])
-            ->addAttribute('Tipo',$this->tipo_prazo[$params['prazo']['tipo']]);
+            ->addAttribute('Tipo',$this->delivery_type_time[$params['prazo']['tipo']]);
 
         if ($params['tipo']=='proprio')
         {
@@ -704,48 +704,48 @@ class Moip_Php
      */
     public function getXML()
     {
-        $this->xml->InstrucaoUnica->addChild('IdProprio' , $this->id_proprio);
-        $this->xml->InstrucaoUnica->addChild('Razao' , $this->razao);
+        $this->xml->InstrucaoUnica->addChild('IdProprio' , $this->uniqueID);
+        $this->xml->InstrucaoUnica->addChild('Razao' , $this->reason);
 
-        if (empty($this->valor))
+        if (empty($this->value))
             throw new InvalidArgumentException('Erro: o valor da transação deve ser especificado');
 
         $this->xml->InstrucaoUnica->addChild('Valores')
-            ->addChild('Valor',$this->valor)
+            ->addChild('Valor',$this->value)
             ->addAttribute('moeda','BRL');
 
-        if (isset($this->deducao))
+        if (isset($this->deduction))
         {
-            $this->xml->InstrucaoUnica->Valores->addChild('Deducao',$this->deducao)
+            $this->xml->InstrucaoUnica->Valores->addChild('deduction',$this->deduction)
                 ->addAttribute('moeda','BRL');
         }
 
-        if (isset($this->acrescimo))
+        if (isset($this->adds))
         {
-            $this->xml->InstrucaoUnica->Valores->addChild('Acrescimo',$this->acrescimo)
+            $this->xml->InstrucaoUnica->Valores->addChild('Acrescimo',$this->adds)
                 ->addAttribute('moeda','BRL');
         }
 
-        if (!empty($this->forma_pagamento))
+        if (!empty($this->payment_way))
         {
             $instrucao = $this->xml->InstrucaoUnica;
             $formas = $instrucao->addChild('FormasPagamento');
 
-            foreach ($this->forma_pagamento as $forma)
+            foreach ($this->payment_way as $way)
             {
 
-                $formas->addChild('FormaPagamento',$this->formas_pagamento[$forma]);
+                $formas->addChild('FormaPagamento',$this->payment_way[$way]);
 
-                if($forma == 'boleto' and !empty($this->forma_pagamento_args))
+                if($way == 'boleto' and !empty($this->payment_way_args))
                 {
                     $instrucao->addChild('Boleto')
-                        ->addChild('DiasExpiracao',$this->forma_pagamento_args['dias_expiracao']['dias'])
-                        ->addAttribute('Tipo',$this->forma_pagamento_args['dias_expiracao']['tipo']);
+                        ->addChild('DiasExpiracao',$this->payment_way_args['dias_expiracao']['dias'])
+                        ->addAttribute('Tipo',$this->payment_way_args['dias_expiracao']['tipo']);
 
-                    if(isset($this->forma_pagamento_args['instrucoes']))
+                    if(isset($this->payment_way_args['instrucoes']))
                     {
                         $numeroInstrucoes = 1;
-                        foreach($this->forma_pagamento_args['instrucoes'] as $instrucaostr)
+                        foreach($this->payment_way_args['instrucoes'] as $instrucaostr)
                         {
                             $instrucao->Boleto->addChild('Instrucao'.$numeroInstrucoes,$instrucaostr);
                             $numeroInstrucoes++;
@@ -756,36 +756,36 @@ class Moip_Php
             }
         }
 
-        if(!empty($this->pagador))
+        if(!empty($this->payer))
         {
-            $p = $this->pagador;
+            $p = $this->payer;
             $this->xml->InstrucaoUnica->addChild('Pagador');
-            (isset($p['nome']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Nome' , $this->pagador[ 'nome' ] ):null;
-            (isset($p['login_moip']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'LoginMoIP' , $this->pagador[ 'login_moip' ] ):null;
-            (isset($p['email']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Email' , $this->pagador['email']):null;
-            (isset($p['celular']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'TelefoneCelular' , $this->pagador['celular']):null;
-            (isset($p['apelido']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Apelido' , $this->pagador['apelido']):null;
-            (isset($p['identidade']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Identidade' , $this->pagador['identidade']):null;
+            (isset($p['nome']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Nome' , $this->payer[ 'nome' ] ):null;
+            (isset($p['login_moip']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'LoginMoIP' , $this->payer[ 'login_moip' ] ):null;
+            (isset($p['email']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Email' , $this->payer['email']):null;
+            (isset($p['celular']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'TelefoneCelular' , $this->payer['celular']):null;
+            (isset($p['apelido']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Apelido' , $this->payer['apelido']):null;
+            (isset($p['identidade']))?$this->xml->InstrucaoUnica->Pagador->addChild( 'Identidade' , $this->payer['identidade']):null;
 
-            $p = $this->pagador['endereco'];
+            $p = $this->payer['endereco'];
             $this->xml->InstrucaoUnica->Pagador->addChild( 'EnderecoCobranca' );
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Logradouro' , $this->pagador['endereco']['logradouro']):null;
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Logradouro' , $this->payer['endereco']['logradouro']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Numero' , $this->pagador['endereco']['numero']):null;
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Numero' , $this->payer['endereco']['numero']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Complemento' , $this->pagador['endereco']['complemento']):null;
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Complemento' , $this->payer['endereco']['complemento']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Bairro' , $this->pagador['endereco']['bairro']):null;
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Bairro' , $this->payer['endereco']['bairro']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Cidade' , $this->pagador['endereco']['cidade']):null;
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Cidade' , $this->payer['endereco']['cidade']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Estado' , $this->pagador['endereco']['estado']):null;
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Estado' , $this->payer['endereco']['estado']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Pais' , $this->pagador['endereco']['pais']):null;
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Pais' , $this->payer['endereco']['pais']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'CEP' , $this->pagador['endereco']['cep']):null;
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'CEP' , $this->payer['endereco']['cep']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'TelefoneFixo' , $this->pagador['endereco']['telefone']):null;
+            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'TelefoneFixo' , $this->payer['endereco']['telefone']):null;
 
         }
 
@@ -795,7 +795,7 @@ class Moip_Php
     }
 
     /**
-     * Method envia()
+     * Method send()
      *
      * Send the request to the server
      *
@@ -803,19 +803,19 @@ class Moip_Php
      * @return void
      * @access public
      */
-    public function envia($client=null)
+    public function send($client=null)
     {
-        $this->valida();
+        $this->validate();
 
         if($client==null)
             $client = new MoIPClient();
 
-        if ($this->ambiente=='sandbox')
+        if ($this->environment=='sandbox')
             $url = 'https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica';
         else
             $url = 'https://www.moip.com.br/ws/alpha/EnviarInstrucao/Unica';
 
-        $this->resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],
+        $this->answer = $client->send($this->credential['token'].':'.$this->credential['key'],
             $this->getXML(),
             $url);
         
@@ -823,35 +823,35 @@ class Moip_Php
     }
 
     /**
-     * Method getResposta()
+     * Method getAnswer()
      *
      * Gets the server's answer
      * 
      * @return object
      * @access public
      */
-    public function getResposta()
+    public function getAnswer()
     {
-        $xml = new SimpleXmlElement($this->resposta->resposta);
+        $xml = new SimpleXmlElement($this->answer->answer);
         if (isset($xml->Resposta->Erro)) {
             return (object) array('sucesso'=>false,'mensagem'=>$xml->Resposta->Erro);
         }
 
         $return = (object) array();
-        $return->sucesso = (bool)$xml->Resposta->Status=='Sucesso';
+        $return->success = (bool)$xml->Resposta->Status=='Sucesso';
         $return->id      = (string)$xml->Resposta->ID;
         $return->token = (string)$xml->Resposta->Token;
 
-        if ($this->ambiente == 'sandbox')
-            $return->url_pagamento = "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=".$return->token;
+        if ($this->environment == 'sandbox')
+            $return->payment_url = "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=".$return->token;
         else
-            $return->url_pagamento = "https://www.moip.com.br/Instrucao.do?token=".$return->token;
+            $return->payment_url = "https://www.moip.com.br/Instrucao.do?token=".$return->token;
 
         return $return;
     }
 
     /**
-     * Method checarPagamentoDireto()
+     * Method verifyPagamentoDireto()
      *
      * Does a verification of payment types available for the MoIP's client defined in $login_moip
      *
@@ -860,9 +860,9 @@ class Moip_Php
      * @return object
      * @access public
      */
-    public function checarPagamentoDireto($login_moip,$client=null)
+    public function verifyPagamentoDireto($login_moip,$client=null)
     {
-        if (!isset($this->credenciais))
+        if (!isset($this->credential))
             throw new Exception("Você deve especificar as credenciais (token/key) da API antes de chamar este método");
 
         if ($client==null) {
@@ -870,11 +870,11 @@ class Moip_Php
         }
 
         $url = "https://www.moip.com.br/ws/alpha/ChecarPagamentoDireto/$login_moip";
-        $resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],'',$url,'GET');
-        $xml = new SimpleXmlElement($resposta->resposta);
+        $answer = $client->send($this->credential['token'].':'.$this->credential['key'],'',$url,'GET');
+        $xml = new SimpleXmlElement($answer->answer);
 
         return (object)array(
-            'erro'=>$resposta->erro,
+            'erro'=>$answer->erro,
             'id'=>(string)$xml->Resposta->ID,
             'sucesso'=>$xml->Resposta->Status=='Sucesso',
             'carteira_moip'=>$xml->Resposta->CarteiraMoIP=='true',
@@ -887,21 +887,21 @@ class Moip_Php
     }
 
     /**
-     * Method checarValoresParcelamento()
+     * Method verifyParcelValues()
      *
      * Get all informations about the parcelling of user defined by $login_moip
      * 
      * @param string $login_moip The client's login for MoIP services
-     * @param numeric $total_parcelas The total parcels
-     * @param numeric $juros The rate's percents of the parcelling.
-     * @param numeric $valor_simulado The value for simulation
+     * @param numeric $total_parcels The total parcels
+     * @param numeric $rate The rate's percents of the parcelling.
+     * @param numeric $simulated_value The value for simulation
      * @param object $client The server's connection
      * @return array
      * @access public
      */
-    public function checarValoresParcelamento($login_moip,$total_parcelas,$juros,$valor_simulado,$client=null)
+    public function verifyParcelValues($login_moip,$total_parcels,$rate,$simulated_value,$client=null)
     {
-        if (!isset($this->credenciais)) {
+        if (!isset($this->credential)) {
             throw new Exception("Você deve especificar as credenciais (token/key) da API antes de chamar este método");
         }
 
@@ -909,9 +909,9 @@ class Moip_Php
             $client = new MoIPClient();
         }
 
-        $url = "https://www.moip.com.br/ws/alpha/ChecarValoresParcelamento/$login_moip/$total_parcelas/$juros/$valor_simulado";
-        $resposta = $client->send($this->credenciais['token'].':'.$this->credenciais['key'],'',$url,'GET');
-        $xml = new SimpleXmlElement($resposta->resposta);
+        $url = "https://www.moip.com.br/ws/alpha/ChecarValoresParcelamento/$login_moip/$total_parcels/$rate/$simulated_value";
+        $answer = $client->send($this->credential['token'].':'.$this->credential['key'],'',$url,'GET');
+        $xml = new SimpleXmlElement($answer->answer);
 
         $return = array('sucesso'=>(bool)$xml->Resposta->Status=='sucesso',
             'id'=>(string)$xml->Resposta->ID,
@@ -959,7 +959,7 @@ class MoIPClient
         if ($response === false) {
             throw new Exception("Problemas ao ler dados de $url, $php_errormsg");
         }
-        return (object)array('resposta'=>$response,'erro'=>null);
+        return (object)array('answer'=>$response,'erro'=>null);
     }
 
     function send($credentials,$xml,$url='https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica',$method='POST')
@@ -982,7 +982,7 @@ class MoIPClient
         $ret = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
-        return (object) array('resposta'=>$ret,'erro'=>$err);
+        return (object) array('answer'=>$ret,'erro'=>$err);
     }
 
 }
