@@ -716,7 +716,7 @@ class MoIP
 
         if (isset($this->deduction))
         {
-            $this->xml->InstrucaoUnica->Valores->addChild('deduction',$this->deduction)
+            $this->xml->InstrucaoUnica->Valores->addChild('Desconto',$this->deduction)
                 ->addAttribute('moeda','BRL');
         }
 
