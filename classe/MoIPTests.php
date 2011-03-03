@@ -39,7 +39,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->setCredenciais(array('token'=>'token','key'=>'key'));
+            $this->MoIP->setCredential(array('token'=>'token','key'=>'key'));
             $this->fail('Erro: Não obtive uma exception ao informar um token e uma key inválida ');
         }
         catch(InvalidArgumentException $e)
@@ -51,55 +51,55 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 
     public function testVerificaSeNaoOcorreExceptionsQuandoCredenciaisValidasForemPassadas()
     {
-        $this->MoIP->setCredenciais($this->validCredentials);
+        $this->MoIP->setCredential($this->validCredentials);
     }
 
     public function testVerificaSeExceptionEhLancadaQuandoOAmbienteDeExecucaoInvalidoForPassado()
     {
         try
         {
-            $this->MoIP->setAmbiente('ambiente.invalido');
+            $this->MoIP->setEnvironment('ambiente.invalido');
             $this->fail('Erro: Não obtive uma exception ao informar um abiente inválido');
         }catch(InvalidArgumentException $e){}
     }
 
     public function testVerificaSeExceptionNaoEhLancadaQuandoOAmbienteDeExecucaoValidoForPassado()
     {
-        $this->MoIP->setAmbiente('producao');
-        $this->MoIP->setAmbiente('sandbox');
+        $this->MoIP->setEnvironment('producao');
+        $this->MoIP->setEnvironment('sandbox');
     }
 
     public function testVerificaSeQuandoDadosInsuficientesForemPassadosUmaExceptionEhLancada()
     {
         try
         {
-            $this->MoIP->valida();
+            $this->MoIP->validate();
             $this->fail("Erro: não obtive uma exception ao deixar de informar campos inválidos");
         } catch (InvalidArgumentException $e){}
 
             try
             {
-                $this->MoIP->setRazao('Pagamento de testes')->valida();
+                $this->MoIP->setReason('Pagamento de testes')->validate();
                 $this->fail("Erro: não obtive exception ao especificar somente a razão");
             }catch(InvalidArgumentException $e){}
     }
 
     public function testVerificaSeQuandoDadosCorretosForemPassadosNenhumaExceptionEhLancada()
     {
-        $this->MoIP->setRazao('Pagamento de testes')
-            ->setCredenciais($this->validCredentials)
-            ->setIDProprio(123456)
-            ->valida();
+        $this->MoIP->setReason('Pagamento de testes')
+            ->setCredential($this->validCredentials)
+            ->setUniqueID(123456)
+            ->validate();
     }
 
     public function testVerificaSeXMLGeradoEhValidoQuandoParametrosBasicosForemPassados()
     {    
         //com forma de pagamento em boleto com instruções extra
         $current = new MoIP(); 
-        $current->setIDProprio(123456)
-            ->setRazao('Pagamento de testes')
-            ->setValor('12345')
-            ->addFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'Corridos','dias'=>5),
+        $current->setUniqueID(123456)
+            ->setReason('Pagamento de testes')
+            ->setValue('12345')
+            ->addPaymentWay('boleto',array('dias_expiracao'=>array('tipo'=>'Corridos','dias'=>5),
                 'instrucoes'=>array('Nao receber apos o vencimento','Outra instrucao'))); 
         $xml = new SimpleXmlElement($current->getXML()); 
 
@@ -115,19 +115,19 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addFormaPagamento('invalid');
+            $this->MoIP->addPaymentWay('invalid');
             $this->fail('Erro: não houve exception ao setar uma forma de pagamento inválida');
         }
         catch(InvalidArgumentException $e){}
     }
     public function testVerificaSeOpcoesDePagamentoPadraoEstaoDisponiveis()
     {
-        $this->MoIP->addFormaPagamento('boleto');
-        $this->MoIP->addFormaPagamento('financiamento');
-        $this->MoIP->addFormaPagamento('debito');
-        $this->MoIP->addFormaPagamento('cartao_credito');
-        $this->MoIP->addFormaPagamento('cartao_debito');
-        $this->MoIP->addFormaPagamento('carteira_moip');
+        $this->MoIP->addPaymentWay('boleto');
+        $this->MoIP->addPaymentWay('financiamento');
+        $this->MoIP->addPaymentWay('debito');
+        $this->MoIP->addPaymentWay('cartao_credito');
+        $this->MoIP->addPaymentWay('cartao_debito');
+        $this->MoIP->addPaymentWay('carteira_moip');
     }
 
     public function testVerificaSeARespostaDoServidorFoiRecebidaCorretamente()
@@ -142,12 +142,12 @@ class MoIPTests extends PHPUnit_Framework_TestCase
             ->method('send')
             ->will($this->returnValue($respostaFromMoIPClient));
 
-        $resposta = $this->MoIP->setRazao('Pagamento de testes')
-            ->setCredenciais($this->validCredentials)
-            ->setIDProprio(123456)
-            ->setValor('123456')
-            ->valida()
-            ->envia($client)
+        $resposta = $this->MoIP->setReason('Pagamento de testes')
+            ->setCredential($this->validCredentials)
+            ->setUniqueID(123456)
+            ->setValue('123456')
+            ->validate()
+            ->send($client)
             ->getResposta();
 
         $this->assertTrue($resposta->sucesso);
@@ -158,8 +158,8 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->checarPagamentoDireto('login');
-            $this->fail('checarPagamentoDireto deveria lancar uma exception quando os dados de auth não forem passados');
+            $this->MoIP->verifyPagamentoDireto('login');
+            $this->fail('verifyPagamentoDireto deveria lancar uma exception quando os dados de auth não forem passados');
         }
         catch(Exception $e)
         {
@@ -175,7 +175,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
             ->method('send')
             ->will($this->returnValue($respostaFromMoIPClient));
 
-        $resposta = $this->MoIP->setCredenciais($this->validCredentials)->checarPagamentoDireto('login',$client);
+        $resposta = $this->MoIP->setCredential($this->validCredentials)->verifyPagamentoDireto('login',$client);
         $this->assertFalse($resposta->erro);
         $this->assertEquals($resposta->id,'201008241612518190000002974464');
         $this->assertTrue($resposta->sucesso);
@@ -192,8 +192,8 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->checarValoresParcelamento('login_moip',12,1.99,100);
-            $this->fail('O Método checarValoresParcelamento deve lançar uma exception quando as credenciais não forem informadas');
+            $this->MoIP->verifyParcelValues('login_moip',12,1.99,100);
+            $this->fail('O Método verifyParcelValues deve lançar uma exception quando as credenciais não forem informadas');
         }
         catch(Exception $e)
         {
@@ -236,8 +236,8 @@ class MoIPTests extends PHPUnit_Framework_TestCase
                               '8'=>array('total'=>'170.88','juros'=>'2.99','valor'=>'21.36'),
         ));
 
-        $this->MoIP->setCredenciais($this->validCredentials);
-        $current = $this->MoIP->checarValoresParcelamento('blah',12,1.99,100,$client);
+        $this->MoIP->setCredential($this->validCredentials);
+        $current = $this->MoIP->verifyParcelValues('blah',12,1.99,100,$client);
 
         $this->assertEquals($expected,$current);
     }
@@ -246,7 +246,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addFormaPagamento('boleto',array('nada'));
+            $this->MoIP->addPaymentWay('boleto',array('nada'));
             $this->fail('Erro: deve haver uma exception quando os dados do boleto são especificados de forma incorreta');
         }
         catch(InvalidArgumentException $e){}
@@ -255,7 +255,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 
     public function testVerificaSeNaoHaExceptionQuandoOsDadosDoBoletoSaoPassadosCorretamente()
     {
-        $this->MoIP->addFormaPagamento('boleto',array('dias_expiracao'=>array('tipo'=>'corridos','dias'=>'5')));
+        $this->MoIP->addPaymentWay('boleto',array('dias_expiracao'=>array('tipo'=>'corridos','dias'=>'5')));
     }
 
     public function testVerificaSeExceptionEhLancadaQuandoDadosDoPagadorSaoPassadosIncorretamente()
@@ -263,9 +263,9 @@ class MoIPTests extends PHPUnit_Framework_TestCase
         $pagador = array();
         try
         {
-            $this->MoIP->setPagador($pagador);
-            $this->MoIP->setTipoPagamento('Direto');
-            $this->MoIP->valida();
+            $this->MoIP->setPayer($pagador);
+            $this->MoIP->setPaymentType('Direto');
+            $this->MoIP->validate();
             $this->fail('Erro: deve haver uma exception quando dos dados do pagador são especificados de forma incorreta');
         }catch (InvalidArgumentException $e){}
     }
@@ -274,7 +274,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->setIDProprio('123456')->setRazao('Razao do pagamento')->getXML();
+            $this->MoIP->setUniqueID('123456')->setReason('Razao do pagamento')->getXML();
             $this->fail('Erro: uma exception deve ser lançada quando o valor não for especificado');
         }catch(InvalidArgumentException $e){}
     }
@@ -283,19 +283,19 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addComissao(array());
+            $this->MoIP->addComission(array());
             $this->fail('Erro: uma exception deveria ser lançada se os parametros de comissão fossem passados incorretamente');
         }catch(InvalidArgumentException $e){}
 
             try
             {
-                $this->MoIP->addComissao(array('login_moip'=>'blah'));
+                $this->MoIP->addComission(array('login_moip'=>'blah'));
                 $this->fail('Erro: uma exception deveria ser lançada se o valor não for informado');
             }catch(InvalidArgumentException $e){}
 
                 try
                 {
-                    $this->MoIP->addComissao(array('login_moip'=>'blah','valor_fixo'=>'10','valor_percentual'=>'15'));
+                    $this->MoIP->addComission(array('login_moip'=>'blah','valor_fixo'=>'10','valor_percentual'=>'15'));
                     $this->fail('Erro: uma exception deveria ser lançada se mais de um valor for informado');
                 }
         catch(InvalidArgumentException $e){}
@@ -303,14 +303,14 @@ class MoIPTests extends PHPUnit_Framework_TestCase
 
     public function testVerificaSeExceptionNaoEhLancadaQuandoDadosDoPagadorSaoPassadosCorretamente()
     {
-        $this->MoIP->setPagador($this->pagadorValido);
+        $this->MoIP->setPayer($this->pagadorValido);
     }
 
     public function testCertificaQueUmArrayVazioNaoPodeSerPassadoComoArgumentoDeEntrega()
     {
         try
         {
-            $this->MoIP->addEntrega(array());
+            $this->MoIP->addDelivery(array());
             $this->fail('Erro: uma exception deveria ser lançada caso os parametros necessários da entrega não fossem informados');
         }
         catch(InvalidArgumentException $e){}
@@ -320,13 +320,13 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addEntrega(array('tipo'=>'proprio')); 
+            $this->MoIP->addDelivery(array('tipo'=>'proprio'));
             $this->fail('Erro: uma exception deveria ser lançada caso os parametros necessários da entrega não fossem informados');
         }catch(InvalidArgumentException $e){}
 
             try
             {
-                $this->MoIP->addEntrega(array('prazo'=>'5')); 
+                $this->MoIP->addDelivery(array('prazo'=>'5'));
                 $this->fail('Erro: uma exception deveria ser lançada caso os parametros necessários da entrega não fossem informados');
 
             }catch(InvalidArgumentException $e){}
@@ -336,7 +336,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'blah'));
+            $this->MoIP->addDelivery(array('prazo'=>'5','tipo'=>'blah'));
             $this->fail('Erro: uma exception deveria ser lançada quando um tipo inválido for passado');
         }
         catch(InvalidArgumentException $e){}
@@ -346,7 +346,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addEntrega(array('prazo'=>array('tipo'=>'blah','dias'=>'5'),'tipo'=>'proprio'));
+            $this->MoIP->addDelivery(array('prazo'=>array('tipo'=>'blah','dias'=>'5'),'tipo'=>'proprio'));
             $this->fail('Erro: uma exception deveria ser lançada quando um tipo de prazo inválido for passado');
         }
         catch(InvalidArgumentException $e){}
@@ -356,7 +356,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'correios'));
+            $this->MoIP->addDelivery(array('prazo'=>'5','tipo'=>'correios'));
             $this->fail('Erro: uma exception deveria ser lançada quando os correios não forem passados corretamente');
         }
         catch(InvalidArgumentException $e){}
@@ -366,21 +366,21 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'correios','correios'=>array()));
+            $this->MoIP->addDelivery(array('prazo'=>'5','tipo'=>'correios','correios'=>array()));
             $this->fail('Erro: Uma exception deveria ser lançada quando os parâmetros dos correios não forem passados corretamente');
         }
         catch (InvalidArgumentException $e){}
 
             try
             {
-                $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'correios','correios'=>array('peso_total'=>'1.1')));
+                $this->MoIP->addDelivery(array('prazo'=>'5','tipo'=>'correios','correios'=>array('peso_total'=>'1.1')));
                 $this->fail('Erro: Uma exception deveria ser lançada quando os parâmetros dos correios não forem passados corretamente');
             }
         catch (InvalidArgumentException $e){}
 
             try
             {
-                $this->MoIP->addEntrega(array('prazo'=>'5','tipo'=>'correios','correios'=>array('forma_entrega'=>'EncomendaNormal')));
+                $this->MoIP->addDelivery(array('prazo'=>'5','tipo'=>'correios','correios'=>array('forma_entrega'=>'EncomendaNormal')));
                 $this->fail('Erro: Uma exception deveria ser lançada quando os parâmetros dos correios não forem passados corretamente');
             }
         catch (InvalidArgumentException $e){}
@@ -391,7 +391,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addEntrega(array('tipo'=>'proprio','valor'=>'2.30','prazo'=>array('tipo'=>'uteis','dia'=>'3')));
+            $this->MoIP->addDelivery(array('tipo'=>'proprio','valor'=>'2.30','prazo'=>array('tipo'=>'uteis','dia'=>'3')));
             $this->fail('Erro: quando o numero de dias não eh passado, deve ocorrer uma exception.');
         }catch (InvalidArgumentException $e){}
     }
@@ -400,21 +400,21 @@ class MoIPTests extends PHPUnit_Framework_TestCase
     {
         try
         {
-            $this->MoIP->addEntrega(array('tipo'=>'proprio','prazo'=>array('tipo'=>'corridos','dias'=>'3')));
+            $this->MoIP->addDelivery(array('tipo'=>'proprio','prazo'=>array('tipo'=>'corridos','dias'=>'3')));
             $this->fail('Erro: uma exception deveria ser lançada quando o tipo de frete é próprio mas não há nenhum valor, fixo ou percentual');
         }catch(InvalidArgumentException $e){}
     }
 
-    public function testVerificaSeNaoHaNenhumaExceptionQuandoOsParametrosDoAddEntregaSaoPassadosCorretamente()
+    public function testVerificaSeNaoHaNenhumaExceptionQuandoOsParametrosDoaddDeliverySaoPassadosCorretamente()
     {
-        $this->MoIP->addEntrega(array('tipo'=>'proprio','valor_fixo'=>'2.30','prazo'=>array('tipo'=>'corridos','dias'=>'3')));
+        $this->MoIP->addDelivery(array('tipo'=>'proprio','valor_fixo'=>'2.30','prazo'=>array('tipo'=>'corridos','dias'=>'3')));
 
-        $this->MoIP->addEntrega(array('tipo'=>'correios',
+        $this->MoIP->addDelivery(array('tipo'=>'correios',
 
             'prazo'=>array('tipo'=>'corridos','dias'=>'3'),
             'correios'=>array('peso'=>'10','forma_entrega'=>'EncomendaNormal')));
 
-        $this->MoIP->addEntrega(array('tipo'=>'correios',                              
+        $this->MoIP->addDelivery(array('tipo'=>'correios',
             'prazo'=>array('tipo'=>'corridos','dias'=>'3'),
             'correios'=>array('peso'=>'10','forma_entrega'=>'Sedex10')));
 
