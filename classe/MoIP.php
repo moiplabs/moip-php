@@ -14,7 +14,7 @@
  * Class to use for all abstraction of MoIP's API
  * @package MoIP
  */
-class Moip_Php
+class MoIP
 {
     /**
      * Associative array with two keys. 'key'=>'your_key','token'=>'your_token'
@@ -716,7 +716,7 @@ class Moip_Php
 
         if (isset($this->deduction))
         {
-            $this->xml->InstrucaoUnica->Valores->addChild('deduction',$this->deduction)
+            $this->xml->InstrucaoUnica->Valores->addChild('Desconto',$this->deduction)
                 ->addAttribute('moeda','BRL');
         }
 
