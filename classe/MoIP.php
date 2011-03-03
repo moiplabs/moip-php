@@ -50,7 +50,7 @@ class MoIP
      * @var array
      * @access private
      */
-    private $payment_way = array('boleto'=>'BoletoBancario',
+    private $payment_ways = array('boleto'=>'BoletoBancario',
         'financiamento'=>'FinanciamentoBancario',
         'debito'=>'DebitoBancario',
         'cartao_credito'=>'CartaoCredito',
@@ -212,12 +212,12 @@ class MoIP
      */
     public function setPagamentoDireto($params)
     {
-        if (!isset($params['way']))
+        if (!isset($params['forma']))
             throw new InvalidArgumentException("Você deve especificar a forma de pagamento em setPagamentoDireto.");
 
 
         if (
-            ($params['way']=='debito' or $params['way']=='cartao_credito')
+            ($params['forma']=='debito' or $params['forma']=='cartao_credito')
             and
             (!isset($params['instituicao']) or !isset($this->institution[$params['instituicao']]))
 
@@ -227,7 +227,7 @@ class MoIP
                 " a forma de forma de pagamento é via débito ou cartao");
         }
 
-        if ($params['way'] == 'cartao_credito' and
+        if ($params['forma'] == 'cartao_credito' and
             (!isset($params['cartao']) or
             !isset($params['cartao']['numero']) or
             !isset($params['cartao']['expiracao']) or
@@ -249,14 +249,14 @@ class MoIP
 
         $pd = $this->xml->InstrucaoUnica->addChild('PagamentoDireto');
 
-        $pd->addChild('Forma',$this->payment_way[$params['way']]);
+        $pd->addChild('Forma',$this->payment_ways[$params['forma']]);
 
-        if ($params['way']=='debito' or $params['way']=='cartao_credito')
+        if ($params['forma']=='debito' or $params['forma']=='cartao_credito')
         {
             $pd->addChild('Instituicao',$this->institution[$params['instituicao']]);
         }
 
-        if ($params['way']=='cartao_credito')
+        if ($params['forma']=='cartao_credito')
         {
             $cartao = $pd->addChild('CartaoCredito');
             $cartao->addChild('Numero',$params['cartao']['numero']);
@@ -400,7 +400,7 @@ class MoIP
      */
     public function addPaymentWay($way,$args=null)
     {
-        if(!isset($this->payment_way[$way]))
+        if(!isset($this->payment_ways[$way]))
             throw new InvalidArgumentException("Forma de pagamento indisponivel");
 
         if($args!=null)
@@ -734,7 +734,7 @@ class MoIP
             foreach ($this->payment_way as $way)
             {
 
-                $formas->addChild('FormaPagamento',$this->payment_way[$way]);
+                $formas->addChild('FormaPagamento',$this->payment_ways[$way]);
 
                 if($way == 'boleto' and !empty($this->payment_way_args))
                 {
@@ -832,7 +832,7 @@ class MoIP
      */
     public function getAnswer()
     {
-        $xml = new SimpleXmlElement($this->answer->answer);
+        $xml = new SimpleXmlElement($this->answer->resposta);
         if (isset($xml->Resposta->Erro)) {
             return (object) array('sucesso'=>false,'mensagem'=>$xml->Resposta->Erro);
         }
@@ -871,7 +871,7 @@ class MoIP
 
         $url = "https://www.moip.com.br/ws/alpha/ChecarPagamentoDireto/$login_moip";
         $answer = $client->send($this->credential['token'].':'.$this->credential['key'],'',$url,'GET');
-        $xml = new SimpleXmlElement($answer->answer);
+        $xml = new SimpleXmlElement($answer->resposta);
 
         return (object)array(
             'erro'=>$answer->erro,
@@ -911,7 +911,7 @@ class MoIP
 
         $url = "https://www.moip.com.br/ws/alpha/ChecarValoresParcelamento/$login_moip/$total_parcels/$rate/$simulated_value";
         $answer = $client->send($this->credential['token'].':'.$this->credential['key'],'',$url,'GET');
-        $xml = new SimpleXmlElement($answer->answer);
+        $xml = new SimpleXmlElement($answer->resposta);
 
         $return = array('sucesso'=>(bool)$xml->Resposta->Status=='sucesso',
             'id'=>(string)$xml->Resposta->ID,

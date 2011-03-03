@@ -148,9 +148,9 @@ class MoIPTests extends PHPUnit_Framework_TestCase
             ->setValue('123456')
             ->validate()
             ->send($client)
-            ->getResposta();
+            ->getAnswer();
 
-        $this->assertTrue($resposta->sucesso);
+        $this->assertTrue($resposta->success);
         $this->assertEquals(strlen($resposta->token),60);
     }
 
