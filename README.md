@@ -9,29 +9,29 @@ A MoIP-PHP é uma biblioteca que implementa uma camada de abstração prientada 
 
       require 'MoIP.php';
       $moip = new MoIP();
-      $moip->setCredenciais(array('key'=>'sua_key','token'=>'seu_token'));
-      $moip->setIDProprio(123456);
-      $moip->setValor('123456')
-      $moip->setRazao('Teste do MoIP-PHP');
-      $moip->valida();
-      $moip->envia();
-      echo $moip->getResposta()->token;
+      $moip->setCredencials(array('key'=>'sua_key','token'=>'seu_token'));
+      $moip->setUniqueID(123456);
+      $moip->setValue('123456')
+      $moip->setReason('Teste do MoIP-PHP');
+      $moip->validate();
+      $moip->send();
+      echo $moip->getAnswer()->token;
 
 O MoIP-PHP utiliza o padrão [Fluent Interfaces](http://martinfowler.com/bliki/FluentInterface.html), portanto, você pode fazer o exemplo acima da seguinte forma:
 
       require 'MoIP.php';
       $moip = new MoIP();
-      echo $moip->setCredenciais(array('key'=>'sua_key','token'=>'seu_token'))
-                ->setIDProprio(123456)
-                ->setValor('123456')
-                ->setRazao('Teste do MoIP-PHP')
-                ->valida()
-                ->envia()
-                ->getResposta()
+      echo $moip->setCredentials(array('key'=>'sua_key','token'=>'seu_token'))
+                ->setUniqueID(123456)
+                ->setValue('123456')
+                ->setReason('Teste do MoIP-PHP')
+                ->validate()
+                ->send()
+                ->getAnswer()
                 ->token;
 
 
-O método getResposta() retorna um objeto contendo com os atributos "token" , "sucesso" (um tipo booleano) e "url_pagamento", que contém a URL que você deverá redirecionar seu cliente de acordo com o ambiente (sandbox ou produção) que você está utilizando.
+O método getAnswer() retorna um objeto contendo com os atributos "token" , "success" (um tipo booleano) e "url_pagamento", que contém a URL que você deverá redirecionar seu cliente de acordo com o ambiente (sandbox ou produção) que você está utilizando.
 
 O MoIP-PHP possui testes unitários utilizando o framework [PHPUnit](http://phpunit.de). Se você quiser se certificar que o MoIP-PHP funciona no seu ambiente, é só chamar o phpunit com o arquivo de testes:
 
@@ -41,29 +41,29 @@ O MoIP-PHP possui testes unitários utilizando o framework [PHPUnit](http://phpu
 Métodos disponíveis
 ===================
 
-setCredenciais ($credenciais)
+setCredentials ($credencials)
 ------------------------------
 
 Informa as credenciais (token,key) ao objeto MoIP. Necessárias à autenticação. Você *precisa* informar as suas credenciais antes de enviar a instrução, pois não é possível autenticar no sistema da MoIP sem estas informações.
 
-O parâmetro $credenciais é um array associativo contendo as chaves _key_ e _token_ (ex: array('key'=>'sua_key','token'=>'seu_token')). Se você ainda não possui estes dados, entre em contato com a equipe do MoiP e solicite-os.
+O parâmetro $credencials é um array associativo contendo as chaves _key_ e _token_ (ex: array('key'=>'sua_key','token'=>'seu_token')). Se você ainda não possui estes dados, entre em contato com a equipe do MoiP e solicite-os.
 
-setAmbiente($ambiente)
+setEnvironment($environment)
 ------------------------------
 
 Configura o ambiente a ser utilizado. Suporta apenas dois valores: 'producao' e 'sandbox'
 
-setIDProprio($id_proprio)
+setUniqueID($uniqueID)
 ------------------------------
 
 Informa seu ID para a transação.
 
-setRazao($razao) 
+setReason($reason)
 ------------------------------
 
 Informa a razão do pagamento. Campo obrigatório.
 
-addFormaPagamento($forma,$args=null)
+addPaymentWay($way,$args=null)
 ------------------------------
 
 Adiciona um tipo de forma de pagamento. $forma pode ser:
@@ -79,7 +79,7 @@ O parametro opcional $args serve para informar dados adicionais do pagamento em 
 
     array('dias_expiracao'=>array('dias'=>5,'tipo'=>'corridos'));
 
-setValor($valor) [obrigatório]
+setValue($value) [obrigatório]
 ------------------------------
 
 Especifica o valor da transação no formato do MoIP (sem vírgulas, sendo que os dois ultimos digitos representam os centavos)
@@ -113,10 +113,10 @@ Um exemplo de uso:
                                                    )
                                  ));
 
-checarPagamentoDireto($login_moip)
+verifyPagamentoDireto($login_moip)
 ------------------------------
 
-Faz a verificação dos tipos de pagamento disponíveis para o cliente MoIP em $login_moip, utilizando o PagamentoDireto. **Atenção**: você precisa especificar as credenciais de acesso utilizando o método setCredenciais antes de chamar o checarPagamentoDireto.
+Faz a verificação dos tipos de pagamento disponíveis para o cliente MoIP em $login_moip, utilizando o PagamentoDireto. **Atenção**: você precisa especificar as credenciais de acesso utilizando o método setCredentials antes de chamar o checarPagamentoDireto.
 
 Esse método retorna um objeto contendo os métodos/meios de pagamento do MoIP e se o usuário em questão pode utiliza-lo. Eis um exemplo adaptado da saída do ḿetodo anterior para um usuário que não tem o PagamentoDireto:
 
@@ -137,7 +137,7 @@ Esse método retorna um objeto contendo os métodos/meios de pagamento do MoIP e
 No caso anterior, o usuário consultado não tem acesso a nenhum método de pagamento via PagamentoDireto. Para maiores detalhes sobre esse método, veja [nosso post sobre o assunto](http://labs.moip.com.br/2011/01/24/novas-funcionalidades-da-api-do-moip-checarpagamentodireto-e-checarvaloresparcelamento/)
 
 
-checarValoresParcelamento($login_moip,$total_parcelas,$juros,$valor_simulado)
+verifyParcelValues($login_moip,$total_parcels,$rate,$simuleted_value)
 ------------------------------
 
 Obtém os valores das parcelas de acordo com o usuário MoIP (determinado por $login_moip), o número de parcelas ($total_parcelas, inteiro), os juros ($juros, float) e o valor total da transação a ser simulado ($valor_simulado). **Atenção** este método requer que você especifique suas credenciais **de produção** da API do MoIP para funcionar.
@@ -145,8 +145,8 @@ Obtém os valores das parcelas de acordo com o usuário MoIP (determinado por $l
 Exemplo:
 
     $moip = new MoIP();
-    $moip->setCredenciais(array('token'=>'meu_token_de_producao','key'=>'minha_key_de_producao');
-    $parcelamento = $moip->checarValoresParcelamento('login_moip',12,1.99,100);
+    $moip->setCredentials(array('token'=>'meu_token_de_producao','key'=>'minha_key_de_producao');
+    $parcelamento = $moip->verifyParcelValues('login_moip',12,1.99,100);
     print_r($parcelamento);
 
     // a instrucao acima irá imprimir algo parecido com isso:
@@ -246,10 +246,10 @@ Exemplo:
 
 
 
-setPagador($pagador)
+setPayer($payer)
 ------------------------------
 
-Informa os dados do pagador em que ''$pagador''. Um exemplo de $pagador:
+Informa os dados do pagador em que ''$payer''. Um exemplo de $pagador:
 
     $pagador = array('nome'=>'Jose da Silva',
                      'login_moip'=>'jose_silva',
@@ -265,32 +265,32 @@ Informa os dados do pagador em que ''$pagador''. Um exemplo de $pagador:
                                        'pais'=>'Brasil',
                                        'cep'=>'11111111',
                                        'telefone'=>'1188888888'));
-addMensagem($msg)
+addMessage($msg)
 ------------------------------
 
 Adiciona uma mensagem na instrução para serem mostradas ao pagador. Você pode adicionar quantas mensagens quiser.
 
-setUrlRetorno($url)
+setReturnURL($url)
 ------------------------------
 
 Informa a URL de retorno, que redireciona o cliente à página de seu site, por exemplo, após o pagamento. É necessário que a ferramenta URL de Retorno esteja habilitada em sua conta MoIP. Para habilitá-la, acesse sua conta MoIP em Meus Dados > Preferências > URL de Retorno
 
-setUrlNotificacao($url)
+setNotificationURL($url)
 ------------------------------
 
 Informa a URL de notificação, que envia as informações sobre as alterações de status do pagamento. Estas informações são enviadas ao seu sistema para controle dos recebimentos. É necessário que a ferramenta NASP esteja habilitada em sua conta MoIP. Para habilitá-la, acesse sua conta MoIP em Meus Dados > Preferências > Notificação das Transações. Neste menu, marque a opção “*Receber notificação instantânea de transação” e confirme as alterações.
 
-setAcrescimo($valor)
+setAdds($value)
 ------------------------------
 
 Adiciona um valor no pagamento. Pode ser usado para cobrança de multas, fretes e outros.
 
-setDeducao($valor)
+setDeduct($value)
 ------------------------------
 
 Deduz um valor do pagamento. É usado principalmente para descontos.
 
-addEntrega($params)
+addDelivery($params)
 ------------------------------
 
 Adiciona um parâmetro de entrega, permitindo especificar o cálculo do frete (sendo que o frete pode ser próprio ou dos correios).
@@ -300,19 +300,19 @@ Um exemplo mínimo:
     $moip = new MoIP();
     
     //adiciona um parâmetro de entrega de frete próprio, custando R$2,30 que será entregue em 3 dias corridos
-    $moip->addEntrega(array('tipo'=>'proprio',
+    $moip->addDelivery(array('tipo'=>'proprio',
                             'valor_fixo'=>'2.30',
                             'prazo'=>array('tipo'=>'corridos','dias'=>'3'));
    
     //adiciona um parâmetro de entrega de frete via correios, com 10KG, via uma encomenda normal,
     //podendo ser entregue em até 3 dias uteis. 
-    $moip->addEntrega(array('tipo'=>'correios',
+    $moip->addDelivery(array('tipo'=>'correios',
                             'prazo'=>array('tipo'=>'uteis','dias'=>'3'),
                             'correios'=>array('peso'=>'10.00','forma_entrega'=>'EncomendaNormal')));
     
     // adiciona um parâmetro de entrega de frete via correios, com 10KG, via Sedex 10.
     // podendo ser entregue em até 1 dia corrido.
-    $moIP->addEntrega(array('tipo'=>'correios',                              
+    $moIP->addDelivery(array('tipo'=>'correios',
                             'prazo'=>array('tipo'=>'corridos','dias'=>'1'),
                             'correios'=>array('peso'=>'10.00','forma_entrega'=>'Sedex10')));
 
@@ -320,23 +320,23 @@ Em qualquer parâmetro é obrigatório que o tipo de frete seja especificado e s
 
 Se o tipo de frete for os correios, é necessário especificar os parâmetros de entrega pelos correios (peso e forma de entrega).
 
-addParcela($min,$max,$juros='')
+addParcel($min,$max,$rate='')
 ------------------------------
 
 Permite adicionar uma forma de parcelamento, em que $min se refere ao mínimo de parcelas da forma e $max se refere ao numero maximo de parcelas. $juros é um parâmetro opcional que informa os juros mensais (em %).
 
-addComissao($params)
+addComission($params)
 ------------------------------
 
 Mais uma instrução adicional. Permite especificar comissões, em valores fixos ou percentuais, sobre o pagamento. Exemplos de uso:
 
 Adicionando um comissionado com um valor fixo:
 
-    addComissao(array('login_moip'=>'login_do_comissionado','valor_fixo'=>15)); 
+    addComission(array('login_moip'=>'login_do_comissionado','valor_fixo'=>15));
 
 Adicionando um comissionado com um valor percentual:
 
-    addComissao(array('login_moip'=>'login_do_comissionado','valor_percentual'=>2.1));
+    addComission(array('login_moip'=>'login_do_comissionado','valor_percentual'=>2.1));
 
 getXML()
 ---------
