@@ -8,7 +8,7 @@
  * @version 1.0 
  * @license <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>
  */
-require_once 'lib/MoIP.php';
+require_once '../lib/MoIP.php';
 require_once 'PHPUnit/Framework.php';
 
 /**
