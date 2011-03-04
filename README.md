@@ -36,7 +36,7 @@ O método getAnswer() retorna um objeto contendo com os atributos "token" , "suc
 O MoIP-PHP possui testes unitários utilizando o framework [PHPUnit](http://phpunit.de). Se você quiser se certificar que o MoIP-PHP funciona no seu ambiente, é só chamar o phpunit com o arquivo de testes:
 
 
-> $ phpunit MoIPTests.php
+> $ phpunit test/MoIPTests.php
 
 Métodos disponíveis
 ===================

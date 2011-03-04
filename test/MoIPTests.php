@@ -1,6 +1,6 @@
 <?php
 require_once 'PHPUnit/Framework.php';
-require_once '../lib/MoIP.php';
+require_once 'lib/MoIP.php';
 
 /**
  * Testes unitários da lib MoIP
