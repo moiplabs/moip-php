@@ -1,12 +1,12 @@
 <?php
 /**
- * Class to help PHP users of MoIP's API
+ * Library to help PHP users of MoIP's API
  *
  * @author Herberth Amaral
  * @author Wesley Willians
  * @author Alê Borba
- * @version 1.0rc2 
- * @licence <a href="http://opensource.org/licenses/gpl-3.0.html">GNU General Public License version 3 (GPLv3)</a>
+ * @version 1.0 
+ * @license <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>
  */
 /**
  * MoIP's API abstraction class

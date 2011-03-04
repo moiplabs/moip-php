@@ -1,6 +1,15 @@
 <?php
-require_once 'PHPUnit/Framework.php';
+/**
+ * Library to help PHP users of MoIP's API
+ *
+ * @author Herberth Amaral
+ * @author Wesley Willians
+ * @author Alê Borba
+ * @version 1.0 
+ * @license <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>
+ */
 require_once 'lib/MoIP.php';
+require_once 'PHPUnit/Framework.php';
 
 /**
  * Testes unitários da lib MoIP
