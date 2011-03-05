@@ -338,67 +338,6 @@ Adicionando um comissionado com um valor percentual:
 
     addComission(array('login_moip'=>'login_do_comissionado','valor_percentual'=>2.1));
 
-getXML()
----------
-
-
-Útil para debugging. Retorna o XML que irá ser gerado, com base nos parâmetros já informados.
-
-MoIP Status
-------------
-
-O MoIP Status reune funcionalidades desejadas que ainda não foram incluídos na API oficial do MoIP. Eis um exemplo de consulta de saldo:
-
-      require 'MoIPStatus.php';
-
-      $status = new MoIPStatus();
-      $status->setCredenciais('seu_username_moip','sua_senha_moip')->getStatus();
-      print $status->saldo; // R$ 120,34
-      print $status->saldo_a_receber; // R$12,45 -- null se não houver saldo a receber
-
-Você também pode obter as ultimas transações:
-
-      require 'MoIPStatus.php';
-
-      $status = new MoIPStatus();
-      $status->setCredenciais('seu_username_moip','sua_senha_moip')->getStatus();
-      print_r($status->ultimas_transacoes);
-
-Um exemplo de saída do exemplo anterior seria:
-
-    Array
-        (
-            [0] => Array
-                (
-                    [data] => 10/10/2010
-                    [nome] => Jose da Silve
-                    [pagamento] => concluido
-                    [adicional] => Saque para Conta corrente
-                    [valor] => - R$123.45
-                )
-
-            [1] => Array
-                (
-                    [data] => 10/10/2010
-                    [nome] => Maria Pereira
-                    [pagamento] => cancelado
-                    [adicional] => Caneca X
-                    [valor] => + R$2.00
-                )
-
-            [2] => Array
-                (
-                    [data] => 09/10/2010
-                    [nome] => Ricardo Oliveira
-                    [pagamento] => boleto impresso
-                    [adicional] => Camisa do Link
-                    [valor] => + R$30.00
-                )
-
-O atributo **ultimas_transacoes** será **null** se não houver ao menos uma transação nos ultimos 30 dias. 
-
-As dependências necessárias para esta funcionalidade já estão incluídas por padrão.
-
 queryInstruction($token)
 -------------------------
 
@@ -480,6 +419,67 @@ Quando o processo é iniciado, alguns outros dados aparecerão na resposta, assi
             )
 
     )
+
+getXML()
+---------
+
+
+Útil para debugging. Retorna o XML que irá ser gerado, com base nos parâmetros já informados.
+
+MoIP Status
+------------
+
+O MoIP Status reune funcionalidades desejadas que ainda não foram incluídos na API oficial do MoIP. Eis um exemplo de consulta de saldo:
+
+      require 'MoIPStatus.php';
+
+      $status = new MoIPStatus();
+      $status->setCredenciais('seu_username_moip','sua_senha_moip')->getStatus();
+      print $status->saldo; // R$ 120,34
+      print $status->saldo_a_receber; // R$12,45 -- null se não houver saldo a receber
+
+Você também pode obter as ultimas transações:
+
+      require 'MoIPStatus.php';
+
+      $status = new MoIPStatus();
+      $status->setCredenciais('seu_username_moip','sua_senha_moip')->getStatus();
+      print_r($status->ultimas_transacoes);
+
+Um exemplo de saída do exemplo anterior seria:
+
+    Array
+        (
+            [0] => Array
+                (
+                    [data] => 10/10/2010
+                    [nome] => Jose da Silve
+                    [pagamento] => concluido
+                    [adicional] => Saque para Conta corrente
+                    [valor] => - R$123.45
+                )
+
+            [1] => Array
+                (
+                    [data] => 10/10/2010
+                    [nome] => Maria Pereira
+                    [pagamento] => cancelado
+                    [adicional] => Caneca X
+                    [valor] => + R$2.00
+                )
+
+            [2] => Array
+                (
+                    [data] => 09/10/2010
+                    [nome] => Ricardo Oliveira
+                    [pagamento] => boleto impresso
+                    [adicional] => Camisa do Link
+                    [valor] => + R$30.00
+                )
+
+O atributo **ultimas_transacoes** será **null** se não houver ao menos uma transação nos ultimos 30 dias. 
+
+As dependências necessárias para esta funcionalidade já estão incluídas por padrão.
 
 
 
