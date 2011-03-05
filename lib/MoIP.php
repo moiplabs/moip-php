@@ -14,6 +14,7 @@
  * Class to use for all abstraction of MoIP's API
  * @package MoIP
  */
+include 'MoIPClient.php';
 class MoIP
 {
     /**
@@ -927,6 +928,23 @@ class MoIP
         }
 
         return $return;
+    }
+
+    public function queryInstruction($token,$client=null)
+    {
+        if (!isset($this->credential))
+            throw new Exception("Você deve especificar as credenciais (token/key) da API antes de chamar este método");
+
+        $url = $this->environment == "producao"?"https://www.moip.com.br/ws/alpha/ConsultarInstrucao/":"https://desenvolvedor.moip.com.br/sandbox/ws/alpha/ConsultarInstrucao/";
+
+        $url .= $token; 
+        if ($client == null)
+            $client = new MoIPClient();
+
+
+        $response = $client->send($this->credential['token'].':'.$this->credential['key'],'',$url,'GET');
+        $xml = new SimpleXmlElement($response->resposta);
+        return $xml;
     }
 
 }

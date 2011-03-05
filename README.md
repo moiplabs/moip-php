@@ -338,6 +338,88 @@ Adicionando um comissionado com um valor percentual:
 
     addComission(array('login_moip'=>'login_do_comissionado','valor_percentual'=>2.1));
 
+queryInstruction($token)
+-------------------------
+
+Faz uma consulta no MoIP a respeito de uma transação, determinada pelo seu token. É útil para recuperar dados de clientes que não informaram dados no seu portal, mas informaram no MoIP no momento do checkout.
+
+Além disso, há algumas informações úteis, como a taxa cobrada pelo MoIP, a data que o pagamento foi feito (se tiver sido feito).
+
+Exemplo de uso:
+
+    $moip = new MoIP();
+    $instruction = $moip->setCredential(array('token'=>'seu_token','key'=>'sua_key'))
+                        ->queryInstruction('Q2D0S1F1Z0X3N054M2M131C8W3P4Y4W9U9L0V0A0I0W0Y01020J8X9H7Z827');
+    print_r($instruction);
+
+A resposta do método é um objeto SimpleXmlElement, que pode ter basicamente duas formas distintas. A resposta seguinte corresponde a uma transação enviada, mas sem que o processo de pagamento tenha sido iniciado:
+
+    SimpleXMLElement Object
+    (
+        [RespostaConsultar] => SimpleXMLElement Object
+            (
+                [ID] => 201103042124090000000000089788
+                [Status] => Sucesso
+            )
+
+    )
+
+Quando o processo é iniciado, alguns outros dados aparecerão na resposta, assim como mostrado no exemplo de resposta a seguir:
+
+    SimpleXMLElement Object
+    (
+        [RespostaConsultar] => SimpleXMLElement Object
+            (
+                [ID] => 201103042126169290000000089791
+                [Status] => Sucesso
+                [Autorizacao] => SimpleXMLElement Object
+                    (
+                        [Pagador] => SimpleXMLElement Object
+                            (
+                                [Nome] => Herberth Amaral
+                                [Email] => herberthamaral@labs.moip.com.br
+                            )
+
+                        [EnderecoCobranca] => SimpleXMLElement Object
+                            (
+                                [Logradouro] => Av. XYZ
+                                [Numero] => 1234
+                                [Complemento] => SimpleXMLElement Object
+                                    (
+                                    )
+
+                                [Bairro] => Centro
+                                [CEP] => 11111-111
+                                [Cidade] => Sao Paulo 
+                                [Estado] => SP
+                                [Pais] => BRA
+                                [TelefoneFixo] => 1111111111
+                            )
+
+                        [Recebedor] => SimpleXMLElement Object
+                            (
+                                [Nome] => Casas Goiás 
+                                [Email] => casas@goias.com.br
+                            )
+
+                        [Pagamento] => SimpleXMLElement Object
+                            (
+                                [Data] => 2011-03-04T21:25:56.000-03:00
+                                [TotalPago] => 124.00
+                                [TaxaParaPagador] => 1.00
+                                [TaxaMoIP] => 3.96
+                                [ValorLiquido] => 119.04
+                                [FormaPagamento] => BoletoBancario
+                                [InstituicaoPagamento] => Bradesco
+                                [Status] => BoletoImpresso
+                            )
+
+                    )
+
+            )
+
+    )
+
 getXML()
 ---------
 
@@ -398,6 +480,8 @@ Um exemplo de saída do exemplo anterior seria:
 O atributo **ultimas_transacoes** será **null** se não houver ao menos uma transação nos ultimos 30 dias. 
 
 As dependências necessárias para esta funcionalidade já estão incluídas por padrão.
+
+
 
 Licença
 -------
