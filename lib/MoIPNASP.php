@@ -81,8 +81,18 @@ class MoIPNASP{
         fclose($this->file);
     }
 
+    /**
+     * Method getContent()
+     *
+     * Method to return NASP data stored in a file
+     *
+     * @param string $path The path's file
+     * @param string $filename The name's file
+     * @access public
+     */
     public function getContent($path = null, $filename = null) {
-        
+
+        //Get the file's data em send to array
         if (isset ($path) && isset ($filename)) {
             $transactions = file($path.$filename);
             foreach ($transactions as $transaction) {
