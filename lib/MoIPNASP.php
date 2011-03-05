@@ -10,8 +10,7 @@
  * @todo Implements get contents from the defined file
  * @todo Implements support for database storage
  */
-class MoIPNASP
-{
+class MoIPNASP{
     /**
      * The file resource
      *
@@ -36,7 +35,7 @@ class MoIPNASP
      * @param string $filename The file's name
      * @access public
      */
-    public function setFile($path, $filename) {
+    public function setFile($path = null, $filename = null) {
 
         //Open a resource and set the variable
         if (isset ($path) && isset ($filename)) {
@@ -80,6 +79,21 @@ class MoIPNASP
         fwrite($this->file, "{$this->file_content}\n");
         //Close the file
         fclose($this->file);
+    }
+
+    public function getContent($path = null, $filename = null) {
+        
+        if (isset ($path) && isset ($filename)) {
+            $transactions = file($path.$filename);
+            foreach ($transactions as $transaction) {
+                $infos[] = explode(';', $transaction);
+            }
+
+            return $infos;
+        }
+        else {
+            throw new Exception("The required params not be defined");
+        }
     }
 }
 ?>
