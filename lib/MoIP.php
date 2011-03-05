@@ -14,7 +14,6 @@
  * Class to use for all abstraction of MoIP's API
  * @package MoIP
  */
-include 'MoIPClient.php';
 class MoIP
 {
     /**
