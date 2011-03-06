@@ -482,6 +482,54 @@ O atributo **ultimas_transacoes** será **null** se não houver ao menos uma tra
 As dependências necessárias para esta funcionalidade já estão incluídas por padrão.
 
 
+INSTRUÇÕES PARA USO DA CLASSE MoIPNASP()
+=============================================
+
+Tentando facilitar o tratamento das informações enviadas pelo MoIP através do NASP, criamos a classe MoIPNASP()
+
+Métodos disponíveis
+=======================
+
+Manipulação através de arquivos
+--------------------------------
+
+Os métodos abaixo auxiliam na manipulação dos dados usando arquvivos. Se já quiser um exemplo pronto disto basta abrir o arquivo nasp.sample.php, configura-lo para o seu ambiente e usar para manipular seus arquivos.
+
+setFile($path, $filename)
+-------------------------
+Método utilizado para definir o caminho($path) e o nome do arquivo($filename) para onde serão enviadas as informações do NASP.
+
+setContent($data)
+-----------------------
+Método utilizado para definir as informações que serão gravadas no arquivo definido em setFile().
+
+write()
+----------------------
+Método usado para escrever as informações definidas em setContent()
+
+getContent()
+--------------
+Método usado para retornar as informações gravadas no arquivo definido por setFile()
+
+
+Manipulação através de banco de dados MySQL
+-------------------------------------------
+
+Os métodos abaixo auxiliam na manipulação dos dados usando arquvivos. Para facilitar, você pode executar o arquivo nasp.dbconfig.php que, ao passar as informações do database, ele cria a tabela de dados já no formato suportado pela classe.
+
+
+setDatabase($hostname, $database,$user,$pass)
+-----------------------------------------------
+Método que define o banco de dados que será utilizado para armazenar as informações do NASP
+
+insertData($data)
+------------------
+Método utilizado para persistir as informações($data) no banco de dados definido em setDatabase().
+
+getData()
+------------------
+Método utilizado para retornar as informações do banco de dados definido em setDatabase().
+
 
 Licença
 -------
