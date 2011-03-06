@@ -139,15 +139,95 @@ class MoIPNASP{
         return self::$conn;
     }
 
+    /**
+     * Method insertData()
+     *
+     * Inserts the NASP's data in the database
+     *
+     * @param array $data The data array from NASP
+     * @access public
+     */
     public function insertData(array $data) {
+        //Verify the connection and insert the data
         if ($con = $this->getConnection()) {
+
             $sql = "INSERT INTO tbl_moip_nasp (id_transacao, valor, status_pagamento, cod_moip, forma_pagamento, tipo_pagamento, email_consumidor) VALUES ('{$data['id_transacao']}','{$data['valor']}','{$data['status_pagamento']}','{$data['cod_moip']}','{$data['forma_pagamento']}','{$data['tipo_pagamento']}','{$data['email_consumidor']}')";
+
             $result = $con->query($sql);
+
             if (!$result) {
                 $erro = $con->errorCode();
                 print_r($erro);
             }
         }
+        else{
+            throw new Exception("The method setDatabase had to be defined first");
+        }
+    }
+
+    /**
+     * Method getData()
+     *
+     * Gets the NASP's data from the database
+     *
+     * @param string $transactionID The ID of the transaction
+     * @param string $payment_status The status of the payment
+     * @param string $cod_moip The MoIP's code of the transaction
+     * @param string $payment_way The payment way
+     * @param string $payment_type The type of the payment
+     * @param string $payer_email The payer's email
+     * @return array
+     * @access public
+     */
+    public function getData($transactionID = null, $payment_status = null, $cod_moip = null, $payment_way = null, $payment_type = null, $payer_email = null) {
+        //Make the SQL instruction
+        $sql = "SELECT * FROM tbl_moip_nasp";
+
+        $filtros = "";
+
+        $whereAnd = " WHERE ";
+
+        if(isset ($transactionID)){
+            $filtros .= "{$whereAnd} id_transacao = '{$transactionID}'";
+            $whereAnd = " AND ";
+        }
+
+        if(is_numeric($payment_status)){
+            $filtros .= "{$whereAnd} status_pagamento = {$payment_status}";
+            $whereAnd = " AND ";
+        }
+
+        if(is_numeric($cod_moip)){
+            $filtros .= "{$whereAnd} cod_moip = {$cod_moip}";
+            $whereAnd = " AND ";
+        }
+
+        if(is_numeric($payment_way)){
+            $filtros .= "{$whereAnd} forma_pagamento = {$payment_way}";
+            $whereAnd = " AND ";
+        }
+
+    	if(is_string($payment_type)){
+            $filtros .= "{$whereAnd} tipo_pagamento = '{$payment_type}'";
+            $whereAnd = " AND ";
+        }
+
+    	if( is_string($payer_email)){
+            $filtros .= "{$whereAnd} email_consumidor = '{$payer_email}'";
+            $whereAnd = " AND ";
+        }
+
+        $sql .= $filtros;
+
+        $con = $this->getConnection();
+
+        $query = $con->query($sql);
+
+        foreach ($query as $result) {
+            $results[] = $result;
+        }
+
+        return $results;
     }
 }
 ?>
