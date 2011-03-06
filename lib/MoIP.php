@@ -5,7 +5,7 @@
  * @author Herberth Amaral
  * @author Wesley Willians
  * @author Alê Borba
- * @version 1.0 
+ * @version 1.0
  * @license <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>
  */
 /**
@@ -18,21 +18,21 @@ class MoIP
 {
     /**
      * Associative array with two keys. 'key'=>'your_key','token'=>'your_token'
-     * 
+     *
      * @var array
      * @access private
      */
     private $credential;
     /**
      * Define the payment's reason
-     * 
+     *
      * @var string
      * @access private
      */
     private $reason;
     /**
      * The application's environment
-     * 
+     *
      * @var string
      * @access private
      */
@@ -58,7 +58,7 @@ class MoIP
         'carteira_moip'=>'CarteiraMoIP');
     /**
      * Associative array of payment's institutions
-     * 
+     *
      * @var array
      * @access private
      */
@@ -79,21 +79,21 @@ class MoIP
     );
     /**
      * Associative array of delivery's type
-     * 
+     *
      * @var array
      * @access private
      */
     private $delivery_type = array('proprio'=>'Proprio','correios'=>'Correios');
     /**
      * Associative array with type of delivery's time
-     * 
+     *
      * @var array
      * @access private
      */
     private $delivery_type_time = array('corridos'=>'Corridos','uteis'=>'Uteis');
     /**
      * Payment method
-     * 
+     *
      * @var array
      * @access private
      */
@@ -107,7 +107,7 @@ class MoIP
     private $payment_method_args;
     /**
      * Payment's type
-     * 
+     *
      * @var string
      * @access private
      */
@@ -128,14 +128,14 @@ class MoIP
     public $answer;
     /**
      * The transaction's value
-     * 
+     *
      * @var numeric
      * @access private
      */
     private $value;
     /**
      * Simple XML object
-     * 
+     *
      * @var object
      * @access private
      */
@@ -168,7 +168,7 @@ class MoIP
      * Method initXMLObject()
      *
      * Start a new XML structure for the requests
-     * 
+     *
      * @return void
      * @access private
      */
@@ -177,12 +177,12 @@ class MoIP
         $this->xml = new SimpleXmlElement('<EnviarInstrucao></EnviarInstrucao>');
         $this->xml->addChild('InstrucaoUnica');
     }
-    
+
     /**
      * Method setPaymentType()
      *
      * Define the payment's type between 'Unico' or 'Direto'
-     * 
+     *
      * @param string $tipo Can be 'Unico' or 'Direto'
      * @return void
      * @access public
@@ -302,7 +302,7 @@ class MoIP
      * Method setEnvironment()
      *
      * Define the environment for the API utilization.
-     * 
+     *
      * @param string $environment Only two values supported, 'sandbox' or 'producao'
      */
     public function setEnvironment($environment)
@@ -318,7 +318,7 @@ class MoIP
      * Method validate()
      *
      * Make the data validation
-     * 
+     *
      * @return void
      * @access public
      */
@@ -377,7 +377,7 @@ class MoIP
      * Method setReason()
      *
      * Set the short description of transaction. eg. Order Number.
-     * 
+     *
      * @param string $reason The reason fo transaction
      * @return void
      * @access public
@@ -406,7 +406,7 @@ class MoIP
         if($args!=null)
         {
             if (!is_array($args))
-                throw InvalidArgumentException("Os parâmetros extra devem ser passados em um array");
+                throw new InvalidArgumentException("Os parâmetros extra devem ser passados em um array");
 
             if($way=='boleto')
             {
@@ -429,7 +429,7 @@ class MoIP
      * Method setPayer()
      *
      * Set contacts informations for the payer.
-     * 
+     *
      * @param array $payer Contact information for the payer.
      * @return voi
      * @access public
@@ -472,7 +472,7 @@ class MoIP
 
     /**
      * Method setDeduct()
-     * 
+     *
      * Deducts a payment amount. It is mainly used for discounts.
      *
      * @param numeric $value The value to deduct
@@ -489,7 +489,7 @@ class MoIP
      * Method addMessage()
      *
      * Add a message in the instruction to be displayed to the payer.
-     * 
+     *
      * @param string $msg Message to be displayed.
      * @return void
      * @access public
@@ -507,7 +507,7 @@ class MoIP
 
     /**
      * Method setReturnURL()
-     * 
+     *
      * Set the return URL, which redirects the client after payment.
      *
      * @param string $url Return URL
@@ -525,7 +525,7 @@ class MoIP
      * Method setNotificationURL()
      *
      * Set the notification URL, which sends information about changes in payment status
-     * 
+     *
      * @param string $url Notification URL
      * @access public
      */
@@ -575,9 +575,9 @@ class MoIP
 
     /**
      * Method addParcel()
-     * 
+     *
      * Allows to add a order to parceling.
-     * 
+     *
      * @param numeric $min The minimum number of parcels.
      * @param numeric $max The maximum number of parcels.
      * @param numeric $rate The percentual value of rates
@@ -818,7 +818,7 @@ class MoIP
         $this->answer = $client->send($this->credential['token'].':'.$this->credential['key'],
             $this->getXML(),
             $url);
-        
+
         return $this;
     }
 
@@ -826,7 +826,7 @@ class MoIP
      * Method getAnswer()
      *
      * Gets the server's answer
-     * 
+     *
      * @return object
      * @access public
      */
@@ -890,7 +890,7 @@ class MoIP
      * Method verifyParcelValues()
      *
      * Get all informations about the parcelling of user defined by $login_moip
-     * 
+     *
      * @param string $login_moip The client's login for MoIP services
      * @param numeric $total_parcels The total parcels
      * @param numeric $rate The rate's percents of the parcelling.
@@ -936,7 +936,7 @@ class MoIP
 
         $url = $this->environment == "producao"?"https://www.moip.com.br/ws/alpha/ConsultarInstrucao/":"https://desenvolvedor.moip.com.br/sandbox/ws/alpha/ConsultarInstrucao/";
 
-        $url .= $token; 
+        $url .= $token;
         if ($client == null)
             $client = new MoIPClient();
 
