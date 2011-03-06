@@ -151,7 +151,56 @@ class MoIPNASP{
         //Verify the connection and insert the data
         if ($con = $this->getConnection()) {
 
-            $sql = "INSERT INTO tbl_moip_nasp (id_transacao, valor, status_pagamento, cod_moip, forma_pagamento, tipo_pagamento, email_consumidor) VALUES ('{$data['id_transacao']}','{$data['valor']}','{$data['status_pagamento']}','{$data['cod_moip']}','{$data['forma_pagamento']}','{$data['tipo_pagamento']}','{$data['email_consumidor']}')";
+            $sql = "INSERT INTO moip_nasp (
+                    id_transacao,
+                    valor,
+                    status_pagamento,
+                    cod_moip,
+                    forma_pagamento,
+                    tipo_pagamento,
+                    mail_consumidor)
+                    VALUES (
+                    '{$data['id_transacao']}',
+                    '{$data['valor']}',
+                    '{$data['status_pagamento']}',
+                    '{$data['cod_moip']}',
+                    '{$data['forma_pagamento']}',
+                    '{$data['tipo_pagamento']}',
+                    '{$data['email_consumidor']}');";
+
+            $result = $con->query($sql);
+
+            if (!$result) {
+                $erro = $con->errorCode();
+                print_r($erro);
+            }
+        }
+        else{
+            throw new Exception("The method setDatabase had to be defined first");
+        }
+    }
+
+    /**
+     * Method createTable()
+     *
+     * Create the NASP's table in the database
+     *
+     * @access public
+     */
+    public function createTable() {
+        //Verify the connection and insert the data
+        if ($con = $this->getConnection()) {
+
+            $sql = "CREATE TABLE moip_nasp(
+                    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    id_transacao VARCHAR(100) NOT NULL,
+                    valor INTEGER NOT NULL,
+                    `status_pagamento` INTEGER NOT NULL,
+                    `cod_moip` INTEGER NOT NULL,
+                    `forma_pagamento` INTEGER NOT NULL,
+                    tipo_pagamento VARCHAR(100) NOT NULL,
+                    email_consumidor VARCHAR(150) NOT NULL
+                    );";
 
             $result = $con->query($sql);
 
