@@ -524,6 +524,32 @@ class MoIPTests extends PHPUnit_Framework_TestCase
         }
     }
 
+    public function test_getXML_IfThePayerIsSet_TheXmlGeneratorMustReturnItOnResponse()
+    {
+        $moip = new MoIP();
+        $moip->setEnvironment('sandbox');
+        $moip->setCredential(array('key'=>'KBJW7FOG1M5WV1J7KCFURVO4TMTVTTBSBM3ZNJW4',
+                                   'token'=>'PE8ZECRX4ZPV3OF7HRG136HEPDOOTNUB'));
+        $moip->setUniqueID('teste9');
+        $moip->setValue('100.30');
+        $moip->setReason('Teste do MoIP-PHP');
+        $moip->setPayer(array('nome'=>'Jose da Silva',
+                     'email'=>'jose@silva.com',
+                     'endereco'=>array('logradouro'=>'Rua do Zé',
+                                       'numero'=>'45',
+                                       'complemento'=>'z',
+                                       'cidade'=>'São Paulo',
+                                       'estado'=>'SP',
+                                       'pais'=>'BRA',
+                                       'cep'=>'01230-000',
+                                       'telefone'=>'1188888888')));
+        $moip->validate();
+
+        $xml = new SimpleXmlElement($moip->getXML());
+        $this->assertTrue((string)($xml->InstrucaoUnica->Pagador->Nome)=="Jose da Silva");
+        $this->assertTrue((string)($xml->InstrucaoUnica->Pagador->EnderecoCobranca->Logradouro)=="Rua do Zé");
+
+    }
 
     //method called after each test method
     public function tearDown()

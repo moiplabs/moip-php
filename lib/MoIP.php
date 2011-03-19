@@ -756,6 +756,7 @@ class MoIP
             }
         }
 
+
         if(!empty($this->payer))
         {
             $p = $this->payer;
@@ -769,23 +770,23 @@ class MoIP
 
             $p = $this->payer['endereco'];
             $this->xml->InstrucaoUnica->Pagador->addChild( 'EnderecoCobranca' );
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Logradouro' , $this->payer['endereco']['logradouro']):null;
+            (isset($p['logradouro']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Logradouro' , $this->payer['endereco']['logradouro']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Numero' , $this->payer['endereco']['numero']):null;
+            (isset($p['numero']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Numero' , $this->payer['endereco']['numero']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Complemento' , $this->payer['endereco']['complemento']):null;
+            (isset($p['complemento']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Complemento' , $this->payer['endereco']['complemento']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Bairro' , $this->payer['endereco']['bairro']):null;
+            (isset($p['bairro']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Bairro' , $this->payer['endereco']['bairro']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Cidade' , $this->payer['endereco']['cidade']):null;
+            (isset($p['cidade']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Cidade' , $this->payer['endereco']['cidade']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Estado' , $this->payer['endereco']['estado']):null;
+            (isset($p['estado']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Estado' , $this->payer['endereco']['estado']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Pais' , $this->payer['endereco']['pais']):null;
+            (isset($p['pais']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'Pais' , $this->payer['endereco']['pais']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'CEP' , $this->payer['endereco']['cep']):null;
+            (isset($p['cep']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'CEP' , $this->payer['endereco']['cep']):null;
 
-            (isset($p['endereco']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'TelefoneFixo' , $this->payer['endereco']['telefone']):null;
+            (isset($p['telefone']))?$this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild( 'TelefoneFixo' , $this->payer['endereco']['telefone']):null;
 
         }
 
