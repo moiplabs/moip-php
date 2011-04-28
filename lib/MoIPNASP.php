@@ -158,7 +158,7 @@ class MoIPNASP{
                     cod_moip,
                     forma_pagamento,
                     tipo_pagamento,
-                    mail_consumidor)
+                    email_consumidor)
                     VALUES (
                     '{$data['id_transacao']}',
                     '{$data['valor']}',
@@ -230,7 +230,7 @@ class MoIPNASP{
      */
     public function getData($transactionID = null, $payment_status = null, $cod_moip = null, $payment_way = null, $payment_type = null, $payer_email = null) {
         //Make the SQL instruction
-        $sql = "SELECT * FROM tbl_moip_nasp";
+        $sql = "SELECT * FROM moip_nasp";
 
         $filtros = "";
 
