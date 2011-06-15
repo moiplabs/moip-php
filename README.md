@@ -9,9 +9,9 @@ A MoIP-PHP é uma biblioteca que implementa uma camada de abstração orientada 
 
       require 'MoIP.php';
       $moip = new MoIP();
-      $moip->setCredencials(array('key'=>'sua_key','token'=>'seu_token'));
+      $moip->setCredencial(array('key'=>'sua_key','token'=>'seu_token'));
       $moip->setUniqueID(123456);
-      $moip->setValue('123456')
+      $moip->setValue('123456');
       $moip->setReason('Teste do MoIP-PHP');
       $moip->validate();
       $moip->send();
@@ -21,7 +21,7 @@ O MoIP-PHP utiliza o padrão [Fluent Interfaces](http://martinfowler.com/bliki/F
 
       require 'MoIP.php';
       $moip = new MoIP();
-      echo $moip->setCredentials(array('key'=>'sua_key','token'=>'seu_token'))
+      echo $moip->setCredential(array('key'=>'sua_key','token'=>'seu_token'))
                 ->setUniqueID(123456)
                 ->setValue('123456')
                 ->setReason('Teste do MoIP-PHP')
