@@ -5,7 +5,8 @@
  * @author Herberth Amaral
  * @author Wesley Willians
  * @author Alê Borba
- * @version 1.0
+ * @author Diego Puddu
+ * @version 1.2
  * @license <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>
  */
 /**
@@ -948,24 +949,20 @@ class MoIP
         $xml = new SimpleXmlElement($response->resposta);
         return $xml;
     }
-    
-	/**
-     * Method setRecebedor()
-     *
+
+    /**
+     * Method setReceiver()
      * Set the Recebedor data
      *
-     * @param array $recebedor: ['LoginMoIP'] 
-     * 							['Apelido']
+     * @param array $receiver: ['LoginMoIP']['Apelido']
      * @access public
      */
-    //Diego Puddu 08/07/2011
-    public function setRecebedor($recebedor){
-		if (!isset($this->xml->InstrucaoUnica->Recebedor)){
+    public function setReceiver($receiver){
+        if (!isset($this->xml->InstrucaoUnica->Recebedor)){
             $this->xml->InstrucaoUnica->addChild('Recebedor');
-            (isset($recebedor['LoginMoIP']))?$this->xml->InstrucaoUnica->Recebedor->addChild( 'LoginMoIP' , $recebedor['LoginMoIP'] ):null;
-        	(isset($recebedor['Apelido']))?$this->xml->InstrucaoUnica->Recebedor->addChild( 'Apelido' , $recebedor['Apelido'] ):null;
+            (isset($receiver['LoginMoIP']))?$this->xml->InstrucaoUnica->Recebedor->addChild( 'LoginMoIP' , $receiver['LoginMoIP'] ):null;
+            (isset($receiver['Apelido']))?$this->xml->InstrucaoUnica->Recebedor->addChild( 'Apelido' , $receiver['Apelido'] ):null;
         }
     }
-
 }
 ?>
