@@ -550,7 +550,7 @@ class MoIP
         if (!isset($param['login_moip']))
             throw new InvalidArgumentException('Você deve especificar um usuário para comissionar.');
 
-        if (!isset($param['valor_fixo']) or !isset($param['valor_percentual']))
+        if (!isset($param['valor_fixo']) and !isset($param['valor_percentual']))
             throw new InvalidArgumentException('Você deve especificar um tipo de valor para comissionar.');
 
         if (isset($param['valor_fixo']) and isset($param['valor_percentual']))
