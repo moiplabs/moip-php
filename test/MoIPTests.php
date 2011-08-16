@@ -68,7 +68,7 @@ class MoIPTests extends PHPUnit_Framework_TestCase
         try
         {
             $this->MoIP->setEnvironment('ambiente.invalido');
-            $this->fail('Erro: Não obtive uma exception ao informar um abiente inválido');
+            $this->fail('Erro: Não obtive uma exception ao informar um ambiente inválido');
         }catch(InvalidArgumentException $e){}
     }
 
