@@ -269,8 +269,10 @@ class MoIP
             $portador->addChild('Nome',$params['cartao']['portador']['nome']);
             $portador->addChild('Identidade',$params['cartao']['portador']['identidade_numero'])
                      ->addAttribute('tipo',$params['cartao']['portador']['identidade_tipo']);
+            $portador->addChild('Telefone',$params['cartao']['portador']['telefone']);
+            $portador->addChild('DataNascimento',$params['cartao']['portador']['data_nascimento']);
 
-            $parcelamento = $cartao->addChild('Parcelamento');
+            $parcelamento = $pd->addChild('Parcelamento');
             $parcelamento->addChild('Parcelas',$params['cartao']['parcelamento']['parcelas']);
             $parcelamento->addChild('Recebimento',$params['cartao']['parcelamento']['recebimento']);
         }
