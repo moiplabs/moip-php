@@ -843,6 +843,14 @@ class MoIP
         $return->id      = (string)$xml->Resposta->ID;
         $return->token = (string)$xml->Resposta->Token;
 
+        if($this->payment_type=='Direto'){
+            $return->pd_valor_total = (string)$xml->Resposta->RespostaPagamentoDireto->TotalPago;
+            $return->pd_taxa_moip = (string)$xml->Resposta->RespostaPagamentoDireto->TaxaMoIP;
+            $return->pd_status = (string)$xml->Resposta->RespostaPagamentoDireto->Status;
+            $return->pd_codigo_moip = (string)$xml->Resposta->RespostaPagamentoDireto->CodigoMoIP;
+            $return->pd_mensagem = (string)$xml->Resposta->RespostaPagamentoDireto->Mensagem;
+        }
+
         if ($this->environment == 'sandbox')
             $return->payment_url = "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=".$return->token;
         else
