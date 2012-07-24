@@ -173,8 +173,11 @@ Exemplo:
     $moip->setCredentials(array('token' => 'meu_token_de_producao', 'key' => 'minha_key_de_producao');
     $parcelamento = $moip->verifyParcelValues('login_moip', 12, 1.99, 100);
     print_r($parcelamento);
+```
 
-    // a instrucao acima irá imprimir algo parecido com isso:
+A instrução acima irá imprimir algo parecido com isso:
+
+```
     Array
     (
         [sucesso] => 1
@@ -395,11 +398,17 @@ Mais uma instrução adicional. Permite especificar comissões, em valores fixos
 
 Adicionando um comissionado com um valor fixo:
 
-    addComission(array('login_moip' => 'login_do_comissionado','valor_fixo'=>15));
+```php
+<?php
+    $moip->addComission(array('login_moip' => 'login_do_comissionado','valor_fixo'=>15));
+```
 
 Adicionando um comissionado com um valor percentual:
 
-    addComission(array('login_moip' => 'login_do_comissionado','valor_percentual'=>2.1));
+```php
+<?php
+    $moip->addComission(array('login_moip' => 'login_do_comissionado','valor_percentual'=>2.1));
+```
 
 queryInstruction($token)
 -------------------------
@@ -519,8 +528,11 @@ Você também pode obter as ultimas transações:
 	$status = new MoIPStatus();
 	$status->setCredenciais('seu_username_moip', 'sua_senha_moip')->getStatus();
 	print_r($status->ultimas_transacoes);
+```
 
-	// Um exemplo de saída do exemplo anterior seria:
+Um exemplo de saída do exemplo anterior seria:
+
+```
     Array
         (
             [0] => Array
