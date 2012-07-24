@@ -5,7 +5,9 @@ Você já deve ter visto todos os nossos plugins prontos e provavelmente deve te
 
 Pois seus problemas acabaram-se :-)
 
-A MoIP-PHP é uma biblioteca que implementa uma camada de abstração orientada à objetos para geração do XML de instruções da MoIP, permitindo que você gere instruções sem poluir seu código com várias linhas de XML. Um exemplo rápido:
+A MoIP-PHP é uma biblioteca que implementa uma camada de abstração orientada à objetos para geração do XML de instruções da MoIP, permitindo que você gere instruções sem poluir seu código com várias linhas de XML. 
+
+Um exemplo rápido:
 
 ```php
 <?php
@@ -39,7 +41,7 @@ O MoIP-PHP utiliza o padrão [Fluent Interfaces](http://martinfowler.com/bliki/F
 			  ->token;
 ```
 
-O método getAnswer() retorna um objeto contendo com os atributos "token", "success" (um tipo booleano) e "url_pagamento", que contém a URL que você deverá redirecionar seu cliente de acordo com o ambiente (sandbox ou produção) que você está utilizando.
+O método `getAnswer()` retorna um objeto contendo com os atributos "token", "success" (um tipo booleano) e "url_pagamento", que contém a URL que você deverá redirecionar seu cliente de acordo com o ambiente (sandbox ou produção) que você está utilizando.
 
 O MoIP-PHP possui testes unitários utilizando o framework [PHPUnit](http://phpunit.de). Se você quiser se certificar que o MoIP-PHP funciona no seu ambiente, é só chamar o phpunit com o arquivo de testes:
 
@@ -52,9 +54,9 @@ Métodos disponíveis
 setCredentials ($credencials)
 ------------------------------
 
-Informa as credenciais (token,key) ao objeto MoIP. Necessárias à autenticação. Você *precisa* informar as suas credenciais antes de enviar a instrução, pois não é possível autenticar no sistema da MoIP sem estas informações.
+Informa as credenciais (token, key) ao objeto MoIP. Necessárias à autenticação. Você *precisa* informar as suas credenciais antes de enviar a instrução, pois não é possível autenticar no sistema da MoIP sem estas informações.
 
-O parâmetro $credencials é um array associativo contendo as chaves _key_ e _token_ (ex: array('key' => 'sua_key', 'token' => 'seu_token')). Se você ainda não possui estes dados, entre em contato com a equipe do MoiP e solicite-os.
+O parâmetro `$credencials` é um array associativo contendo as chaves _key_ e _token_ (ex: `array('key' => 'sua_key', 'token' => 'seu_token')`). Se você ainda não possui estes dados, entre em contato com a equipe do MoiP e solicite-os.
 
 setEnvironment($environment)
 ------------------------------
@@ -98,7 +100,7 @@ Especifica o valor da transação no formato do MoIP (sem vírgulas, sendo que o
 setPagamentoDireto($params)
 ------------------------------
 
-Especifica que a transação irá ser feita utilizando o Pagamento Direto do MoIP. É necessário que a conta do MoIP em questão já esteja com o Pagamento Direto habilitado. Em caso de dúvidas sobre o pagamento direto, utilize nosso [ fórum ][http://labs.moip.com.br/forum/]
+Especifica que a transação irá ser feita utilizando o Pagamento Direto do MoIP. É necessário que a conta do MoIP em questão já esteja com o Pagamento Direto habilitado. Em caso de dúvidas sobre o pagamento direto, utilize nosso [fórum](http://labs.moip.com.br/forum/)
 
 Um exemplo de uso:
 
@@ -136,7 +138,7 @@ Um exemplo de uso:
 verifyPagamentoDireto($login_moip)
 ------------------------------
 
-Faz a verificação dos tipos de pagamento disponíveis para o cliente MoIP em $login_moip, utilizando o PagamentoDireto. **Atenção**: você precisa especificar as credenciais de acesso utilizando o método setCredentials antes de chamar o checarPagamentoDireto.
+Faz a verificação dos tipos de pagamento disponíveis para o cliente MoIP em `$login_moip`, utilizando o PagamentoDireto. **Atenção**: você precisa especificar as credenciais de acesso utilizando o método setCredentials antes de chamar o checarPagamentoDireto.
 
 Esse método retorna um objeto contendo os métodos/meios de pagamento do MoIP e se o usuário em questão pode utiliza-lo. Eis um exemplo adaptado da saída do ḿetodo anterior para um usuário que não tem o PagamentoDireto:
 
@@ -159,10 +161,10 @@ Esse método retorna um objeto contendo os métodos/meios de pagamento do MoIP e
 No caso anterior, o usuário consultado não tem acesso a nenhum método de pagamento via PagamentoDireto. Para maiores detalhes sobre esse método, veja [nosso post sobre o assunto](http://labs.moip.com.br/2011/01/24/novas-funcionalidades-da-api-do-moip-checarpagamentodireto-e-checarvaloresparcelamento/)
 
 
-verifyParcelValues($login_moip,$total_parcels,$rate,$simuleted_value)
+verifyParcelValues($login_moip, $total_parcels, $rate, $simuleted_value)
 ------------------------------
 
-Obtém os valores das parcelas de acordo com o usuário MoIP (determinado por $login_moip), o número de parcelas ($total_parcelas, inteiro), os juros ($juros, float) e o valor total da transação a ser simulado ($valor_simulado). **Atenção** este método requer que você especifique suas credenciais **de produção** da API do MoIP para funcionar.
+Obtém os valores das parcelas de acordo com o usuário MoIP (determinado por `$login_moip`), o número de parcelas (`$total_parcelas`, inteiro), os juros (`$juros`, float) e o valor total da transação a ser simulado ($valor_simulado). **Atenção** este método requer que você especifique suas credenciais **de produção** da API do MoIP para funcionar.
 
 Exemplo:
 
@@ -277,7 +279,9 @@ A instrução acima irá imprimir algo parecido com isso:
 setPayer($payer)
 ------------------------------
 
-Informa os dados do pagador em que `$payer`. Um exemplo de $pagador:
+Informa os dados do pagador em que `$payer` contém os dados do pagador. 
+
+Um exemplo de `$payer`:
 
 ```php
 <?php
@@ -386,10 +390,10 @@ Em qualquer parâmetro é obrigatório que o tipo de frete seja especificado e s
 
 Se o tipo de frete for os correios, é necessário especificar os parâmetros de entrega pelos correios (peso e forma de entrega).
 
-addParcel($min,$max,$rate='')
+addParcel($min, $max, $rate = '')
 ------------------------------
 
-Permite adicionar uma forma de parcelamento, em que $min se refere ao mínimo de parcelas da forma e $max se refere ao numero maximo de parcelas. $juros é um parâmetro opcional que informa os juros mensais (em %).
+Permite adicionar uma forma de parcelamento, em que `$min` se refere ao mínimo de parcelas da forma e `$max` se refere ao numero maximo de parcelas. `$juros` é um parâmetro opcional que informa os juros mensais (em %).
 
 addComission($params)
 ------------------------------
@@ -400,14 +404,14 @@ Adicionando um comissionado com um valor fixo:
 
 ```php
 <?php
-    $moip->addComission(array('login_moip' => 'login_do_comissionado','valor_fixo'=>15));
+    $moip->addComission(array('login_moip' => 'login_do_comissionado', 'valor_fixo' => 15));
 ```
 
 Adicionando um comissionado com um valor percentual:
 
 ```php
 <?php
-    $moip->addComission(array('login_moip' => 'login_do_comissionado','valor_percentual'=>2.1));
+    $moip->addComission(array('login_moip' => 'login_do_comissionado', 'valor_percentual' => 2.1));
 ```
 
 queryInstruction($token)
@@ -579,42 +583,42 @@ Métodos disponíveis
 Manipulação através de arquivos
 --------------------------------
 
-Os métodos abaixo auxiliam na manipulação dos dados usando arquvivos. Se já quiser um exemplo pronto disto basta abrir o arquivo nasp.sample.php, configura-lo para o seu ambiente e usar para manipular seus arquivos.
+Os métodos abaixo auxiliam na manipulação dos dados usando arquvivos. Se já quiser um exemplo pronto disto basta abrir o arquivo `nasp.sample.php`, configurá-lo para o seu ambiente e usar para manipular seus arquivos.
 
 setFile($path, $filename)
 -------------------------
-Método utilizado para definir o caminho($path) e o nome do arquivo($filename) para onde serão enviadas as informações do NASP.
+Método utilizado para definir o caminho(`$path`) e o nome do arquivo(`$filename`) para onde serão enviadas as informações do NASP.
 
 setContent($data)
 -----------------------
-Método utilizado para definir as informações que serão gravadas no arquivo definido em setFile().
+Método utilizado para definir as informações que serão gravadas no arquivo definido em `setFile()`.
 
 write()
 ----------------------
-Método usado para escrever as informações definidas em setContent()
+Método usado para escrever as informações definidas em `setContent()`
 
 getContent()
 --------------
-Método usado para retornar as informações gravadas no arquivo definido por setFile()
+Método usado para retornar as informações gravadas no arquivo definido por `setFile()`
 
 
 Manipulação através de banco de dados MySQL
 -------------------------------------------
 
-Os métodos abaixo auxiliam na manipulação dos dados usando arquvivos. Para facilitar, você pode executar o arquivo nasp.dbconfig.php que, ao passar as informações do database, ele cria a tabela de dados já no formato suportado pela classe.
+Os métodos abaixo auxiliam na manipulação dos dados usando arquvivos. Para facilitar, você pode executar o arquivo `nasp.dbconfig.php` que, ao passar as informações do database, ele cria a tabela de dados já no formato suportado pela classe.
 
 
-setDatabase($hostname, $database,$user,$pass)
+setDatabase($hostname, $database, $user, $pass)
 -----------------------------------------------
 Método que define o banco de dados que será utilizado para armazenar as informações do NASP
 
 insertData($data)
 ------------------
-Método utilizado para persistir as informações($data) no banco de dados definido em setDatabase().
+Método utilizado para persistir as informações(`$data`) no banco de dados definido em `setDatabase()`.
 
 getData()
 ------------------
-Método utilizado para retornar as informações do banco de dados definido em setDatabase().
+Método utilizado para retornar as informações do banco de dados definido em `setDatabase()`.
 
 
 Licença
