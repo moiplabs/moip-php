@@ -1,4 +1,6 @@
 <?php
+require 'MoIPClient.php';
+
 /**
  * Library to help PHP users of MoIP's API
  *
