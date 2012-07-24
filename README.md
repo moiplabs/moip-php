@@ -129,7 +129,7 @@ Um exemplo de uso:
 					'telefone' => '(11) 1111-1111',
 					'data_nascimento' => '30/11/1980'
 				),
-				'parcelamento' => array('parcelas'=>2,'recebimento' => 'avista')
+				'parcelamento' => array('parcelas' => 2, 'recebimento' => 'avista')
 			)
 		)
 	);
