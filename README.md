@@ -119,7 +119,7 @@ Um exemplo de uso:
 			'forma' => 'cartao_credito',
 			'instituicao' => 'american_express',
 			'cartao'=>array(
-				'numero'=>345678901234564,
+				'numero' => 345678901234564,
 				'expiracao' => '08/11',
 				'codigo_seguranca' => '1234',
 				'portador'=>array(
@@ -292,15 +292,15 @@ Um exemplo de `$payer`:
          'celular' => '1199999999',
          'apelido' => 'zeh',
          'identidade' => '12345678',
-         'endereco'=>array(
+         'endereco' => array(
 			'logradouro' => 'Rua do Zé',
 			'numero' => '45',
 			'complemento' => 'z',
 			'cidade' => 'São Paulo',
 			'estado' => 'SP',
-			'pais' => 'Brasil',
-			'cep' => '11111111',
-			'telefone' => '1188888888'
+			'pais' => 'BRA',
+			'cep' => '11111-111',
+			'telefone' => '(11)8888-8888'
 		)
 	);
 ```	
