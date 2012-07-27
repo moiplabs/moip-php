@@ -136,6 +136,13 @@ class MoIP
      */
     private $value;
     /**
+     * XML encoding
+     *
+     * @var string
+     * @access private
+     */
+    private $xmlEncoding;
+    /**
      * Simple XML object
      *
      * @var object
@@ -149,8 +156,11 @@ class MoIP
      * @return void
      * @access public
      */
-    public function __construct()
+    public function __construct($encoding = null)
     {
+    	// Set encoding
+    	$this->setEncoding($encoding);
+
 	//Verify the environment variable, if not 'producao' set 'sandbox'
 	if($this->environment != 'producao')
 	{
@@ -176,7 +186,7 @@ class MoIP
      */
     private function initXMLObject()
     {
-        $this->xml = new SimpleXmlElement('<EnviarInstrucao></EnviarInstrucao>');
+        $this->xml = new SimpleXmlElement($this->xmlEncoding . '<EnviarInstrucao></EnviarInstrucao>');
         $this->xml->addChild('InstrucaoUnica');
     }
 
@@ -313,6 +323,21 @@ class MoIP
             throw new InvalidArgumentException("Ambiente inválido");
 
         $this->environment = $environment;
+        return $this;
+    }
+
+	/**
+     * Method setUniqueID()
+     *
+     * Set XML encoding
+     *
+     * @param string $encoding XML encoding
+     * @return object
+     */
+    private function setEncoding($encoding)
+    {
+    	if ($encoding)
+	    	$this->xmlEncoding = '<?xml version="1.0" encoding="' . $encoding . '"?>';
         return $this;
     }
 
