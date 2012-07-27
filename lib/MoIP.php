@@ -332,13 +332,11 @@ class MoIP
      * Set XML encoding
      *
      * @param string $encoding XML encoding
-     * @return object
      */
     private function setEncoding($encoding)
     {
     	if ($encoding)
 	    	$this->xmlEncoding = '<?xml version="1.0" encoding="' . $encoding . '"?>';
-        return $this;
     }
 
     /**
