@@ -297,7 +297,7 @@ Um exemplo de `$payer`:
 			'numero' => '45',
 			'complemento' => 'z',
 			'cidade' => 'São Paulo',
-			'estado' => 'São Paulo',
+			'estado' => 'SP',
 			'pais' => 'Brasil',
 			'cep' => '11111111',
 			'telefone' => '1188888888'
