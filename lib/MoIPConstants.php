@@ -1,4 +1,7 @@
 <?php
+/**
+ * MoIP Transaction status
+ */
 class MoIPTransactionStatus {
 	const AUTHORIZED = 1;
 	const INITIATE = 2;
