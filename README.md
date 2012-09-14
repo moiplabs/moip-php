@@ -472,17 +472,17 @@ queryParcel()
 O método queryParcel() retorna um Array() contendo as informações de parcelas e seus respectivos valores cobrados por parcela e o valor total a ser pago referente a taxa de juros simulada..
 
 1. REQUEST
-1. $login: Login Moip do usuario.        
-2. $maxParcel: Máximo de parcelar a ser consultado.
-3. $rate:  Taxa de juros para simulação.
-4. $simulatedValue: Valor pago ao qual será simulado.
+2. $login: Login Moip do usuario.
+3. $maxParcel: Máximo de parcelar a ser consultado.
+4. $rate:  Taxa de juros para simulação.
+5. $simulatedValue: Valor pago ao qual será simulado.
 
-1. RESPONSE
-1. response : "true" em caso de resposta Moip com "&lt;Status&gt;" "Sucesso" e "false" em caso de "Falha"
-2. installment: Numero de parcela correspondente aos valores.
-1. total : Total a ser pago.
-2. rate: Taxa de juros atribuido.
-3. value: Valor por parcela.
+6. RESPONSE
+7. response : "true" em caso de resposta Moip com "&lt;Status&gt;" "Sucesso" e "false" em caso de "Falha"
+8. installment: Numero de parcela correspondente aos valores.
+9. total : Total a ser pago.
+10. rate: Taxa de juros atribuido.
+11. value: Valor por parcela.
 
 queryParcel($login, $maxParcel, $rate, $simulatedValue)
 
