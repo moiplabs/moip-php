@@ -25,7 +25,7 @@ class Moip {
 	 *
 	 * @var string
 	 */
-	protected $encoding = 'UTF-8';
+	public $encoding = 'UTF-8';
     /**
      * Associative array with two keys. 'key'=>'your_key','token'=>'your_token'
      *
@@ -167,13 +167,21 @@ class Moip {
         $this->initXMLObject();
     }
 
-	private function convert_encoding($text)
+	private function convert_encoding($text, $post = false)
 	{
-		if ($this->encoding === 'UTF-8')
+		if ($post)
 		{
-			return $text;
+			return mb_convert_encoding($text, 'UTF-8');
 		}
-		return mb_convert_encoding($text, $this->encoding, 'UTF-8');
+		else
+		{
+			/* No need to convert if its already in utf-8 */
+			if ($this->encoding === 'UTF-8')
+			{
+				return $text;
+			}
+			return mb_convert_encoding($text, $this->encoding, 'UTF-8');
+		}
 	}
 
     /**
@@ -695,7 +703,7 @@ class Moip {
             (isset($p['phone'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('TelefoneFixo', $this->payer['billingAddress']['phone']) : null;
         }
 
-        $return = $this->convert_encoding($this->xml->asXML());
+        $return = $this->convert_encoding($this->xml->asXML(), true);
         $this->initXMLObject();
         return str_ireplace("\n", "", $return);
     }
