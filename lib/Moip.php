@@ -5,9 +5,10 @@
  *
  * @author Herberth Amaral
  * @author Wesley Willians
- * @author Alê Borba
+ * @author AlÃª Borba
  * @author Vagner Fiuza Vieira
- * @version 1.5
+ * @author Paulo Cesar
+ * @version 1.6
  * @license <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>
  */
 
@@ -19,41 +20,42 @@
  */
 class Moip {
 
+	/**
+	 * Encoding of the page
+	 *
+	 * @var string
+	 */
+	public $encoding = 'UTF-8';
     /**
      * Associative array with two keys. 'key'=>'your_key','token'=>'your_token'
      *
      * @var array
-     * @access private
      */
-    private $credential;
+    protected $credential;
     /**
      * Define the payment's reason
      *
      * @var string
-     * @access private
      */
-    private $reason;
+    protected $reason;
     /**
      * The application's environment
      *
-     * @var string
-     * @access private
+     * @var MoipEnvironment
      */
-    private $environment;
+    protected $environment = null;
     /**
      * Transaction's unique ID
      *
      * @var string
-     * @access private
      */
-    private $uniqueID;
+    protected $uniqueID;
     /**
      * Associative array of payment's way
      *
      * @var array
-     * @access private
      */
-    private $payment_ways = array('billet' => 'BoletoBancario',
+    protected $payment_ways = array('billet' => 'BoletoBancario',
         'financing' => 'FinanciamentoBancario',
         'debit' => 'DebitoBancario',
         'creditCard' => 'CartaoCredito',
@@ -62,9 +64,8 @@ class Moip {
      * Associative array of payment's institutions
      *
      * @var array
-     * @access private
      */
-    private $institution = array('moip' => 'MoIP',
+    protected $institution = array('moip' => 'MoIP',
         'visa' => 'Visa',
         'american_express' => 'AmericanExpress',
         'mastercard' => 'Mastercard',
@@ -83,81 +84,80 @@ class Moip {
      * Associative array of delivery's type
      *
      * @var array
-     * @access private
      */
-    private $delivery_type = array('proprio' => 'Proprio', 'correios' => 'Correios');
+    protected $delivery_type = array('proprio' => 'Proprio', 'correios' => 'Correios');
     /**
      * Associative array with type of delivery's time
      *
      * @var array
-     * @access private
      */
-    private $delivery_type_time = array('corridos' => 'Corridos', 'uteis' => 'Uteis');
+    protected $delivery_type_time = array('corridos' => 'Corridos', 'uteis' => 'Uteis');
     /**
      * Payment method
      *
      * @var array
-     * @access private
      */
-    private $payment_method;
+    protected $payment_method;
     /**
      * Arguments of payment method
      *
      * @var array
-     * @access private
      */
-    private $payment_method_args;
+    protected $payment_method_args;
     /**
      * Payment's type
      *
      * @var string
-     * @access private
      */
-    private $payment_type;
+    protected $payment_type;
     /**
      * Associative array with payer's information
      *
      * @var array
-     * @access private
      */
-    private $payer;
+    protected $payer;
     /**
      * Server's answer
      *
-     * @var object
-     * @access public
+     * @var MoipResponse
      */
     public $answer;
     /**
      * The transaction's value
      *
-     * @var numeric
-     * @access private
+     * @var float
      */
-    private $value;
+    protected $value;
+    /**
+     * Simple XML object
+     *
+     * @var SimpleXMLElement
+     */
+    protected $xml;
     /**
      * Simple XML object
      *
      * @var object
-     * @access private
-     */
-    private $xml;
-    /**
-     * Simple XML object
-     *
-     * @var object
-     * @access public
      */
     public $errors;
-
+	/**
+	 * @var array
+	 */
+	protected $payment_way = array();
+	/**
+	 * @var float
+	 */
+	protected $adds;
+	/**
+	 * @var float
+	 */
+	protected $deduction;
     /**
      * Method construct
      *
-     * @return void
      * @access public
      */
     public function __construct() {
-//Verify the payment's type, if null set 'Unico'
         $this->setEnvironment();
 
         if (!$this->payment_type) {
@@ -166,6 +166,23 @@ class Moip {
 
         $this->initXMLObject();
     }
+
+	private function convert_encoding($text, $post = false)
+	{
+		if ($post)
+		{
+			return mb_convert_encoding($text, 'UTF-8');
+		}
+		else
+		{
+			/* No need to convert if its already in utf-8 */
+			if ($this->encoding === 'UTF-8')
+			{
+				return $text;
+			}
+			return mb_convert_encoding($text, $this->encoding, 'UTF-8');
+		}
+	}
 
     /**
      * Method initXMLObject()
@@ -183,14 +200,13 @@ class Moip {
     /**
      * Method setPaymentType()
      *
-     * Define the payment's type between 'Unico' or 'Direto'
+     * Define the payment's type between 'Basic' or 'Identification'
      *
-     * @param string $tipo Can be 'Unico' or 'Direto'
-     * @return void
+     * @param string $tipo Can be 'Basic' or 'Identification'
+     * @return Moip
      * @access public
      */
     public function setPaymentType($tipo) {
-//Verify if the value of variable $tipo is between 'Basic' or 'Identification'. If not, throw new exception error
         if ($tipo == 'Basic' || $tipo == 'Identification') {
             $this->payment_type = $tipo;
         } else {
@@ -206,7 +222,7 @@ class Moip {
      * Set the credentials(key,token) required for the API authentication.
      *
      * @param array $credential Array with the credentials token and key
-     * @return void
+     * @return Moip
      * @access public
      */
     public function setCredential($credential) {
@@ -225,20 +241,22 @@ class Moip {
      *
      * Define the environment for the API utilization.
      *
-     * @param string $environment Only two values supported, 'sandbox' or 'producao'
+     * @param bool $testing If true, will use the sandbox environment
+	 * @return Moip
      */
-    public function setEnvironment($environment = null) {
-        if ($environment == 'test') {
-            $return = (object) array();
-            $return->name = "Sandbox";
-            $return->base_url = "https://desenvolvedor.moip.com.br/sandbox";
-        } else {
-            $return = (object) array();
-            $return->name = "Produção";
-            $return->base_url = "https://www.moip.com.br";
-        }
+    public function setEnvironment($testing = false) {
+		if (empty($this->environment))
+		{
+			$this->environment = new MoipEnvironment();
+		}
 
-        $this->environment = $return;
+        if ($testing) {
+            $this->environment->name = "Sandbox";
+            $this->environment->base_url = "https://desenvolvedor.moip.com.br/sandbox";
+        } else {
+            $this->environment->name = "ProduÃ§Ã£o";
+            $this->environment->base_url = "https://www.moip.com.br";
+        }
 
         return $this;
     }
@@ -247,8 +265,9 @@ class Moip {
      * Method validate()
      *
      * Make the data validation
-     *
-     * @return void
+	 *
+     * @param string $validateType Identification or Basic, defaults to Basic
+     * @return Moip
      * @access public
      */
     public function validate($validateType = "Basic") {
@@ -263,6 +282,7 @@ class Moip {
         $payer = $this->payer;
 
         if ($this->payment_type == 'Identification') {
+			$varNotSeted = '';
 
             $dataValidate = array('name',
                 'email',
@@ -281,21 +301,19 @@ class Moip {
 
             foreach ($dataValidate as $key) {
                 if (!isset($payer[$key])) {
-                    $notSeted = $key;
                     $varNotSeted .= ' [' . $key . '] ';
                 }
             }
 
             foreach ($dataValidateAddress as $key) {
                 if (!isset($payer['billingAddress'][$key])) {
-                    $notSeted = $key;
                     $varNotSeted .= ' [' . $key . '] ';
                 }
             }
 
-            if ($notSeted)
+            if ($varNotSeted !== false)
                 $this->setError('Error: The following data required were not informed: ' . $varNotSeted . '.');
-            
+
         }
         return $this;
     }
@@ -305,8 +323,8 @@ class Moip {
      *
      * Set the unique ID for the transaction
      *
-     * @param numeric $id Unique ID for each transaction
-     * @return void
+     * @param int $id Unique ID for each transaction
+     * @return Moip
      * @access public
      */
     public function setUniqueID($id) {
@@ -320,7 +338,7 @@ class Moip {
      * Set the short description of transaction. eg. Order Number.
      *
      * @param string $reason The reason fo transaction
-     * @return void
+     * @return Moip
      * @access public
      */
     public function setReason($reason) {
@@ -334,7 +352,7 @@ class Moip {
      * Add a payment's method
      *
      * @param string $way The payment method. Options: 'billet','financing','debit','creditCard','debitCard'.
-     * @return void
+     * @return Moip
      * @access public
      */
     public function addPaymentWay($way) {
@@ -397,7 +415,7 @@ class Moip {
      * Set contacts informations for the payer.
      *
      * @param array $payer Contact information for the payer.
-     * @return voi
+     * @return Moip
      * @access public
      */
     public function setPayer($payer) {
@@ -410,8 +428,8 @@ class Moip {
      *
      * Set the transaction's value
      *
-     * @param numeric $value The transaction's value
-     * @return void
+     * @param float $value The transaction's value
+     * @return Moip
      * @access public
      */
     public function setValue($value) {
@@ -424,8 +442,8 @@ class Moip {
      *
      * Adds a value on payment. Can be used for collecting fines, shipping and other
      *
-     * @param numeric $value The value to add.
-     * @return void
+     * @param float $value The value to add.
+     * @return Moip
      * @access public
      */
     public function setAdds($value) {
@@ -438,8 +456,8 @@ class Moip {
      *
      * Deducts a payment amount. It is mainly used for discounts.
      *
-     * @param numeric $value The value to deduct
-     * @return void
+     * @param float $value The value to deduct
+     * @return Moip
      * @access public
      */
     public function setDeduct($value) {
@@ -453,7 +471,7 @@ class Moip {
      * Add a message in the instruction to be displayed to the payer.
      *
      * @param string $msg Message to be displayed.
-     * @return void
+     * @return Moip
      * @access public
      */
     public function addMessage($msg) {
@@ -471,12 +489,14 @@ class Moip {
      * Set the return URL, which redirects the client after payment.
      *
      * @param string $url Return URL
+	 * @return Moip
      * @access public
      */
     public function setReturnURL($url) {
         if (!isset($this->xml->InstrucaoUnica->URLRetorno)) {
             $this->xml->InstrucaoUnica->addChild('URLRetorno', $url);
         }
+		return $this;
     }
 
     /**
@@ -499,14 +519,13 @@ class Moip {
      * Set Erroe alert
      *
      * @param String $error Error alert
-     * @return void
+     * @return Moip
      * @access public
      */
     public function setError($error) {
         $this->errors = $error;
 
         return $this;
-//throw new InvalidArgumentException($error);
     }
 
     /**
@@ -519,6 +538,7 @@ class Moip {
      * @param number $value value of the division of payment
      * @param boolean $percentageValue percentage value should be
      * @param boolean $ratePayer this secondary recipient will pay the fee Moip
+	 * @return Moip
      * @access public
      */
     public function addComission($reason, $receiver, $value, $percentageValue=false, $ratePayer=false) {
@@ -550,11 +570,11 @@ class Moip {
      *
      * Allows to add a order to parceling.
      *
-     * @param numeric $min The minimum number of parcels.
-     * @param numeric $max The maximum number of parcels.
-     * @param numeric $rate The percentual value of rates
-     * @param boolean $tranfer "true" defines the amount of interest charged by MoIP installment to be paid by the payer
-     * @return void
+     * @param int $min The minimum number of parcels.
+     * @param int $max The maximum number of parcels.
+     * @param float $rate The percentual value of rates
+     * @param boolean $transfer "true" defines the amount of interest charged by MoIP installment to be paid by the payer
+     * @return Moip
      * @access public
      */
     public function addParcel($min, $max, $rate=null, $transfer=false) {
@@ -575,7 +595,7 @@ class Moip {
 
         $parcela->addChild('Recebimento', 'AVista');
 
-        if ($transfer == false) {
+        if ($transfer === false) {
             if (isset($rate)) {
                 if (is_numeric($rate))
                     $parcela->addChild('Juros', $rate);
@@ -598,7 +618,7 @@ class Moip {
      * Allows to add a order to parceling.
      *
      * @param string $receiver login Moip the secondary receiver
-     * @return void
+     * @return Moip
      * @access public
      */
     public function setReceiver($receiver) {
@@ -683,7 +703,7 @@ class Moip {
             (isset($p['phone'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('TelefoneFixo', $this->payer['billingAddress']['phone']) : null;
         }
 
-        $return = utf8_encode($this->xml->asXML());
+        $return = $this->convert_encoding($this->xml->asXML(), true);
         $this->initXMLObject();
         return str_ireplace("\n", "", $return);
     }
@@ -694,7 +714,7 @@ class Moip {
      * Send the request to the server
      *
      * @param object $client The server's connection
-     * @return void
+     * @return MoipResponse
      * @access public
      */
     public function send($client=null) {
@@ -714,26 +734,24 @@ class Moip {
      * Method getAnswer()
      *
      * Gets the server's answer
-     *
-     * @return object
+     * @param boolean $return_xml_as_string Return the answer XMl string
+     * @return MoipResponse|string
      * @access public
      */
-    public function getAnswer($formato=null) {
+    public function getAnswer($return_xml_as_string = false) {
         if ($this->answer->response == true) {
-            if ($formato == "xml") {
-
+            if ($return_xml_as_string) {
                 return $this->answer->xml;
             }
 
             $xml = new SimpleXmlElement($this->answer->xml);
 
-            $return = (object) array();
-            $return->response = $xml->Resposta->Status == 'Sucesso' ? true : false;
-            $return->error = $xml->Resposta->Status == 'Falha' ? (string) utf8_decode($xml->Resposta->Erro) : false;
-            $return->token = (string) $xml->Resposta->Token;
-            $return->payment_url = $xml->Resposta->Status == 'Sucesso' ? (string) $this->environment->base_url . "/Instrucao.do?token=" . $return->token : false;
-
-            return $return;
+            return new MoipResponse(array(
+				'response' => $xml->Resposta->Status == 'Sucesso' ? true : false,
+    			'error' => $xml->Resposta->Status == 'Falha' ? $this->convert_encoding((string)$xml->Resposta->Erro) : false,
+    			'token' => (string) $xml->Resposta->Token,
+    			'payment_url' => $xml->Resposta->Status == 'Sucesso' ? (string) $this->environment->base_url . "/Instrucao.do?token=" . (string) $xml->Resposta->Token : false,
+			));
         } else {
             return $this->answer->error;
         }
@@ -744,10 +762,10 @@ class Moip {
      *
      * Get all informations about the parcelling of user defined by $login_moip
      *
-     * @param string $login_moip The client's login for Moip services
-     * @param numeric $total_parcels The total parcels
-     * @param numeric $rate The rate's percents of the parcelling.
-     * @param numeric $simulated_value The value for simulation
+     * @param string $login The client's login for Moip services
+     * @param int $maxParcel The total parcels
+     * @param float $rate The rate's percents of the parcelling.
+     * @param float $simulatedValue The value for simulation
      * @return array
      * @access public
      */
@@ -780,13 +798,20 @@ class Moip {
                 $i++;
             }
             return $return;
-        } else {
-            return $answer;
         }
 
-
-        return $return;
+		return $answer;
     }
 
 }
-?>
+
+class MoipEnvironment {
+	public $base_url;
+	public $name;
+
+	function __construct($base_url = '', $name = '')
+	{
+		$this->base_url = $base_url;
+		$this->name = $name;
+	}
+}
