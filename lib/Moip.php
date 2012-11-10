@@ -1056,9 +1056,13 @@ class Moip {
 
 		$url = $this->environment->base_url . '/ws/alpha/EnviarInstrucao/Unica';
 
-		return $this->answer = $client->curlPost($this->credential['token'] . ':' . $this->credential['key'],
-			$this->getXML(),
-			$url, $this->errors);
+		return
+			$this->answer =
+				$client->curlPost($this->credential['token'] . ':' . $this->credential['key'],
+					$this->getXML(),
+					$url,
+					$this->errors
+				);
 	}
 
 	/**

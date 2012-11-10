@@ -36,6 +36,11 @@ class MoipResponse implements Serializable, Countable {
 		$this->response = $flat;
 	}
 
+	private function set_keys()
+	{
+		$this->strtolower_keys = array_change_key_case(array_combine(array_keys($this->response), array_keys($this->response)));
+	}
+
 	function __construct(array $response, $flatten = true)
 	{
 		$this->response = $response;
@@ -45,16 +50,24 @@ class MoipResponse implements Serializable, Countable {
 			$this->flatten();
 		}
 
-		$this->strtolower_keys = array_change_key_case(array_combine(array_keys($this->response), array_keys($this->response)));
+		$this->set_keys();
+	}
+
+	private function to_key($name)
+	{
+		$name = strtolower($name);
+		if (isset($this->strtolower_keys[$name]))
+		{
+			return $this->strtolower_keys[$name];
+		}
+		return false;
 	}
 
 	function __get($name)
 	{
-		$name = strtolower($name);
-
-		if (isset($this->strtolower_keys[$name]))
+		if ($name = $this->to_key($name))
 		{
-			return $this->response[$this->strtolower_keys[$name]];
+			return $this->response[$name];
 		}
 
 		return null;
@@ -62,10 +75,10 @@ class MoipResponse implements Serializable, Countable {
 
 	function __isset($name)
 	{
-		return isset($this->response[strtolower($name)]);
+		return $this->to_key($name);
 	}
 
-	public function serialize($json = false)
+	public function serialize($json = false, $lowercase = false)
 	{
 		if ($json)
 		{
@@ -95,5 +108,10 @@ class MoipResponse implements Serializable, Countable {
 	public function count()
 	{
 		return count($this->response);
+	}
+
+	public function as_array($lowercase = false)
+	{
+		return $lowercase ? array_combine(array_keys($this->strtolower_keys), $this->response) : $this->response;
 	}
 }
