@@ -3,6 +3,7 @@ SDK Moip-PHP - API
 
 O Moip-PHP é uma biblioteca que implementa uma camada de abstração para geração do XML de instruções do Moip, permitindo que você integre aos serviços de API sem poluir seu código com várias linhas de XML. Um exemplo rápido:
 
+```php
     include_once "autoload.inc.php";
  
     $moip = new Moip();
@@ -19,10 +20,11 @@ O Moip-PHP é uma biblioteca que implementa uma camada de abstração para geração 
     $moip->validate('Basic');
  
     print_r($moip->send());
-	
+```	
 
 O Moip-PHP utiliza o padrão Fluent Interfaces, portanto, você pode fazer o exemplo acima da seguinte forma:
 
+```php
     include_once "autoload.inc.php";
  
     $moip = new Moip(); 
@@ -35,6 +37,8 @@ O Moip-PHP utiliza o padrão Fluent Interfaces, portanto, você pode fazer o exemp
             ->setReason('Teste do Moip-PHP')
             ->validate('Basic')
             ->send());
+```
+
 -------------------------------------
 
 Métodos disponíveis
@@ -50,20 +54,55 @@ Método construtor.
 
 Moip()
 
+```php
     $moip = new Moip();
+```
+
 -------------------------------------
 
 setEnvironment()
 ----------
-Método que define o ambiente em qual o requisição será processada, 'test' para definir que será em ambiente de testes Moip o Sandbox, a omissão desse método define que a requisição deverá ser processada em ambiente real, de produção Moip.
+Método que define o ambiente em qual o requisição será processada, passando `true` para definir que será em ambiente de testes Moip o Sandbox, a omissão desse método define que a requisição deverá ser processada em ambiente real, de produção Moip.
 
 
 Importante: ao definir o ambiente certifique-se de que está utilizando a autenticação correspondente ao ambiente, no Moip cada ambiente possui suas própria chaves de autenticação API.
 
-setEnvironment($environment)
-$environment : String ('test')
+setEnvironment($testing)
+$testing : bool (false)
 
-	$moip->setEnvironment('test');
+```php
+	$moip->setEnvironment(true);
+```
+
+-------------------------------------
+
+setPaymentType()
+----------
+Método que define o tipo de pagamento, que será validado. Basic
+
+setPaymentType($tipo)
+$tipo : String ('Basic' ou 'Identification')
+
+1. Basic : Irá realizar a validação dos dados mínimos de para uma requisição XML ao Moip.
+2. Identification : Irá validar os dados necessários para se processar um XML com identificação Moip, usados geralmente para redirecionar o cliente já no segundo step da pagina de pagamento no checkout Moip ou usar o Moip Transaparente.
+
+```php
+	$moip->setPaymentType('Basic');
+```
+
+-------------------------------------
+
+setEncoding()
+----------
+Método que define o qual o encoding da sua página atualmente. O padrão é UTF-8. Normalmente, para páginas em português são utilizados as codificações ISO-8859-1 e Windows-1252.
+
+setEncoding($encoding)
+$encoding : String
+
+```php
+	$moip->setEnvironment(true);
+```
+
 -------------------------------------
 
 setCredential()
@@ -76,10 +115,12 @@ O parâmetro $credencials é um array associativo contendo as chaves key e token (
 
  $credential : Array('key','token')
 
+```php
 	$moip->setCredential(array(
 	        'key' => 'SUA_KEY',
         	'token' => 'SEU_TOKEN'
         	));
+```
 
 -------------------------------------
 
@@ -94,7 +135,9 @@ O método validate() irá realizar a validação dos dados obrigatórios para o tipo 
 
  $validateType : String ('Basic' ou 'Identification')
 
+```php
 	$moip->validate('Identification');
+```
 
 -------------------------------------
 
@@ -108,7 +151,10 @@ setUniqueID($id)
 
 $id : String
 
+```php
 	$moip->setUniqueID('ABCD123456789');
+```
+
 -------------------------------------
 
 setValue()
@@ -120,9 +166,12 @@ O método setValue() atribui valor a tag "&lt;Valor&gt;" no XML Moip.
 
 setValue($value)
 
-$value : Numeric
+$value : Float
 
+```php
 	$moip->setValue('100.00');	
+```
+
 -------------------------------------
 
 setAdds()
@@ -133,9 +182,12 @@ O método setAdds() atribui valor a tag "&lt;Acrescimo&gt;" no XML Moip.
 
 setAdds($value)
 
-$value : Numeric
+$value : Float
 
+```php
 	$moip->setAdds('15.00');	
+```
+
 -------------------------------------
 
 setDeduct()
@@ -149,7 +201,10 @@ setDeduct($value)
 
 $value : Numeric
 
+```php
 	$moip->setDeduct('15.00');
+```
+
 -------------------------------------
 
 setReason()
@@ -163,7 +218,10 @@ setReason($value)
 
 $value : String
 
+```php
 	$moip->setReason('Pagamento de teste do Moip-PHP');
+```
+
 -------------------------------------
 
 setPayer()
@@ -192,6 +250,7 @@ setPayer($value)
 
 $value : Array ('name','email','payerId','identity', 'phone','billingAddress' => Array('address','number','complement','city','neighborhood','state','country','zipCode','phone'))
 
+```php
 	$moip->setPayer(array('name' => 'Nome Sobrenome',
         	'email' => 'email@cliente.com.br',
         	'payerId' => 'id_usuario',
@@ -204,6 +263,8 @@ $value : Array ('name','email','payerId','identity', 'phone','billingAddress' =>
             		'country' => 'BRA',
             		'zipCode' => '01230-000',
             		'phone' => '(11)8888-8888')));
+```
+
 -------------------------------------
 
 addPaymentWay()
@@ -221,11 +282,14 @@ addPaymentWay($way)
 
 $way : String ('billet','financing','debit','creditCard','debitCard')
 
+```php
 	$moip->addPaymentWay('creditCard');
 	$moip->addPaymentWay('billet');
 	$moip->addPaymentWay('financing');
 	$moip->addPaymentWay('debit');
 	$moip->addPaymentWay('debitCard');
+```
+
 -------------------------------------
 
 setBilletConf()
@@ -247,12 +311,15 @@ $instructions : Array()
 
 $uriLogo : String
 
+```php
 	$moip->setBilletConf("2011-04-06",
             	false,
             	array("Primeira linha",
                 	"Segunda linha",
                 	"Terceira linha"),
             	"http://seusite.com.br/logo.gif");
+```
+
 -------------------------------------
 
 addMessage()
@@ -266,7 +333,10 @@ addMessage($msg)
 
 $msg : String
 
+```php
 	$moip->addMessage('Seu pedido contem os produtos X,Y e Z.');
+```
+
 -------------------------------------
 
 setReturnURL()
@@ -277,7 +347,10 @@ setReturnURL($url)
 
 $url : String
 
+```php
 	$moip->setReturnURL('https://meusite.com.br/cliente/pedido/bemvindodevolta');
+```
+
 -------------------------------------
 
 setNotificationURL()
@@ -288,7 +361,68 @@ setNotificationURL($url)
 
 $url : String
 
+```php
 	$moip->setNotificationURL('https://meusite.com.br/nasp/');
+```
+
+-------------------------------------
+
+getStatus()
+---------------
+Método que retorna o status de um token. Caso não seja passado nenhum parâmetro, retorna o status do token atual.
+
+getStatus($paymentToken = null)
+
+$paymentToken : String (null)
+
+```php
+	echo $moip->getStatus()->status;
+```
+
+-------------------------------------
+
+removeInstruction()
+---------------
+O método removeInstruction() remove uma instrução previamente enviada. Retorna MoipResponse
+
+removeInstruction($paymentToken)
+
+$paymentToken : String 
+
+```php
+	$moip->removeInstruction('92D091R2I0Y9X0E4T2K034L2H2V4H2J6L9R0S0T0K0N0L0T0Y9H879H144O8');
+```
+
+-------------------------------------
+
+getJavascript()
+---------------
+O método getJavascript() retorna a URL para inclusão do arquivo de javascript para o checkout transparente.
+
+getJavascript($include_https)
+
+$include_https : Boolean (true)
+
+```php
+	<script src="<?php echo $moip->getJavascript(); ?>" type="text/javascript"></script>
+```
+
+-------------------------------------
+
+getWidget()
+---------------
+O método getWidget() retorna o widget para o checkout transparente, para ser incluido no body do HTML, com o token e respectivos callbacks em Javscript
+
+getWidget($success, $error)
+
+$success : String 
+
+$error : String 
+
+```php
+	<?php echo $moip->getWidget('payment_success', 'payment_error'); ?>
+```
+
 -------------------------------------
 
 addComission()
@@ -314,6 +448,7 @@ $percentageValue: Boolean
 
 $ratePayer : Boolean
 
+```php
 	$moip->addComission('Razão do Split',
 			'recebedor_secundario',
 			'5.00');
@@ -322,6 +457,8 @@ $ratePayer : Boolean
 			'12.00',
 			true,
 			true);
+```
+
 -------------------------------------
 
 addParcel()
@@ -345,9 +482,12 @@ $rate : Number
 
 $transfer : Boolean
 
+```php
 	$moip->addParcel('2', '4');
 	$moip->addParcel('5', '7', '1.00');
 	$moip->addParcel('8', '12', null, true);
+```
+
 -------------------------------------
 
 setReceiver()
@@ -362,7 +502,10 @@ setReceiver($receiver)
 
 $receiver : String
 
+```php
 	$moip->setReceiver('integracao@labs.moip.com.br');
+```
+
 -------------------------------------
 
 getXML()
@@ -372,6 +515,7 @@ O método getXML() irá retornar o XML gerado com todos os atributos que você conf
 
 getXML()
 
+```php
 	$moip = new Moip();
 	$moip->setEnvironment('test');
 	$moip->setCredential(array(
@@ -384,8 +528,10 @@ getXML()
 	$moip->validate('Basic');
 
 	print_r($moip->getXML());
+```
 
-        //IRÃ? IMPRIMIR
+```xml
+        //IRÁ IMPRIMIR
         <?xml version="1.0" encoding="utf-8"?>
         <EnviarInstrucao>
             <InstrucaoUnica>
@@ -396,6 +542,8 @@ getXML()
                 </Valores>
             </InstrucaoUnica>
         </EnviarInstrucao>
+```
+
 -------------------------------------
 
 send()
@@ -409,6 +557,7 @@ O método send() executa o envio da instrução ao Moip, e retorna os dados de resp
 
 send()
 
+```php
 	$moip = new Moip();
 	$moip->setEnvironment('test');
 	$moip->setCredential(array(
@@ -421,14 +570,18 @@ send()
 	$moip->validate('Basic');
 
 	print_r($moip->send());
+```
 
-        //IRÃ? IMPRIMIR
-        stdClass Object
+```
+        //IRÁ IMPRIMIR
+        MoipResponse Object
         (
-            [response] => 1
-            [error] =>
+            [response] => true
+            [error] => false
             [xml] => <ns1:EnviarInstrucaoUnicaResponse xmlns:ns1="http://www.moip.com.br/ws/alpha/"><Resposta><ID>201209042007216380000000989104</ID><Status>Sucesso</Status><Token>M2C031R2Q0Z9W0Y4Q2S0H0W7E2G1Z6P3E8C0C0W050T01070Y9Y8V9G1F0F4</Token></Resposta></ns1:EnviarInstrucaoUnicaResponse>
         )
+```
+
 -------------------------------------
 
 getAnswer()
@@ -442,6 +595,7 @@ O método getAnswer() retorna os dados de resposta do Moip em forma de objeto.
 
 getAnswer()
 
+```php
 	$moip = new Moip();
 	$moip->setEnvironment('test');
 	$moip->setCredential(array(
@@ -456,15 +610,19 @@ getAnswer()
 	$moip->send();
 
 	print_r($moip->getAnswer());
+```
 
-	//IRÃ? IMPRIMIR
-	stdClass Object
+```
+	//IRÁ IMPRIMIR
+	MoipResponse Object
 	(
-	    [response] => 1
-	    [error] =>
+	    [response] => true
+	    [error] => false
 	    [token] => 92D091R2I0Y9X0E4T2K034L2H2V4H2J6L9R0S0T0K0N0L0T0Y9H879H144O8
 	    [payment_url] => https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=92D091R2I0Y9X0E4T2K034L2H2V4H2J6L9R0S0T0K0N0L0T0Y9H879H144O8
 	)
+```
+
 -------------------------------------
 
 queryParcel()
@@ -494,6 +652,7 @@ $rate : Number
 
 $simulatedValue: Number
 
+```php
         $moip = new Moip();
         $moip->setEnvironment('test');
         $moip->setCredential(array(
@@ -504,8 +663,10 @@ $simulatedValue: Number
 
         print_r($moip->queryParcel('integracao@labs.moip.com.br', '4', '1.99', '100.00'));
 
+```
 
-        //IRÃ? IMPRIMIR
+```
+        //IRÁ IMPRIMIR
         Array
         (
             [response] => 1
@@ -547,4 +708,6 @@ $simulatedValue: Number
 
 
         )
+```
+
 ---------------
