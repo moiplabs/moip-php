@@ -450,7 +450,7 @@ class Moip {
 	 * @param array   $instructions Additional payment instructions can be array of message or a message in string
 	 * @param string  $uriLogo      URL of the image to be displayed on docket (75x40)
 	 *
-	 * @return void
+	 * @return Moip
 	 */
 	public function setBilletConf($expiration, $workingDays = false, $instructions = null, $uriLogo = null)
 	{
@@ -499,6 +499,8 @@ class Moip {
 				$this->xml->InstrucaoUnica->Boleto->addChild('URLLogo', $uriLogo);
 			}
 		}
+
+		return $this;
 	}
 
 	/**
@@ -543,7 +545,7 @@ class Moip {
 			$value = 0.0;
 		}
 
-		return sprintf('%.02f', $value);
+		return number_format($value, 2, '.', '');
 	}
 
 	/**
