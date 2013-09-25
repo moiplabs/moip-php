@@ -907,12 +907,14 @@ class Moip {
 
 			if ($xml_answer && isset($xml_answer->RespostaVisualizarInstrucaoUnica))
 			{
-				return new MoipResponse(self::xml2array($xml_answer->RespostaVisualizarInstrucaoUnica->InstrucaoUnica));
+				$out = self::xml2array($xml_answer->RespostaVisualizarInstrucaoUnica->InstrucaoUnica);
 			}
 			else
 			{
-				return new MoipResponse(self::xml2array($xml_answer));
+				$out = self::xml2array($xml_answer);
 			}
+
+			return new MoipResponse($out);
 		}
 
 		return new MoipResponse(array());
@@ -939,12 +941,14 @@ class Moip {
 			{
 				unset($xml_answer->RespostaConsultar->Autorizacao->Recebedor);
 
-				return new MoipResponse(self::xml2array($xml_answer->RespostaConsultar->Autorizacao));
+				$out = self::xml2array($xml_answer->RespostaConsultar->Autorizacao);
+				$out['status_pagamento'] = (int)$xml_answer->RespostaConsultar->Autorizacao->Pagamento[0]->Status->attributes()->Tipo;
 			}
 			else
 			{
-				return new MoipResponse(self::xml2array($xml_answer));
+				$out = self::xml2array($xml_answer);
 			}
+			return new MoipResponse($out);
 		}
 
 		return new MoipResponse(array());
