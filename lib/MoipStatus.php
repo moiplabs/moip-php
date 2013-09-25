@@ -5,6 +5,7 @@ require 'phpQuery/phpQuery.php';
  * Verificação de status da conta do MoIP. Atualmente somente com suporte à verificação de saldo e ultimas transações.
  * @author Herberth Amaral
  * @version 0.0.2
+ * @deprecated
  * @package MoIP
  */
 
