@@ -194,7 +194,7 @@
     * @return MoipPlan
     */
    public function setAmount($amount) {
-     if(!is_int($amount)) {
+     if(!is_numeric($amount)) {
        $this->setError('Amount is an integer number.');
      }
      else {
@@ -213,7 +213,7 @@
     * @return MoipPlan
     */
    public function setSetupFee($setup_fee) {
-     if(!is_int($setup_fee)) {
+     if(!is_numeric($setup_fee)) {
        $this->setError('Setup fee is an integer number.');
      }
      else {
@@ -232,7 +232,7 @@
     * @return MoipPlan
     */
    public function setMaxQty($max_qty) {
-     if(!is_int($max_qty)) {
+     if(!is_numeric($max_qty)) {
        $this->setError('Max quantity is an integer number.');
      }
      else {
@@ -270,7 +270,7 @@
     * @return MoipPlan
     */
    public function setInterval($interval) {
-     if(!isset($interval['unit']) || !isset($interval['length']) || !in_array($interval['unit'], array('DAY', 'MONTH', 'YEAR')) || !is_int($interval['length'])) {
+     if(!isset($interval['unit']) || !isset($interval['length']) || !in_array($interval['unit'], array('DAY', 'MONTH', 'YEAR')) || !is_numeric($interval['length'])) {
        $this->setError('Interval must be an array containing the keys \'length\' and \'unit\'.');
      }
      else {
@@ -289,7 +289,7 @@
     * @return MoipPlan
     */
    public function setBillingCycles($billing_cycles) {
-     if(!is_int($billing_cycles)) {
+     if(!is_numeric($billing_cycles)) {
        $this->setError('Billing cycles is an integer number.');
      }
      else {
@@ -308,7 +308,7 @@
     * @return MoipPlan
     */
    public function setTrial($trial) {
-     if(!isset($trial['days']) || !isset($trial['enabled']) || !in_array($trial['enabled'], array('TRUE', 'FALSE')) || !is_int($trial['days'])) {
+     if(!isset($trial['days']) || !isset($trial['enabled']) || !in_array($trial['enabled'], array('TRUE', 'FALSE')) || !is_numeric($trial['days'])) {
        $this->setError('Trial must be an array containing the keys \'days\' and \'enabled\'.');
      }
      else {
