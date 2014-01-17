@@ -127,7 +127,7 @@ class MoipSubscriptionsAPI {
       $plans = array();
       
       foreach($response->data['plans'] as $plan) {
-        $plans[] = new MoipPlan($plan);
+        $plans[$plan['code']] = new MoipPlan($plan);
       }
       
       return new MoipResponse(array('response' => true, 'error' => null, 'data' => $plans));
@@ -163,6 +163,69 @@ class MoipSubscriptionsAPI {
     }
     
     return $this->curlPut($plan->toJSON(),'/plans/'.$plan->code);
+  }
+  
+  /**
+   * Method createCustomer()
+   *
+   * Tells Moip to create a customer.
+   *
+   * @param MoipCustomer $customer
+   * @return MoipResponse the server response
+   */
+  public function createCustomer($customer, $new_vault = false) {
+    $customer->validate();
+  
+    if($customer->errors != null) {
+      $this->setError($customer->errors);
+    }
+  
+    if($new_vault && (!$customer->hasCreditCard() || isset($customer->billing_info['credit_card']['vault']))) {
+      $this->setError('Cannot create vault without credit card information.');
+    }
+    
+    return $this->curlPost($customer->toJSON(),'/customers?newvault=' . ($new_vault ? 'true' : 'false'));
+  }
+  
+  public function getCustomers() {
+    $response = $this->curlGet('/customers', $this->errors);
+  
+    if($response->response) {
+      $customers = array();
+  
+      foreach($response->data['customers'] as $customer) {
+        $customers[$customer['code']] = new MoipCustomer($customer);
+      }
+  
+      return new MoipResponse(array('response' => true, 'error' => null, 'data' => $customers));
+    } else {
+      return $response;
+    }
+  }
+  
+  public function getCustomer($code) {
+    $response = $this->curlGet('/customers/' . $code);
+  
+    if($response->response) {
+      $customer = new MoipCustomer($response->data);
+      return new MoipResponse(array('response' => true, 'error' => null, 'data' => $customer));
+    } else {
+      return $response;
+    }
+  }
+  
+  public function updateCustomer($customer) {
+    $customer->validate();
+    
+    if($customer->errors != null) {
+      $this->setError($customer->errors);
+    }
+    
+    return $this->curlPut($customer->toJSON(),'/customers/'.$customer->code);
+  }
+  
+  public function updateCustomerBillingInfo($code, $billing_info) {
+    return $this->curlPut(json_encode($billing_info), '/customers/'.$code.'/billing_infos');
   }
   
   /**
