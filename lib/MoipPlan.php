@@ -308,7 +308,7 @@
     * @return MoipPlan
     */
    public function setTrial($trial) {
-     if(!isset($trial['days']) || !isset($trial['enabled']) || !in_array($trial['enabled'], array('TRUE', 'FALSE')) || !is_numeric($trial['days'])) {
+     if(!isset($trial['days']) || !isset($trial['enabled']) || !is_bool($trial['enabled']) || !is_numeric($trial['days'])) {
        $this->setError('Trial must be an array containing the keys \'days\' and \'enabled\'.');
      }
      else {
