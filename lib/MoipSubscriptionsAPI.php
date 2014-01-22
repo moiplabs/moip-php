@@ -228,6 +228,18 @@ class MoipSubscriptionsAPI {
     return $this->curlPut(json_encode($billing_info), '/customers/'.$code.'/billing_infos');
   }
   
+  public function suspendSubscription($code) {
+	return $this->curlPut(null,'/subscriptions/'.$code.'/suspend');
+  }
+  
+  public function activateSubscription($code) {
+	return $this->curlPut(null,'/subscriptions/'.$code.'/activate');
+  }
+  
+  public function cancelSubscription($code) {
+	return $this->curlPut(null,'/subscriptions/'.$code.'/cancel');
+  }
+  
   /**
    * @param string $json json data
    * @param string $url url request
