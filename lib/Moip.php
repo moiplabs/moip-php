@@ -8,7 +8,7 @@
  * @author Alê Borba
  * @author Vagner Fiuza Vieira
  * @author Paulo Cesar
- * @version 1.6
+ * @version 1.6.2
  * @license <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>
  */
 
@@ -329,6 +329,8 @@ class Moip {
      */
     public function setUniqueID($id) {
         $this->uniqueID = $id;
+        $this->xml->InstrucaoUnica->addChild('IdProprio', $this->uniqueID);
+
         return $this;
     }
 
@@ -343,6 +345,8 @@ class Moip {
      */
     public function setReason($reason) {
         $this->reason = $reason;
+        $this->xml->InstrucaoUnica->addChild('Razao', $this->reason);
+        
         return $this;
     }
 
@@ -360,6 +364,15 @@ class Moip {
             $this->setError("Error: Payment method unavailable");
         else
             $this->payment_way[] = $way;
+
+
+        $instrucao = $this->xml->InstrucaoUnica;
+
+
+        $formas = (!isset($instrucao->FormasPagamento)) ? $instrucao->addChild('FormasPagamento') : $instrucao->FormasPagamento;
+
+        if (!empty($this->payment_way)) 
+            $formas->addChild('FormaPagamento', $this->payment_ways[$way]);
 
         return $this;
     }
@@ -407,6 +420,8 @@ class Moip {
             if (isset($uriLogo))
                 $this->xml->InstrucaoUnica->Boleto->addChild('URLLogo', $uriLogo);
         }
+
+        return $this;
     }
 
     /**
@@ -420,6 +435,37 @@ class Moip {
      */
     public function setPayer($payer) {
         $this->payer = $payer;
+
+        if (!empty($this->payer)) {
+            $p = $this->payer;
+            $this->xml->InstrucaoUnica->addChild('Pagador');
+            (isset($p['name'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('Nome', $this->payer['name']) : null;
+            (isset($p['email'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('Email', $this->payer['email']) : null;
+            (isset($p['payerId'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('IdPagador', $this->payer['payerId']) : null;
+            (isset($p['identity'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('Identidade', $this->payer['identity']) : null;
+            (isset($p['phone'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('TelefoneCelular', $this->payer['phone']) : null;
+
+            $p = $this->payer['billingAddress'];
+            $this->xml->InstrucaoUnica->Pagador->addChild('EnderecoCobranca');
+            (isset($p['address'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Logradouro', $this->payer['billingAddress']['address']) : null;
+
+            (isset($p['number'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Numero', $this->payer['billingAddress']['number']) : null;
+
+            (isset($p['complement'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Complemento', $this->payer['billingAddress']['complement']) : null;
+
+            (isset($p['neighborhood'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Bairro', $this->payer['billingAddress']['neighborhood']) : null;
+
+            (isset($p['city'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Cidade', $this->payer['billingAddress']['city']) : null;
+
+            (isset($p['state'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Estado', $this->payer['billingAddress']['state']) : null;
+
+            (isset($p['country'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Pais', $this->payer['billingAddress']['country']) : null;
+
+            (isset($p['zipCode'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('CEP', $this->payer['billingAddress']['zipCode']) : null;
+
+            (isset($p['phone'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('TelefoneFixo', $this->payer['billingAddress']['phone']) : null;
+        }
+
         return $this;
     }
 
@@ -434,6 +480,14 @@ class Moip {
      */
     public function setValue($value) {
         $this->value = $value;
+
+        if (empty($this->value))
+            $this->setError('Error: The transaction amount must be specified.');
+
+        $this->xml->InstrucaoUnica->addChild('Valores')
+                ->addChild('Valor', $this->value)
+                ->addAttribute('moeda', 'BRL');
+
         return $this;
     }
 
@@ -448,6 +502,12 @@ class Moip {
      */
     public function setAdds($value) {
         $this->adds = $value;
+
+        if (isset($this->adds)) {
+            $this->xml->InstrucaoUnica->Valores->addChild('Acrescimo', $this->adds)
+                    ->addAttribute('moeda', 'BRL');
+        }
+
         return $this;
     }
 
@@ -462,6 +522,12 @@ class Moip {
      */
     public function setDeduct($value) {
         $this->deduction = $value;
+
+        if (isset($this->deduction)) {
+            $this->xml->InstrucaoUnica->Valores->addChild('Deducao', $this->deduction)
+                    ->addAttribute('moeda', 'BRL');
+        }
+
         return $this;
     }
 
@@ -641,70 +707,9 @@ class Moip {
     public function getXML() {
 
         if ($this->payment_type == "Identification")
-            $this->xml->InstrucaoUnica->addAttribute('TipoValidacao', 'Transparente');
-
-        $this->xml->InstrucaoUnica->addChild('IdProprio', $this->uniqueID);
-        $this->xml->InstrucaoUnica->addChild('Razao', $this->reason);
-
-        if (empty($this->value))
-            $this->setError('Error: The transaction amount must be specified.');
-
-        $this->xml->InstrucaoUnica->addChild('Valores')
-                ->addChild('Valor', $this->value)
-                ->addAttribute('moeda', 'BRL');
-
-        if (isset($this->deduction)) {
-            $this->xml->InstrucaoUnica->Valores->addChild('Deducao', $this->deduction)
-                    ->addAttribute('moeda', 'BRL');
-        }
-
-        if (isset($this->adds)) {
-            $this->xml->InstrucaoUnica->Valores->addChild('Acrescimo', $this->adds)
-                    ->addAttribute('moeda', 'BRL');
-        }
-
-        if (!empty($this->payment_way)) {
-            $instrucao = $this->xml->InstrucaoUnica;
-            $formas = $instrucao->addChild('FormasPagamento');
-
-            foreach ($this->payment_way as $way) {
-                $formas->addChild('FormaPagamento', $this->payment_ways[$way]);
-            }
-        }
-
-
-        if (!empty($this->payer)) {
-            $p = $this->payer;
-            $this->xml->InstrucaoUnica->addChild('Pagador');
-            (isset($p['name'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('Nome', $this->payer['name']) : null;
-            (isset($p['email'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('Email', $this->payer['email']) : null;
-            (isset($p['payerId'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('IdPagador', $this->payer['payerId']) : null;
-            (isset($p['identity'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('Identidade', $this->payer['identity']) : null;
-            (isset($p['phone'])) ? $this->xml->InstrucaoUnica->Pagador->addChild('TelefoneCelular', $this->payer['phone']) : null;
-
-            $p = $this->payer['billingAddress'];
-            $this->xml->InstrucaoUnica->Pagador->addChild('EnderecoCobranca');
-            (isset($p['address'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Logradouro', $this->payer['billingAddress']['address']) : null;
-
-            (isset($p['number'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Numero', $this->payer['billingAddress']['number']) : null;
-
-            (isset($p['complement'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Complemento', $this->payer['billingAddress']['complement']) : null;
-
-            (isset($p['neighborhood'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Bairro', $this->payer['billingAddress']['neighborhood']) : null;
-
-            (isset($p['city'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Cidade', $this->payer['billingAddress']['city']) : null;
-
-            (isset($p['state'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Estado', $this->payer['billingAddress']['state']) : null;
-
-            (isset($p['country'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('Pais', $this->payer['billingAddress']['country']) : null;
-
-            (isset($p['zipCode'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('CEP', $this->payer['billingAddress']['zipCode']) : null;
-
-            (isset($p['phone'])) ? $this->xml->InstrucaoUnica->Pagador->EnderecoCobranca->addChild('TelefoneFixo', $this->payer['billingAddress']['phone']) : null;
-        }
+            $this->xml->InstrucaoUnica->addAttribute('TipoValidacao', 'Transparente');        
 
         $return = $this->convert_encoding($this->xml->asXML(), true);
-        $this->initXMLObject();
         return str_ireplace("\n", "", $return);
     }
 
