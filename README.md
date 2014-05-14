@@ -1,7 +1,7 @@
 SDK Moip-PHP - API
 ====================================================
 
-O Moip-PHP é uma biblioteca que implementa uma camada de abstração para geração do XML de instruções do Moip, permitindo que você integre aos serviços de API sem poluir seu código com várias linhas de XML. Um exemplo rápido:
+O Moip-PHP Ã© uma biblioteca que implementa uma camada de abstraÃ§Ã£o para geraÃ§Ã£o do XML de instruÃ§Ãµes do Moip, permitindo que vocÃª integre aos serviÃ§os de API sem poluir seu cÃ³digo com vÃ¡rias linhas de XML. Um exemplo rÃ¡pido:
 
     include_once "autoload.inc.php";
  
@@ -19,9 +19,9 @@ O Moip-PHP é uma biblioteca que implementa uma camada de abstração para geração 
     $moip->validate('Basic');
  
     print_r($moip->send());
-	
+    
 
-O Moip-PHP utiliza o padrão Fluent Interfaces, portanto, você pode fazer o exemplo acima da seguinte forma:
+O Moip-PHP utiliza o padrÃ£o Fluent Interfaces, portanto, vocÃª pode fazer o exemplo acima da seguinte forma:
 
     include_once "autoload.inc.php";
  
@@ -37,16 +37,16 @@ O Moip-PHP utiliza o padrão Fluent Interfaces, portanto, você pode fazer o exemp
             ->send());
 -------------------------------------
 
-Métodos disponíveis
+MÃ©todos disponÃ­veis
 ----------
-Veja baixo relação e detalhes dos métodos disponíveis que você poderá utilizar com o Moip-PHP.
+Veja baixo relaÃ§Ã£o e detalhes dos mÃ©todos disponÃ­veis que vocÃª poderÃ¡ utilizar com o Moip-PHP.
 
 
 -------------------------------------
 
 Moip()
 ----------
-Método construtor.
+MÃ©todo construtor.
 
 Moip()
 
@@ -55,187 +55,187 @@ Moip()
 
 setEnvironment()
 ----------
-Método que define o ambiente em qual o requisição será processada, 'test' para definir que será em ambiente de testes Moip o Sandbox, a omissão desse método define que a requisição deverá ser processada em ambiente real, de produção Moip.
+MÃ©todo que define o ambiente em qual o requisiÃ§Ã£o serÃ¡ processada, 'test' para definir que serÃ¡ em ambiente de testes Moip o Sandbox, a omissÃ£o desse mÃ©todo define que a requisiÃ§Ã£o deverÃ¡ ser processada em ambiente real, de produÃ§Ã£o Moip.
 
 
-Importante: ao definir o ambiente certifique-se de que está utilizando a autenticação correspondente ao ambiente, no Moip cada ambiente possui suas própria chaves de autenticação API.
+Importante: ao definir o ambiente certifique-se de que estÃ¡ utilizando a autenticaÃ§Ã£o correspondente ao ambiente, no Moip cada ambiente possui suas prÃ³pria chaves de autenticaÃ§Ã£o API.
 
 setEnvironment($environment)
 $environment : String ('test')
 
-	$moip->setEnvironment('test');
+    $moip->setEnvironment('test');
 -------------------------------------
 
 setCredential()
 ----------
-O Moip requer que você se autentique para que seja possivel processar requisições em sua API, para isso antes de realizar qualquer requisição você deverá informar ao Moip suas credenciais da API formados por um TOKEN e uma KEY.
+O Moip requer que vocÃª se autentique para que seja possivel processar requisiÃ§Ãµes em sua API, para isso antes de realizar qualquer requisiÃ§Ã£o vocÃª deverÃ¡ informar ao Moip suas credenciais da API formados por um TOKEN e uma KEY.
 
-O parâmetro $credencials é um array associativo contendo as chaves key e token (ex: array('key'=>'sua_key','token'=>'seu_token')). Se você ainda não possui estes dados, veja como obtelas tarvés em sua conta Sandbox.
+O parÃ¢metro $credencials Ã© um array associativo contendo as chaves key e token (ex: array('key'=>'sua_key','token'=>'seu_token')). Se vocÃª ainda nÃ£o possui estes dados, veja como obtelas tarvÃ©s em sua conta Sandbox.
 
  setCredential($credential)
 
  $credential : Array('key','token')
 
-	$moip->setCredential(array(
-	        'key' => 'SUA_KEY',
-        	'token' => 'SEU_TOKEN'
-        	));
+    $moip->setCredential(array(
+            'key' => 'SUA_KEY',
+            'token' => 'SEU_TOKEN'
+            ));
 
 -------------------------------------
 
 validate()
 ----------
-O método validate() irá realizar a validação dos dados obrigatórios para o tipo de instrução que você deseja processar, você pode optar por um dos dois níveis de validação disponíveis o 'Basic' e 'Identification'.
+O mÃ©todo validate() irÃ¡ realizar a validaÃ§Ã£o dos dados obrigatÃ³rios para o tipo de instruÃ§Ã£o que vocÃª deseja processar, vocÃª pode optar por um dos dois nÃ­veis de validaÃ§Ã£o disponÃ­veis o 'Basic' e 'Identification'.
 
-1. Basic : Irá realizar a validação dos dados mínimos de para uma requisição XML ao Moip.
-2. Identification : Irá validar os dados necessários para se processar um XML com identificação Moip, usados geralmente para redirecionar o cliente já no segundo step da pagina de pagamento no checkout Moip ou usar o Moip Transaparente.
+1. Basic : IrÃ¡ realizar a validaÃ§Ã£o dos dados mÃ­nimos de para uma requisiÃ§Ã£o XML ao Moip.
+2. Identification : IrÃ¡ validar os dados necessÃ¡rios para se processar um XML com identificaÃ§Ã£o Moip, usados geralmente para redirecionar o cliente jÃ¡ no segundo step da pagina de pagamento no checkout Moip ou usar o Moip Transaparente.
 
  validate($validateType)
 
  $validateType : String ('Basic' ou 'Identification')
 
-	$moip->validate('Identification');
+    $moip->validate('Identification');
 
 -------------------------------------
 
 setUniqueID()
 ----------
-O método setUniqueID() atribui valor a tag "&lt;IdProprio&gt;" no XML Moip.
+O mÃ©todo setUniqueID() atribui valor a tag "&lt;IdProprio&gt;" no XML Moip.
 
-1. &lt;IdProprio&gt;: Seu identificador único de pedido, essa mesma informações será enviada para você em nossas notificações de alterações de status para que você possa identificar o pedido e tratar seu status.
+1. &lt;IdProprio&gt;: Seu identificador Ãºnico de pedido, essa mesma informaÃ§Ãµes serÃ¡ enviada para vocÃª em nossas notificaÃ§Ãµes de alteraÃ§Ãµes de status para que vocÃª possa identificar o pedido e tratar seu status.
 
 setUniqueID($id)
 
 $id : String
 
-	$moip->setUniqueID('ABCD123456789');
+    $moip->setUniqueID('ABCD123456789');
 -------------------------------------
 
 setValue()
 ----------
 
-O método setValue() atribui valor a tag "&lt;Valor&gt;" no XML Moip.
+O mÃ©todo setValue() atribui valor a tag "&lt;Valor&gt;" no XML Moip.
 
-1. &lt;Valor&gt;:  Responsável por definir o valor que deverá ser pago.
+1. &lt;Valor&gt;:  ResponsÃ¡vel por definir o valor que deverÃ¡ ser pago.
 
 setValue($value)
 
 $value : Numeric
 
-	$moip->setValue('100.00');	
+    $moip->setValue('100.00');    
 -------------------------------------
 
 setAdds()
 ---------------
-O método setAdds() atribui valor a tag "&lt;Acrescimo&gt;" no XML Moip.
+O mÃ©todo setAdds() atribui valor a tag "&lt;Acrescimo&gt;" no XML Moip.
 
-1. &lt;Acrescimo&gt;:  Responsável por definir o valor adicional que deverá ser pago.
+1. &lt;Acrescimo&gt;:  ResponsÃ¡vel por definir o valor adicional que deverÃ¡ ser pago.
 
 setAdds($value)
 
 $value : Numeric
 
-	$moip->setAdds('15.00');	
+    $moip->setAdds('15.00');    
 -------------------------------------
 
 setDeduct()
 ---------------
 
-O método setDeduct() atribui valor a tag "&lt;Deducao&gt;" no XML Moip.
+O mÃ©todo setDeduct() atribui valor a tag "&lt;Deducao&gt;" no XML Moip.
 
-1. &lt;Deducao&gt;:  Responsável por definir o valor de desconto que será subtraído do total a ser pago.
+1. &lt;Deducao&gt;:  ResponsÃ¡vel por definir o valor de desconto que serÃ¡ subtraÃ­do do total a ser pago.
 
 setDeduct($value)
 
 $value : Numeric
 
-	$moip->setDeduct('15.00');
+    $moip->setDeduct('15.00');
 -------------------------------------
 
 setReason()
 ---------------
-O método setReason() atribui valor a tag "&lt;Razao&gt;" no XML Moip.
+O mÃ©todo setReason() atribui valor a tag "&lt;Razao&gt;" no XML Moip.
 
-1. &lt;Razao&gt;:  Responsável por definir o motivo do pagamento.
-1. Este campo é sempre obrigatório em um instrução de pagamento.
+1. &lt;Razao&gt;:  ResponsÃ¡vel por definir o motivo do pagamento.
+1. Este campo Ã© sempre obrigatÃ³rio em um instruÃ§Ã£o de pagamento.
 
 setReason($value)
 
 $value : String
 
-	$moip->setReason('Pagamento de teste do Moip-PHP');
+    $moip->setReason('Pagamento de teste do Moip-PHP');
 -------------------------------------
 
 setPayer()
 ---------------
-O método setPayer() atribui valores ao nodo "&lt;Pagador&gt;" no XML Moip.
+O mÃ©todo setPayer() atribui valores ao nodo "&lt;Pagador&gt;" no XML Moip.
 
 
-1. &lt;Pagador&gt;:  Nodo de informações de quem está realizando o pagamento.
+1. &lt;Pagador&gt;:  Nodo de informaÃ§Ãµes de quem estÃ¡ realizando o pagamento.
 1. name : &lt;Nome&gt; : Nome completo do pagador
 2. email : &lt;Email&gt; : E-mail do pagador
 3. payerId : &lt;IdPagador&gt; : Identificados unico do pagador
 4. identity : &lt;Identidade&gt; : Identidade do pagador (CPF)
-5. phone : &lt;TelefoneCelular&gt; : Telefone de contato secundário do pagador
-6. billingAddress : &lt;EnderecoCobranca&gt; : Endereço do pagador
+5. phone : &lt;TelefoneCelular&gt; : Telefone de contato secundÃ¡rio do pagador
+6. billingAddress : &lt;EnderecoCobranca&gt; : EndereÃ§o do pagador
 1. address : &lt;Logradouro&gt; : Logradouro do pagador, rua, av, estrada, etc.
 2. number : &lt;Numero&gt; : Numero residencial do pagador
-3. complement : &lt;Complemento&gt; : Complemento do endereço do pagador
-4. city : &lt;Cidade&gt; : Cidade do endereço do pagador
-5. neighborhood : &lt;Bairro&gt; : Bairro do endereço do pagador
-6. state : &lt;Estado&gt; : Estado do endereço do pagador em formato ISO-CODE (UF)
+3. complement : &lt;Complemento&gt; : Complemento do endereÃ§o do pagador
+4. city : &lt;Cidade&gt; : Cidade do endereÃ§o do pagador
+5. neighborhood : &lt;Bairro&gt; : Bairro do endereÃ§o do pagador
+6. state : &lt;Estado&gt; : Estado do endereÃ§o do pagador em formato ISO-CODE (UF)
 7. country : &lt;Pais&gt; : Pais do pagador em formato ISO-CODE
-8. zipCode  : &lt;CEP&gt; : CEP de endereço
+8. zipCode  : &lt;CEP&gt; : CEP de endereÃ§o
 9. phone  : &lt;TelefoneFixo&gt; : Telefone de contato do pagador
 
 setPayer($value)
 
 $value : Array ('name','email','payerId','identity', 'phone','billingAddress' => Array('address','number','complement','city','neighborhood','state','country','zipCode','phone'))
 
-	$moip->setPayer(array('name' => 'Nome Sobrenome',
-        	'email' => 'email@cliente.com.br',
-        	'payerId' => 'id_usuario',
-	        'billingAddress' => array('address' => 'Rua do Zézinho Coração',
-            		'number' => '45',
-            		'complement' => 'z',
-            		'city' => 'São Paulo',
-            		'neighborhood' => 'Palhaço Jão',
-            		'state' => 'SP',
-            		'country' => 'BRA',
-            		'zipCode' => '01230-000',
-            		'phone' => '(11)8888-8888')));
+    $moip->setPayer(array('name' => 'Nome Sobrenome',
+            'email' => 'email@cliente.com.br',
+            'payerId' => 'id_usuario',
+            'billingAddress' => array('address' => 'Rua do ZÃ©zinho CoraÃ§Ã£o',
+                    'number' => '45',
+                    'complement' => 'z',
+                    'city' => 'SÃ£o Paulo',
+                    'neighborhood' => 'PalhaÃ§o JÃ£o',
+                    'state' => 'SP',
+                    'country' => 'BRA',
+                    'zipCode' => '01230-000',
+                    'phone' => '(11)8888-8888')));
 -------------------------------------
 
 addPaymentWay()
 ---------------
-O método addPaymentWay() atribui valor a tag "&lt;FormaPagamento&gt;" do nodo "&lt;FormasPagamento&gt;" no XML Moip.
+O mÃ©todo addPaymentWay() atribui valor a tag "&lt;FormaPagamento&gt;" do nodo "&lt;FormasPagamento&gt;" no XML Moip.
 
-&lt;FormaPagamento&gt;: Define quais as formas de pagamento que serão exibidas ao pagador no Checkout Moip.
-1. billet : Para disponibilizar a opção "Boleto Bancário" como forma de pagamento no checkout Moip.
-2. financing :  Para disponibilizar a opção "Financiamento" como forma de pagamento no checkout Moip.
-3. debit :  Para disponibilizar a opção "Debito em conta" como forma de pagamento no checkout Moip.
-4. creditCard :  Para disponibilizar a opção "Cartão de Crédito" como forma de pagamento no checkout Moip.
-5. debitCard :  Para disponibilizar a opção "Cartão de débito" como forma de pagamento no checkout Moip.
+&lt;FormaPagamento&gt;: Define quais as formas de pagamento que serÃ£o exibidas ao pagador no Checkout Moip.
+1. billet : Para disponibilizar a opÃ§Ã£o "Boleto BancÃ¡rio" como forma de pagamento no checkout Moip.
+2. financing :  Para disponibilizar a opÃ§Ã£o "Financiamento" como forma de pagamento no checkout Moip.
+3. debit :  Para disponibilizar a opÃ§Ã£o "Debito em conta" como forma de pagamento no checkout Moip.
+4. creditCard :  Para disponibilizar a opÃ§Ã£o "CartÃ£o de CrÃ©dito" como forma de pagamento no checkout Moip.
+5. debitCard :  Para disponibilizar a opÃ§Ã£o "CartÃ£o de dÃ©bito" como forma de pagamento no checkout Moip.
 
 addPaymentWay($way)
 
 $way : String ('billet','financing','debit','creditCard','debitCard')
 
-	$moip->addPaymentWay('creditCard');
-	$moip->addPaymentWay('billet');
-	$moip->addPaymentWay('financing');
-	$moip->addPaymentWay('debit');
-	$moip->addPaymentWay('debitCard');
+    $moip->addPaymentWay('creditCard');
+    $moip->addPaymentWay('billet');
+    $moip->addPaymentWay('financing');
+    $moip->addPaymentWay('debit');
+    $moip->addPaymentWay('debitCard');
 -------------------------------------
 
 setBilletConf()
 ---------------
-O método setBilletConf() atribui valores ao node "&lt;Boleto&gt;" no XML Moip que é responsável por definir as configurações adicionais e personalização do Boleto bancário.
+O mÃ©todo setBilletConf() atribui valores ao node "&lt;Boleto&gt;" no XML Moip que Ã© responsÃ¡vel por definir as configuraÃ§Ãµes adicionais e personalizaÃ§Ã£o do Boleto bancÃ¡rio.
 
 1. $expiration :  Data em formato "AAAA-MM-DD" ou quantidade de dias.
-2. $workingDays : Caso "$expiration" seja quantidade de dias você pode definir com "true" para que seja contado em dias Ãºteis, o padrão será dias corridos.
-3. $instructions : Mensagem adicionais a ser impresso no boleto, até três mensagens.
-4. $uriLogo : URL de sua logomarca, dimensÃµes máximas 75px largura por 40px altura.
+2. $workingDays : Caso "$expiration" seja quantidade de dias vocÃª pode definir com "true" para que seja contado em dias ÃƒÂºteis, o padrÃ£o serÃ¡ dias corridos.
+3. $instructions : Mensagem adicionais a ser impresso no boleto, atÃ© trÃªs mensagens.
+4. $uriLogo : URL de sua logomarca, dimensÃƒÂµes mÃ¡ximas 75px largura por 40px altura.
 
 setBilletConf($expiration, $workingDays, $instructions, $uriLogo)
 
@@ -247,17 +247,17 @@ $instructions : Array()
 
 $uriLogo : String
 
-	$moip->setBilletConf("2011-04-06",
-            	false,
-            	array("Primeira linha",
-                	"Segunda linha",
-                	"Terceira linha"),
-            	"http://seusite.com.br/logo.gif");
+    $moip->setBilletConf("2011-04-06",
+                false,
+                array("Primeira linha",
+                    "Segunda linha",
+                    "Terceira linha"),
+                "http://seusite.com.br/logo.gif");
 -------------------------------------
 
 addMessage()
 ---------------
-O método addMessage() atribui valor a tag "&lt;Mensagem&gt;" do node "&lt;Mensagens&gt;" no XML Moip.
+O mÃ©todo addMessage() atribui valor a tag "&lt;Mensagem&gt;" do node "&lt;Mensagens&gt;" no XML Moip.
 
 1. &lt;Mensagens&gt;:  Node com "&lt;Mensagens&gt;".
 1. &lt;Mensagem&gt;: TAG que define mensagem adicional a ser exibida no checkout Moip.
@@ -266,41 +266,41 @@ addMessage($msg)
 
 $msg : String
 
-	$moip->addMessage('Seu pedido contem os produtos X,Y e Z.');
+    $moip->addMessage('Seu pedido contem os produtos X,Y e Z.');
 -------------------------------------
 
 setReturnURL()
 ---------------
-O método setReturnURL() atribui valor a tag "&lt;URLRetorno&gt;" no XML Moip, responsável por definir a URL que o comprador será redirecionado ao finalizar um pagamento através do checkout Moip.
+O mÃ©todo setReturnURL() atribui valor a tag "&lt;URLRetorno&gt;" no XML Moip, responsÃ¡vel por definir a URL que o comprador serÃ¡ redirecionado ao finalizar um pagamento atravÃ©s do checkout Moip.
 
 setReturnURL($url)
 
 $url : String
 
-	$moip->setReturnURL('https://meusite.com.br/cliente/pedido/bemvindodevolta');
+    $moip->setReturnURL('https://meusite.com.br/cliente/pedido/bemvindodevolta');
 -------------------------------------
 
 setNotificationURL()
 ---------------
-O método setNotificationURL() atribui valor a tag "&lt;URLNotificacao&gt;" no XML Moip, responsável por definir a URL ao qual o Moip deverá notificar com o NASP (Notificação de Alteração de Status de Pagamento) as mudança de status.
+O mÃ©todo setNotificationURL() atribui valor a tag "&lt;URLNotificacao&gt;" no XML Moip, responsÃ¡vel por definir a URL ao qual o Moip deverÃ¡ notificar com o NASP (NotificaÃ§Ã£o de AlteraÃ§Ã£o de Status de Pagamento) as mudanÃ§a de status.
 
 setNotificationURL($url)
 
 $url : String
 
-	$moip->setNotificationURL('https://meusite.com.br/nasp/');
+    $moip->setNotificationURL('https://meusite.com.br/nasp/');
 -------------------------------------
 
 addComission()
 ---------------
-O método addComission() atribui valores as tags "&lt;Comissoes&gt;" no XML Moip, responsável por atribuir recebedores secundários a transação.
+O mÃ©todo addComission() atribui valores as tags "&lt;Comissoes&gt;" no XML Moip, responsÃ¡vel por atribuir recebedores secundÃ¡rios a transaÃ§Ã£o.
 
 
-1. $reason : Razão/Motivo ao qual o recebedor secundário receberá o valor definido.
-2. $receiver: Login Moip do usuario que receberá o valor.
-3. $value : Valor ao qual será destinado ao recebedor secundário.
-4. $percentageValue: Caso "true" define que valor será calculado em relação ao percentual sobre o valor total da transação.
-5. $ratePayer: Caso "true" define que esse recebedor secundário irá pagar a Taxa Moip com o valor recebido.
+1. $reason : RazÃ£o/Motivo ao qual o recebedor secundÃ¡rio receberÃ¡ o valor definido.
+2. $receiver: Login Moip do usuario que receberÃ¡ o valor.
+3. $value : Valor ao qual serÃ¡ destinado ao recebedor secundÃ¡rio.
+4. $percentageValue: Caso "true" define que valor serÃ¡ calculado em relaÃ§Ã£o ao percentual sobre o valor total da transaÃ§Ã£o.
+5. $ratePayer: Caso "true" define que esse recebedor secundÃ¡rio irÃ¡ pagar a Taxa Moip com o valor recebido.
 
 addComission($reason, $receiver, $value, $percentageValue, $ratePayer)
 
@@ -314,25 +314,25 @@ $percentageValue: Boolean
 
 $ratePayer : Boolean
 
-	$moip->addComission('Razão do Split',
-			'recebedor_secundario',
-			'5.00');
-	$moip->addComission('Razão do Split',
-			'recebedor_secundario_2',
-			'12.00',
-			true,
-			true);
+    $moip->addComission('RazÃ£o do Split',
+            'recebedor_secundario',
+            '5.00');
+    $moip->addComission('RazÃ£o do Split',
+            'recebedor_secundario_2',
+            '12.00',
+            true,
+            true);
 -------------------------------------
 
 addParcel()
 ---------------
-O método addParcel() atribui valores as tags de "&lt;Parcelamentos&gt;" no XML Moip, responsável configuras as opções de parcelamento que serão disponÃ­veis ao pagador.
+O mÃ©todo addParcel() atribui valores as tags de "&lt;Parcelamentos&gt;" no XML Moip, responsÃ¡vel configuras as opÃ§Ãµes de parcelamento que serÃ£o disponÃƒÂ­veis ao pagador.
 
 
-1. $min : Quantidade mÃ­nima de parcelas disponÃ­vel ao pagador.
-2. $max : Quantidade máxima de parcelas disponÃ­veis ao pagador.
+1. $min : Quantidade mÃƒÂ­nima de parcelas disponÃƒÂ­vel ao pagador.
+2. $max : Quantidade mÃ¡xima de parcelas disponÃƒÂ­veis ao pagador.
 3. $rate : Valor de juros a.m por parcela.
-4. $transfer : Caso "true" define que o valor de juros padrão do Moip será pago pelo pagador.
+4. $transfer : Caso "true" define que o valor de juros padrÃ£o do Moip serÃ¡ pago pelo pagador.
 
 
 addParcel($min, $max, $rate, $transfer)
@@ -345,14 +345,14 @@ $rate : Number
 
 $transfer : Boolean
 
-	$moip->addParcel('2', '4');
-	$moip->addParcel('5', '7', '1.00');
-	$moip->addParcel('8', '12', null, true);
+    $moip->addParcel('2', '4');
+    $moip->addParcel('5', '7', '1.00');
+    $moip->addParcel('8', '12', null, true);
 -------------------------------------
 
 setReceiver()
 ---------------
-O método setReceiver() atribui valor a tag "&lt;LoginMoIP&gt;" do node "&lt;Recebedor&gt;" que identifica o usuário Moip que irá receber o pagamento no Moip.
+O mÃ©todo setReceiver() atribui valor a tag "&lt;LoginMoIP&gt;" do node "&lt;Recebedor&gt;" que identifica o usuÃ¡rio Moip que irÃ¡ receber o pagamento no Moip.
 
 
 1. $receiver : Login Moip do recebedor primario.
@@ -362,30 +362,30 @@ setReceiver($receiver)
 
 $receiver : String
 
-	$moip->setReceiver('integracao@labs.moip.com.br');
+    $moip->setReceiver('integracao@labs.moip.com.br');
 -------------------------------------
 
 getXML()
 ---------------
-O método getXML() irá retornar o XML gerado com todos os atributos que você configurou, esse método pode ajudar a saber exatamente o XML que você irá enviar ao Moip.
+O mÃ©todo getXML() irÃ¡ retornar o XML gerado com todos os atributos que vocÃª configurou, esse mÃ©todo pode ajudar a saber exatamente o XML que vocÃª irÃ¡ enviar ao Moip.
 
 
 getXML()
 
-	$moip = new Moip();
-	$moip->setEnvironment('test');
-	$moip->setCredential(array(
-	    'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
-	    'token' => '01010101010101010101010101010101'
-	    ));
-	$moip->setUniqueID(false);
-	$moip->setValue('100.00');
-	$moip->setReason('Teste do Moip-PHP');
-	$moip->validate('Basic');
+    $moip = new Moip();
+    $moip->setEnvironment('test');
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101'
+        ));
+    $moip->setUniqueID(false);
+    $moip->setValue('100.00');
+    $moip->setReason('Teste do Moip-PHP');
+    $moip->validate('Basic');
 
-	print_r($moip->getXML());
+    print_r($moip->getXML());
 
-        //IRÃ? IMPRIMIR
+        //IRÃƒ? IMPRIMIR
         <?xml version="1.0" encoding="utf-8"?>
         <EnviarInstrucao>
             <InstrucaoUnica>
@@ -400,29 +400,29 @@ getXML()
 
 send()
 ---------------
-O método send() executa o envio da instrução ao Moip, e retorna os dados de resposta obtidos do Moip.
+O mÃ©todo send() executa o envio da instruÃ§Ã£o ao Moip, e retorna os dados de resposta obtidos do Moip.
 
 
 1. response : "true" para o caso de sucesso e "false" para quando ocorre algum erro.
-2. error : Retorna sempre uma mensagem quando "response" é "false".
-3. xml:  Retorna sempre o XML de resposta Moip quando "response" é "true".
+2. error : Retorna sempre uma mensagem quando "response" Ã© "false".
+3. xml:  Retorna sempre o XML de resposta Moip quando "response" Ã© "true".
 
 send()
 
-	$moip = new Moip();
-	$moip->setEnvironment('test');
-	$moip->setCredential(array(
-	    'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
-	    'token' => '01010101010101010101010101010101'
-	    ));
-	$moip->setUniqueID(false);
-	$moip->setValue('100.00');
-	$moip->setReason('Teste do Moip-PHP');
-	$moip->validate('Basic');
+    $moip = new Moip();
+    $moip->setEnvironment('test');
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101'
+        ));
+    $moip->setUniqueID(false);
+    $moip->setValue('100.00');
+    $moip->setReason('Teste do Moip-PHP');
+    $moip->validate('Basic');
 
-	print_r($moip->send());
+    print_r($moip->send());
 
-        //IRÃ? IMPRIMIR
+        //IRÃƒ? IMPRIMIR
         stdClass Object
         (
             [response] => 1
@@ -433,49 +433,49 @@ send()
 
 getAnswer()
 ---------------
-O método getAnswer() retorna os dados de resposta do Moip em forma de objeto.
+O mÃ©todo getAnswer() retorna os dados de resposta do Moip em forma de objeto.
 
 1. response : "true" para o caso onde o "&lt;Status&gt;" Moip retornou "Sucesso" e "false" para quando retornou "Falha".
-2. error : Retorna sempre uma mensagem quando "response" é "false".
-3. token:  Retorna o TOKEN de pagamento gerado para quando "response" é "true".
-4. payment_url : Retorna a URL de checkout Moip preparada para redirecionar o cliente com o TOKEN de pagamento para quando "response" é "true".
+2. error : Retorna sempre uma mensagem quando "response" Ã© "false".
+3. token:  Retorna o TOKEN de pagamento gerado para quando "response" Ã© "true".
+4. payment_url : Retorna a URL de checkout Moip preparada para redirecionar o cliente com o TOKEN de pagamento para quando "response" Ã© "true".
 
 getAnswer()
 
-	$moip = new Moip();
-	$moip->setEnvironment('test');
-	$moip->setCredential(array(
-	    'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
-	    'token' => '01010101010101010101010101010101'
-	    ));
+    $moip = new Moip();
+    $moip->setEnvironment('test');
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101'
+        ));
 
-	$moip->setUniqueID(false);
-	$moip->setValue('100.00');
-	$moip->setReason('Teste do Moip-PHP');
-	$moip->validate('Basic');
-	$moip->send();
+    $moip->setUniqueID(false);
+    $moip->setValue('100.00');
+    $moip->setReason('Teste do Moip-PHP');
+    $moip->validate('Basic');
+    $moip->send();
 
-	print_r($moip->getAnswer());
+    print_r($moip->getAnswer());
 
-	//IRÃ? IMPRIMIR
-	stdClass Object
-	(
-	    [response] => 1
-	    [error] =>
-	    [token] => 92D091R2I0Y9X0E4T2K034L2H2V4H2J6L9R0S0T0K0N0L0T0Y9H879H144O8
-	    [payment_url] => https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=92D091R2I0Y9X0E4T2K034L2H2V4H2J6L9R0S0T0K0N0L0T0Y9H879H144O8
-	)
+    //IRÃƒ? IMPRIMIR
+    stdClass Object
+    (
+        [response] => 1
+        [error] =>
+        [token] => 92D091R2I0Y9X0E4T2K034L2H2V4H2J6L9R0S0T0K0N0L0T0Y9H879H144O8
+        [payment_url] => https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=92D091R2I0Y9X0E4T2K034L2H2V4H2J6L9R0S0T0K0N0L0T0Y9H879H144O8
+    )
 -------------------------------------
 
 queryParcel()
 ---------------
-O método queryParcel() retorna um Array() contendo as informações de parcelas e seus respectivos valores cobrados por parcela e o valor total a ser pago referente a taxa de juros simulada..
+O mÃ©todo queryParcel() retorna um Array() contendo as informaÃ§Ãµes de parcelas e seus respectivos valores cobrados por parcela e o valor total a ser pago referente a taxa de juros simulada..
 
 1. REQUEST
 2. $login: Login Moip do usuario.
-3. $maxParcel: Máximo de parcelar a ser consultado.
-4. $rate:  Taxa de juros para simulação.
-5. $simulatedValue: Valor pago ao qual será simulado.
+3. $maxParcel: MÃ¡ximo de parcelar a ser consultado.
+4. $rate:  Taxa de juros para simulaÃ§Ã£o.
+5. $simulatedValue: Valor pago ao qual serÃ¡ simulado.
 
 6. RESPONSE
 7. response : "true" em caso de resposta Moip com "&lt;Status&gt;" "Sucesso" e "false" em caso de "Falha"
@@ -505,7 +505,7 @@ $simulatedValue: Number
         print_r($moip->queryParcel('integracao@labs.moip.com.br', '4', '1.99', '100.00'));
 
 
-        //IRÃ? IMPRIMIR
+        //IRÃƒ? IMPRIMIR
         Array
         (
             [response] => 1
@@ -548,3 +548,110 @@ $simulatedValue: Number
 
         )
 ---------------
+
+Moip Assinaturas - API
+------------------------
+Para interaÃ§Ã£o com a API do Moip Assinaturas, utilize a classe `MoipSubscriptionsAPI`. Ela Ã© construida de forma semelhante Ã  classe `Moip`:
+
+    $moip = new MoipSubscriptionsAPI();
+    $moip->setEnvironment('test'); //ambiente sandbox
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101')
+    );
+
+No momento estÃ¡ implementada apenas a API de Planos (as outras ficarÃ£o prontas em breve!).
+Um plano Ã© representado pela classe `MoipPlan`. Um plano possui os atributos listados [aqui](http://moiplabs.github.io/assinaturas-docs/api.html#planos).
+Para cada atributo, existe um mÃ©todo setter que define o dado. Por exemplo: `setCode()`, `setName()`, etc...
+
+    $plano = new MoipPlan();
+    $plano->setCode('meu_plano')->setName('Meu Plano')->setAmount(500)->setInterval(array('unit' => 'MONTH', 'length' => 1));
+
+AlÃ©m disso, um plano pode receber um array com esses dados em seu construtor para inicializar seus atributos.
+
+    $dados = array(
+        'code' => 'meu_plano',
+        'name' => 'Meu Plano',
+        'amount' => 500,
+        'interval' => array('unit' => 'MONTH', 'length' => 1)
+    );
+    $plano = new MoipPlan($dados);
+
+Os atributos podem ser acessados normalmente, como abaixo:
+
+    $plano->code;
+
+Os mÃ©todos abaixo da classe MoipSubscriptionsAPI interagem com a API de Planos:
+
+###createPlan()
+Cria um plano.
+
+    $moip = new MoipSubscriptionsAPI();
+    $moip->setEnvironment('test'); //ambiente sandbox
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101')
+    );
+    $plano = new MoipPlan();
+    $plano->setCode('meu_plano')->setName('Meu Plano')->setAmount(500);
+    $moip->createPlan($plano);
+
+###getPlans()
+Retorna a lista de todos os planos no atributo `data` do MoipResponse. A resposta Ã© retornada na forma de um array de `MoipPlan`s.
+
+    $moip = new MoipSubscriptionsAPI();
+    $moip->setEnvironment('test'); //ambiente sandbox
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101')
+    );
+    $resp = $moip->getPlans();
+    print_r($resp->data);
+
+###getPlan()
+Retorna informaÃ§Ãµes sobre um plano em especÃ­fico.
+
+    $moip = new MoipSubscriptionsAPI();
+    $moip->setEnvironment('test'); //ambiente sandbox
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101')
+    );
+    $resp = $moip->getPlan('meu_plano');
+    print_r($resp->data);
+
+###activatePlan()
+Ativa um plano.
+
+    $moip = new MoipSubscriptionsAPI();
+    $moip->setEnvironment('test'); //ambiente sandbox
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101')
+    );
+    $resp = $moip->activatePlan('meu_plano');
+
+###inactivatePlan()
+Inativa um plano.
+
+    $moip = new MoipSubscriptionsAPI();
+    $moip->setEnvironment('test'); //ambiente sandbox
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101')
+    );
+    $resp = $moip->inactivatePlan('meu_plano');
+
+###updatePlan()
+Atualiza informaÃ§Ãµes sobre um plano.
+
+    $moip = new MoipSubscriptionsAPI();
+    $moip->setEnvironment('test'); //ambiente sandbox
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101')
+    );
+    $resp = $moip->getPlan('meu_plano');
+    $plano = $resp->data;
+    $plano->setAmount(700);
+    $moip->updatePlan($plano);
