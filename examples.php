@@ -79,6 +79,7 @@ function exampleAddParcel($example='1') {
             'zipCode' => '01230-000',
             'phone' => '(11)8888-8888')));
     $moip->validate('Identification');
+    $moip->setIncomingType('AVista');
 
     if ($example == '1')
         $moip->addParcel('2', '12');

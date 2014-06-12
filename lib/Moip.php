@@ -157,6 +157,13 @@ class Moip {
      *
      * @access public
      */
+    protected $incoming_type;
+    /**
+    * @var string
+    */
+
+    protected $incoming_valid_types = ['AVista','Parcelado'];
+
     public function __construct() {
         $this->setEnvironment();
 
@@ -632,6 +639,22 @@ class Moip {
     }
 
     /**
+    * Method setIncomingType()
+    *
+    * Add a Incoming method
+    *
+    * @param string $incoming Defauls as 'AVista' or can be setted as 'Parcelado'
+    */
+
+    public function setIncomingType($incoming_type = 'AVista') {
+        $this->incoming_type = $incoming_type;
+    }
+
+    public function getIncomingType(){
+        return in_array($this->incoming_type, $this->incoming_valid_types) ? $this->incoming_type : 'AVista'; 
+    }
+
+    /**
      * Method addParcel()
      *
      * Allows to add a order to parceling.
@@ -659,7 +682,7 @@ class Moip {
         else
             $this->setError('Error: Maximum amount can not be greater than 12.');
 
-        $parcela->addChild('Recebimento', 'AVista');
+        $parcela->addChild('Recebimento', $this->getIncomingType());
 
         if ($transfer === false) {
             if (isset($rate)) {
