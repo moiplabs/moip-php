@@ -88,7 +88,7 @@ validate()
 O método validate() irá realizar a validação dos dados obrigatórios para o tipo de instrução que você deseja processar, você pode optar por um dos dois níveis de validação disponíveis o 'Basic' e 'Identification'.
 
 1. Basic : Irá realizar a validação dos dados mínimos de para uma requisição XML ao Moip.
-2. Identification : Irá validar os dados necessários para se processar um XML com identificação Moip, usados geralmente para redirecionar o cliente já no segundo step da pagina de pagamento no checkout Moip ou usar o Moip Transaparente.
+2. Identification : Irá validar os dados necessários para se processar um XML com identificação Moip, usados geralmente para redirecionar o cliente já no segundo step da pagina de pagamento no checkout Moip ou usar o Moip Transparente.
 
  validate($validateType)
 
