@@ -560,7 +560,7 @@ class Moip {
      */
     public function setReturnURL($url) {
         if (!isset($this->xml->InstrucaoUnica->URLRetorno)) {
-            $this->xml->InstrucaoUnica->addChild('URLRetorno', $url);
+            $this->xml->InstrucaoUnica->URLRetorno = $url;
         }
 		return $this;
     }
@@ -575,7 +575,7 @@ class Moip {
      */
     public function setNotificationURL($url) {
         if (!isset($this->xml->InstrucaoUnica->URLNotificacao)) {
-            $this->xml->InstrucaoUnica->addChild('URLNotificacao', $url);
+            $this->xml->InstrucaoUnica->URLNotificacao = $url;
         }
     }
 
