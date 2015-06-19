@@ -326,7 +326,7 @@ $ratePayer : Boolean
 
 addParcel()
 ---------------
-O método addParcel() atribui valores as tags de "&lt;Parcelamentos&gt;" no XML Moip, responsável configuras as opções de parcelamento que serão disponÃ­veis ao pagador.
+O método addParcel() atribui valores as tags de "&lt;Parcelamentos&gt;" no XML Moip, responsável configuras as opções de parcelamento que serão disponíveis ao pagador.
 
 
 1. $min : Quantidade mínima de parcelas disponível ao pagador.
@@ -505,7 +505,7 @@ $simulatedValue: Number
         print_r($moip->queryParcel('integracao@labs.moip.com.br', '4', '1.99', '100.00'));
 
 
-        //IRÃ? IMPRIMIR
+        //IRÁ? IMPRIMIR
         Array
         (
             [response] => 1
