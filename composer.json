@@ -7,11 +7,12 @@
 	"archive": {
         "exclude": ["autoload.inc.php"]
     },
+	"include-path": [
+		"lib/",
+		"lib/phpQuery"
+	],
     "autoload": {
-        "include-path": [
-			"lib/",
-			"lib/phpQuery"
-		]
+        "classmap": []
     },
     "require": {
         "php": ">=5.3.3",
