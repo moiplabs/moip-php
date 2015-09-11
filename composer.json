@@ -8,7 +8,7 @@
         "exclude": ["autoload.inc.php"]
     },
     "autoload": {
-        "classmap": [
+        "include-path": [
 			"lib/",
 			"lib/phpQuery"
 		]
