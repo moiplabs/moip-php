@@ -3,6 +3,7 @@
     "description": "Biblioteca de integração com o MoIP",
     "license": "MIT",
     "homepage": "https://labs.moip.com.br/biblioteca/",
+	"version": "2.0.0",
     "autoload": {
         "classmap": ["lib"]
     },
