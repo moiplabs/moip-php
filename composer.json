@@ -8,12 +8,8 @@
         "exclude": ["autoload.inc.php"]
     },
 	"include-path": [
-		"lib/",
-		"lib/phpQuery"
+		"lib/"
 	],
-    "autoload": {
-        "classmap": []
-    },
     "require": {
         "php": ">=5.3.3",
         "ext-curl": "*",
