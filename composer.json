@@ -8,7 +8,9 @@
         "exclude": ["autoload.inc.php"]
     },
     "autoload": {
-        "classmap": ["lib/"]
+        "psr-4": {
+			"": "src/"
+		}
     },
     "require": {
         "php": ">=5.3.3",
