@@ -7,9 +7,13 @@
 	"archive": {
         "exclude": ["autoload.inc.php"]
     },
-	"include-path": [
-		"lib/"
-	],
+    "autoload": {
+        "files": [
+			"lib/Moip.php",
+			"lib/MoipClient.php",
+			"lib/MoipStatus.php"
+		]
+    },
     "require": {
         "php": ">=5.3.3",
         "ext-curl": "*",
