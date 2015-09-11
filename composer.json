@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Moip\\": "lib/",
+            "Moip\\": "lib/"
         }
     },
     "require": {
