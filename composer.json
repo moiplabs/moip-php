@@ -1,0 +1,15 @@
+{
+    "name": "praniellyferreira/moip-php",
+    "description": "Biblioteca de integração com o MoIP",
+    "license": "Apache License 2.0",
+    "autoload": {
+        "classmap": ["lib"]
+    },
+    "require": {
+        "php": ">=5.3",
+        "ext-curl": "*",
+        "lib-curl": "*",
+        "lib-openssl": "*",
+        "lib-libxml": "*"
+    }
+}
