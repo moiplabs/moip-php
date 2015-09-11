@@ -4,13 +4,8 @@
     "license": "MIT",
     "homepage": "https://labs.moip.com.br/biblioteca/",
 	"type" : "library",
-	"archive": {
-        "exclude": ["autoload.inc.php"]
-    },
     "autoload": {
-        "psr-4": {
-			"": "src/"
-		}
+        "files": ["autoload.inc.php"]
     },
     "require": {
         "php": ">=5.3.3",
