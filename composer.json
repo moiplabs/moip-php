@@ -10,8 +10,11 @@
             "email": "brunowribeiroo@facebook.com"
         }
     ], 
+    "repositories": [
+	{ "type": "git", "url": "https://github.com/offboard/phpquery"}
+    ], 
     "require": {
-        "electrolinux/phpquery": "dev-master"
+        "offboard/phpquery": "dev-master"
     },
     "autoload": {
         "psr-0": {
