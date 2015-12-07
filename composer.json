@@ -1,0 +1,19 @@
+{
+    "name": "offboard/moip-php",
+    "type": "library",
+    "description": "Moip Labs",
+    "homepage": "http://github.com/offboard/moip-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bruno Ribeiro",
+            "email": "brunowribeiroo@facebook.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+       "classmap": ["autoload.php"]
+    }
+}
