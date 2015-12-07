@@ -10,12 +10,6 @@
             "email": "brunowribeiroo@facebook.com"
         }
     ], 
-    "repositories": [
-	{ "type": "git", "url": "https://github.com/offboard/phpquery"}
-    ], 
-    "require": {
-        "offboard/phpquery": "0.9.6"
-    },
     "autoload": {
         "psr-0": {
             "Moip": "src/"
