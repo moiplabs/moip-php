@@ -10,7 +10,6 @@
             "email": "brunowribeiroo@facebook.com"
         }
     ],
-    "minimum-stability": "dev",
     "repositories": [
 	{ "type": "git", "url": "https://github.com/electrolinux/phpquery"}
     ], 
