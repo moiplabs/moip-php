@@ -10,10 +10,13 @@
             "email": "brunowribeiroo@facebook.com"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
-        "php": ">=5.3.0"
+        "electrolinux/phpquery": "dev-master"
     },
     "autoload": {
-       "classmap": ["autoload.php"]
+        "psr-0": {
+            "Moip": "src/"
+        }
     }
 }
