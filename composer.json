@@ -9,9 +9,6 @@
             "name": "Bruno Ribeiro",
             "email": "brunowribeiroo@facebook.com"
         }
-    ],
-    "repositories": [
-	{ "type": "git", "url": "https://github.com/electrolinux/phpquery"}
     ], 
     "require": {
         "electrolinux/phpquery": "dev-master"
