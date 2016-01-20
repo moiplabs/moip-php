@@ -252,7 +252,7 @@ class Moip {
 
         if ($testing) {
             $this->environment->name = "Sandbox";
-            $this->environment->base_url = "https://desenvolvedor.moip.com.br/sandbox";
+            $this->environment->base_url = "https://desenvolvedor2.moip.com.br/sandbox";
         } else {
             $this->environment->name = "Produção";
             $this->environment->base_url = "https://www.moip.com.br";
