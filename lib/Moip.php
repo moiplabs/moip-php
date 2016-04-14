@@ -8,7 +8,8 @@
  * @author Alê Borba
  * @author Vagner Fiuza Vieira
  * @author Paulo Cesar
- * @version 1.6.2
+ * @author Fernando Henrique Bandeira
+ * @version 1.7.0
  * @license <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>
  */
 
@@ -640,10 +641,11 @@ class Moip {
      * @param int $max The maximum number of parcels.
      * @param float $rate The percentual value of rates
      * @param boolean $transfer "true" defines the amount of interest charged by MoIP installment to be paid by the payer
+     * @param boolean $receipt "true" for receiving in installments
      * @return Moip
      * @access public
      */
-    public function addParcel($min, $max, $rate=null, $transfer=false) {
+    public function addParcel($min, $max, $rate=null, $transfer=false, $receipt=false) {
         if (!isset($this->xml->InstrucaoUnica->Parcelamentos)) {
             $this->xml->InstrucaoUnica->addChild('Parcelamentos');
         }
@@ -659,7 +661,10 @@ class Moip {
         else
             $this->setError('Error: Maximum amount can not be greater than 12.');
 
-        $parcela->addChild('Recebimento', 'AVista');
+        if($receipt === false)
+            $parcela->addChild('Recebimento', 'AVista');
+        else
+            $parcela->addChild('Recebimento', 'Parcelado');
 
         if ($transfer === false) {
             if (isset($rate)) {
