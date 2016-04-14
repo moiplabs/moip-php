@@ -366,7 +366,7 @@ $receipt : Boolean
 	$moip->addParcel('2', '4');
 	$moip->addParcel('5', '7', '1.00');
 	$moip->addParcel('8', '10', null, true);
-	$moip->addParcel('10', '12', null, true, true);
+	$moip->addParcel('11', '12', null, true, true);
 ```
 -------------------------------------
 
