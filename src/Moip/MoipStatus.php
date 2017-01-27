@@ -1,5 +1,10 @@
 <?php
-require 'phpQuery/phpQuery.php';
+
+namespace Moip;
+
+use Exception;
+use phpQuery;
+
 
 /**
  * Verificação de status da conta do MoIP. Atualmente somente com suporte à verificação de saldo e ultimas transações.
@@ -8,9 +13,13 @@ require 'phpQuery/phpQuery.php';
  * @package MoIP
  */
 
-class MoIPStatus
+class MoipStatus
 {
     private $url_login = "https://www.moip.com.br/j_acegi_security_check";
+
+    private $username;
+
+    private $password;
 
     function setCredenciais($username,$password)
     {

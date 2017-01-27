@@ -1,6 +1,8 @@
 <?php
 
-include_once "autoload.inc.php";
+include __DIR__ . '/../vendor/autoload.php';
+
+use Moip\Moip;
 
 function exampleBasicInstructions() {
     $moip = new Moip();
@@ -34,11 +36,11 @@ function exampleIdentificationInstruction() {
     $moip->setPayer(array('name' => 'Nome Sobrenome',
         'email' => 'email@cliente.com.br',
         'payerId' => 'id_usuario',
-        'billingAddress' => array('address' => 'Rua do Zézinho Coração',
+        'billingAddress' => array('address' => 'Rua do Zï¿½zinho Coraï¿½ï¿½o',
             'number' => '45',
             'complement' => 'z',
-            'city' => 'São Paulo',
-            'neighborhood' => 'Palhaço Jão',
+            'city' => 'Sï¿½o Paulo',
+            'neighborhood' => 'Palhaï¿½o Jï¿½o',
             'state' => 'SP',
             'country' => 'BRA',
             'zipCode' => '01230-000',
@@ -69,11 +71,11 @@ function exampleAddParcel($example='1') {
     $moip->setPayer(array('name' => 'Nome Sobrenome',
         'email' => 'email@cliente.com.br',
         'payerId' => 'id_usuario',
-        'billingAddress' => array('address' => 'Rua do Zézinho Coração',
+        'billingAddress' => array('address' => 'Rua do Zï¿½zinho Coraï¿½ï¿½o',
             'number' => '45',
             'complement' => 'z',
-            'city' => 'São Paulo',
-            'neighborhood' => 'Palhaço Jão',
+            'city' => 'Sï¿½o Paulo',
+            'neighborhood' => 'Palhaï¿½o Jï¿½o',
             'state' => 'SP',
             'country' => 'BRA',
             'zipCode' => '01230-000',
@@ -106,11 +108,11 @@ function exampleAddComission($example='1') {
     $moip->setPayer(array('name' => 'Nome Sobrenome',
         'email' => 'email@cliente.com.br',
         'payerId' => 'id_usuario',
-        'billingAddress' => array('address' => 'Rua do Zézinho Coração',
+        'billingAddress' => array('address' => 'Rua do Zï¿½zinho Coraï¿½ï¿½o',
             'number' => '45',
             'complement' => 'z',
-            'city' => 'São Paulo',
-            'neighborhood' => 'Palhaço Jão',
+            'city' => 'Sï¿½o Paulo',
+            'neighborhood' => 'Palhaï¿½o Jï¿½o',
             'state' => 'SP',
             'country' => 'BRA',
             'zipCode' => '01230-000',
@@ -118,15 +120,15 @@ function exampleAddComission($example='1') {
     $moip->validate('Identification');
 
     if ($example == '1')
-        $moip->addComission('Razão do Split', 'recebedor_secundario', '12.00');
+        $moip->addComission('Razï¿½o do Split', 'recebedor_secundario', '12.00');
     else if ($example == '2')
-        $moip->addComission('Razão do Split', 'recebedor_secundario', '12.00', true);
+        $moip->addComission('Razï¿½o do Split', 'recebedor_secundario', '12.00', true);
     else if ($example == '3')
-        $moip->addComission('Razão do Split', 'recebedor_secundario', '12.00', true, 'recebedor_secundario_3');
+        $moip->addComission('Razï¿½o do Split', 'recebedor_secundario', '12.00', true, 'recebedor_secundario_3');
     else if ($example == '4') {
-        $moip->addComission('Razão do Split', 'recebedor_secundario', '5.00');
-        $moip->addComission('Razão do Split', 'recebedor_secundario', '2.00', true);
-        $moip->addComission('Razão do Split', 'recebedor_secundario_2', '12.00', true, 'recebedor_secundario_3');
+        $moip->addComission('Razï¿½o do Split', 'recebedor_secundario', '5.00');
+        $moip->addComission('Razï¿½o do Split', 'recebedor_secundario', '2.00', true);
+        $moip->addComission('Razï¿½o do Split', 'recebedor_secundario_2', '12.00', true, 'recebedor_secundario_3');
     }
 
     print_r($moip->send());
@@ -144,11 +146,11 @@ function exampleSetReceiver() {
     $moip->setPayer(array('name' => 'Nome Sobrenome',
         'email' => 'email@cliente.com.br',
         'payerId' => 'id_usuario',
-        'billingAddress' => array('address' => 'Rua do Zézinho Coração',
+        'billingAddress' => array('address' => 'Rua do Zï¿½zinho Coraï¿½ï¿½o',
             'number' => '45',
             'complement' => 'z',
-            'city' => 'São Paulo',
-            'neighborhood' => 'Palhaço Jão',
+            'city' => 'Sï¿½o Paulo',
+            'neighborhood' => 'Palhaï¿½o Jï¿½o',
             'state' => 'SP',
             'country' => 'BRA',
             'zipCode' => '01230-000',
@@ -172,11 +174,11 @@ function exampleConfigPaymentWay($param) {
     $moip->setPayer(array('name' => 'Nome Sobrenome',
         'email' => 'email@cliente.com.br',
         'payerId' => 'id_usuario',
-        'billingAddress' => array('address' => 'Rua do Zézinho Coração',
+        'billingAddress' => array('address' => 'Rua do Zï¿½zinho Coraï¿½ï¿½o',
             'number' => '45',
             'complement' => 'z',
-            'city' => 'São Paulo',
-            'neighborhood' => 'Palhaço Jão',
+            'city' => 'Sï¿½o Paulo',
+            'neighborhood' => 'Palhaï¿½o Jï¿½o',
             'state' => 'SP',
             'country' => 'BRA',
             'zipCode' => '01230-000',
@@ -202,11 +204,11 @@ function exampleFull() {
     $moip->setPayer(array('name' => 'Nome Sobrenome',
         'email' => 'email@cliente.com.br',
         'payerId' => 'id_usuario',
-        'billingAddress' => array('address' => 'Rua do Zézinho Coração',
+        'billingAddress' => array('address' => 'Rua do Zï¿½zinho Coraï¿½ï¿½o',
             'number' => '45',
             'complement' => 'z',
-            'city' => 'São Paulo',
-            'neighborhood' => 'Palhaço Jão',
+            'city' => 'Sï¿½o Paulo',
+            'neighborhood' => 'Palhaï¿½o Jï¿½o',
             'state' => 'SP',
             'country' => 'BRA',
             'zipCode' => '01230-000',
@@ -219,9 +221,9 @@ function exampleFull() {
     $moip->addParcel('5', '7', '1.00');
     $moip->addParcel('8', '12', null, true);
 
-    $moip->addComission('Razão do Split', 'recebedor_secundario', '5.00');
-    $moip->addComission('Razão do Split', 'recebedor_secundario', '2.00', true);
-    $moip->addComission('Razão do Split', 'recebedor_secundario_2', '12.00', true, 'recebedor_secundario_3');
+    $moip->addComission('Razï¿½o do Split', 'recebedor_secundario', '5.00');
+    $moip->addComission('Razï¿½o do Split', 'recebedor_secundario', '2.00', true);
+    $moip->addComission('Razï¿½o do Split', 'recebedor_secundario_2', '12.00', true, 'recebedor_secundario_3');
 
     $moip->addPaymentWay('creditCard');
     $moip->addPaymentWay('billet');

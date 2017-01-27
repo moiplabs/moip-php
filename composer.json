@@ -4,21 +4,17 @@
   "license": "MIT",
   "homepage": "https://labs.moip.com.br/biblioteca/",
   "type" : "library",
-  "archive": {
-    "exclude": ["autoload.inc.php"]
-  },
   "autoload": {
-    "files": [
-      "lib/Moip.php",
-      "lib/MoipClient.php",
-      "lib/MoipStatus.php"
-    ]
+    "psr-4": {
+      "": "src/"
+    }
   },
   "require": {
     "php": ">=5.3.3",
     "ext-curl": "*",
     "lib-curl": "*",
     "lib-openssl": "*",
-    "lib-libxml": "*"
+    "lib-libxml": "*",
+    "electrolinux/phpquery": "^0.9.6"
   }
 }

@@ -1,21 +1,22 @@
 <?php
+    include __DIR__ . '/vendor/autoload.php';
 
-include __DIR__ . '/vendor/autoload.php';
+    use Moip\Moip;
+    use Moip\MoipStatus;
 
-$moip = new Moip();
-$moip->setEnvironment('test');
-$moip->setCredential(array(
-    'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
-    'token' => '01010101010101010101010101010101'
-));
+    $moip = new Moip();
+    $moip->setEnvironment('test');
+    $moip->setCredential(array(
+        'key' => 'ABABABABABABABABABABABABABABABABABABABAB',
+        'token' => '01010101010101010101010101010101'
+    ));
 
-$moip->setUniqueID(false);
-$moip->setValue('100.00');
-$moip->setReason('Teste do Moip-PHP');
+    $moip->setUniqueID(false);
+    $moip->setValue('100.00');
+    $moip->setReason('Teste do Moip-PHP');
 
-$moip->validate('Basic');
+    $moip->validate('Basic');
 
-$moip->send();
-print_r($moip->getAnswer());
+    $moip->send();
+    print_r($moip->getAnswer());
 
-?>
