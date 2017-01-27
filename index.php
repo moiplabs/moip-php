@@ -1,14 +1,6 @@
 <?php
 
-/**
-  include_once 'examples.php';
-
-  exampleBasicInstructions();
-  exampleFull();
-  exampleQueryParcels();
- * 
- */
-include_once "autoload.inc.php";
+include __DIR__ . '/vendor/autoload.php';
 
 $moip = new Moip();
 $moip->setEnvironment('test');
